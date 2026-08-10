@@ -1,0 +1,2764 @@
+# Copyright (C) 2026 WPFactory
+# This file is distributed under the GNU General Public License v3.0.
+msgid ""
+msgstr ""
+"Project-Id-Version: Catalog Health Scanner for WooCommerce 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wpfactory.com/\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-09T17:29:37+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: catalog-health-scanner-for-woocommerce\n"
+
+#. translators: %d: number of checks with open issues.
+#: includes/admin/class-wpfchs-admin-category.php:132
+msgid "%d check with issues"
+msgid_plural "%d checks with issues"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-wpfchs-admin-category.php:135
+msgid "Sorted by severity"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:139
+msgid "No open issues in this category."
+msgstr ""
+
+#. translators: %d: number of passing checks.
+#: includes/admin/class-wpfchs-admin-category.php:152
+msgid "%d other check in this category is passing on all products."
+msgid_plural "%d other checks in this category are passing on all products."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of open issues.
+#: includes/admin/class-wpfchs-admin-category.php:206
+#: includes/admin/class-wpfchs-admin-dashboard.php:197
+msgid "%s open issue"
+msgid_plural "%s open issues"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-wpfchs-admin-category.php:216
+#: includes/admin/class-wpfchs-admin-settings.php:274
+msgid "Applicable"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:218
+msgid "Reported, not scored"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:220
+#: includes/admin/class-wpfchs-admin-dashboard.php:498
+#: includes/admin/class-wpfchs-admin-settings.php:276
+msgid "Not applicable"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:223
+msgid "Change"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:250
+msgid "All severities"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:252
+#: includes/admin/class-wpfchs-admin.php:474
+#: includes/class-wpfchs-scores.php:192
+#: includes/report/class-wpfchs-report.php:191
+#: includes/report/class-wpfchs-report.php:311
+#: includes/report/class-wpfchs-report.php:328
+msgid "Critical"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:253
+#: includes/admin/class-wpfchs-admin.php:475
+#: includes/report/class-wpfchs-report.php:192
+#: includes/report/class-wpfchs-report.php:329
+msgid "High"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:254
+#: includes/admin/class-wpfchs-admin.php:476
+#: includes/report/class-wpfchs-report.php:193
+#: includes/report/class-wpfchs-report.php:330
+msgid "Medium"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:255
+#: includes/admin/class-wpfchs-admin.php:477
+#: includes/report/class-wpfchs-report.php:194
+#: includes/report/class-wpfchs-report.php:331
+msgid "Low"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:269
+msgid "All product categories"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:278
+msgid "All product types"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:284
+msgid "New since last scan"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:286
+msgid "Filter"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:288
+msgid "Export CSV"
+msgstr ""
+
+#. translators: %s: number of affected products.
+#. translators: %s: number of matching products.
+#: includes/admin/class-wpfchs-admin-category.php:320
+#: includes/admin/class-wpfchs-admin-dashboard.php:598
+#: includes/admin/class-wpfchs-admin-dashboard.php:673
+#: includes/admin/class-wpfchs-ajax.php:563
+msgid "%s product"
+msgid_plural "%s products"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-wpfchs-admin-category.php:326
+#: includes/admin/class-wpfchs-admin-dashboard.php:581
+#: includes/admin/class-wpfchs-admin-dashboard.php:607
+msgid "Fix all"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-category.php:328
+msgid "Bulk assign"
+msgstr ""
+
+#. translators: %s: number of affected products.
+#: includes/admin/class-wpfchs-admin-category.php:337
+msgid "View %s product"
+msgid_plural "View %s products"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:77
+msgid "Scan profile"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:86
+msgid "Resume Scan"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:88
+msgid "Pause"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:90
+#: includes/admin/class-wpfchs-admin.php:309
+msgid "Cancel"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:92
+msgid "Run Scan"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:93
+msgid "Schedule"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:95
+#: includes/admin/class-wpfchs-admin-history.php:197
+msgid "PDF report"
+msgstr ""
+
+#. translators: %1$s: human time diff since last scan, %2$s: number of products scanned.
+#: includes/admin/class-wpfchs-admin-dashboard.php:103
+msgid "Last scan: %1$s ago · %2$s products"
+msgstr ""
+
+#. translators: %1$s: scanned count, %2$s: total count.
+#: includes/admin/class-wpfchs-admin-dashboard.php:129
+msgid "Scanning: %1$s of %2$s products"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:145
+msgid "Run your first scan"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:146
+msgid "Find the products that are silently costing you sales. Revenue Blockers is a fast first look — critical issues only. It takes seconds on most catalogs."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:147
+msgid "Scan my catalog now"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:162
+msgid "Setup complete."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:163
+msgid "Your store is configured. Run your first scan to see where you stand."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:165
+msgid "Run first scan"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:192
+#: includes/admin/class-wpfchs-admin-products.php:154
+#: includes/admin/class-wpfchs-admin.php:141
+#: includes/admin/class-wpfchs-admin.php:152
+msgid "Catalog Health"
+msgstr ""
+
+#. translators: %s: number of ignored issues.
+#: includes/admin/class-wpfchs-admin-dashboard.php:209
+msgid "%s ignored, not counted"
+msgid_plural "%s ignored, not counted"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: score.
+#: includes/admin/class-wpfchs-admin-dashboard.php:247
+msgid "Catalog health score: %s percent"
+msgstr ""
+
+#. translators: %d: number of scans in the trend.
+#: includes/admin/class-wpfchs-admin-dashboard.php:285
+msgid "Trend · last %d scans"
+msgstr ""
+
+#. translators: %s: number of products skipped.
+#: includes/admin/class-wpfchs-admin-dashboard.php:331
+msgid "%s product was not checked in this scan."
+msgid_plural "%s products were not checked in this scan."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: grace period in days.
+#: includes/admin/class-wpfchs-admin-dashboard.php:339
+msgid "They are either newer than your %d-day grace period or sit in an excluded category, so your score does not cover them."
+msgstr ""
+
+#. translators: %d: grace period in days.
+#: includes/admin/class-wpfchs-admin-dashboard.php:345
+msgid "They are newer than your %d-day grace period, so your score does not cover them. Turn the grace period off to include everything."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:349
+msgid "They sit in a category excluded from scanning, so your score does not cover them."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:353
+msgid "Change what gets scanned"
+msgstr ""
+
+#. translators: %s: number of critical issues.
+#: includes/admin/class-wpfchs-admin-dashboard.php:397
+msgid "%s critical issue is costing you sales right now."
+msgid_plural "%s critical issues are costing you sales right now."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:401
+msgid "Unpurchasable products, negative margins, or broken downloads."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:421
+msgid "Review & fix"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:481
+msgid "Category scores"
+msgstr ""
+
+#. translators: %1$d: applicable category count, %2$d: total category count.
+#: includes/admin/class-wpfchs-admin-dashboard.php:485
+msgid "%1$d of %2$d categories apply to this store"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:527
+msgid "Not scanned yet"
+msgstr ""
+
+#. translators: %s: number of open issues.
+#. translators: %s: total issue count.
+#: includes/admin/class-wpfchs-admin-dashboard.php:535
+#: includes/admin/class-wpfchs-admin-history.php:134
+msgid "%s issue"
+msgid_plural "%s issues"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:575
+msgid "Quick wins"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:584
+msgid "Auto-fixable"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:589
+msgid "Nothing auto-fixable right now. Good."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:651
+msgid "Top issues"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:654
+msgid "No open issues. Your catalog is clean."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-dashboard.php:677
+msgid "View"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:58
+#: includes/admin/class-wpfchs-admin-history.php:76
+msgid "Compare scans"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:64
+msgid "From"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:64
+msgid "To"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:76
+#: includes/admin/class-wpfchs-admin-history.php:79
+msgid "Compare"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:77
+msgid "See exactly what improved, what regressed, and what is new between any two scans."
+msgstr ""
+
+#. translators: %1$s: older scan date, %2$s: newer scan date.
+#: includes/admin/class-wpfchs-admin-history.php:102
+msgid "Comparison: %1$s → %2$s"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:112
+msgid "Fixed"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:113
+msgid "Regressed"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:114
+msgid "New"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:122
+msgid "None"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:159
+msgid "Scan history"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:162
+msgid "No completed scans yet."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:169
+#: includes/admin/class-wpfchs-admin-history.php:230
+msgid "Date"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:170
+#: includes/admin/class-wpfchs-admin-profiles.php:124
+#: includes/admin/class-wpfchs-admin-settings.php:424
+msgid "Profile"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:171
+msgid "Duration"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:172
+#: includes/admin/class-wpfchs-admin-history.php:233
+#: includes/report/class-wpfchs-report.php:309
+msgid "Products"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:173
+msgid "Issues found"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:174
+msgid "Score"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:175
+msgid "Report"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:194
+msgid "Recalculated after an applicability change; the trend stays comparable."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:197
+msgid "PDF"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:218
+msgid "Fix activity log"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:221
+msgid "No fixes applied yet."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:231
+msgid "User"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:232
+#: includes/admin/class-wpfchs-ajax.php:78
+msgid "Fix"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:234
+#: includes/class-wpfchs-export.php:98
+msgid "Status"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:248
+msgid "Undone"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:250
+#: includes/admin/class-wpfchs-admin.php:302
+msgid "Undo"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-history.php:252
+msgid "Applied"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-products.php:105
+msgid "Health"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-products.php:134
+msgid "No open issues"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-products.php:184
+msgid "No open issues on this product."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-products.php:197
+msgid "Ignore for this product"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-products.php:202
+msgid "Open Catalog Health dashboard"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:48
+#: includes/admin/class-wpfchs-admin-settings.php:49
+#: includes/admin/class-wpfchs-admin-settings.php:94
+#: includes/admin/class-wpfchs-admin-wizard.php:138
+#: includes/admin/class-wpfchs-ajax.php:179
+msgid "You are not allowed to do this."
+msgstr ""
+
+#. translators: %s: source profile name.
+#: includes/admin/class-wpfchs-admin-profiles.php:82
+msgid "Copy of %s"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:110
+msgid "Profiles saved."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:119
+#: includes/admin/class-wpfchs-admin.php:427
+msgid "Profiles"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:123
+msgid "Default"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:125
+msgid "Description"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:126
+msgid "Checks"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:127
+#: includes/admin/class-wpfchs-ajax.php:504
+msgid "Actions"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:136
+msgid "(custom)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:141
+#: includes/admin/class-wpfchs-ajax.php:531
+msgid "Edit"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:143
+msgid "Duplicate"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:145
+msgid "Delete"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:152
+msgid "Save default profile"
+msgstr ""
+
+#. translators: %s: profile name.
+#: includes/admin/class-wpfchs-admin-profiles.php:201
+msgid "Edit profile: %s"
+msgstr ""
+
+#. translators: %s: profile name.
+#: includes/admin/class-wpfchs-admin-profiles.php:202
+msgid "New custom profile"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:206
+msgid "Cancel editing"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:211
+msgid "Profile name"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:233
+msgid "(excluded by applicability)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:243
+msgid "Save changes"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-profiles.php:243
+msgid "Save custom profile"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:186
+msgid "Settings saved."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:199
+msgid "Save settings"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:218
+msgid "Reset & setup"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:220
+msgid "Restore all settings to their defaults and run the setup wizard again."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:221
+msgid "Your scan history, issues, and fix log are kept. Only settings and profiles are reset."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:226
+msgid "Reset & re-run setup"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:245
+msgid "Inventory & stock"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:246
+msgid "Shipping weight & dimensions"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:247
+#: includes/admin/class-wpfchs-admin-wizard.php:108
+#: includes/checks/class-wpfchs-checks.php:40
+msgid "Tax"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:248
+#: includes/admin/class-wpfchs-admin-wizard.php:93
+#: includes/checks/class-wpfchs-checks.php:43
+msgid "Downloads"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:249
+msgid "Product feed readiness"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:250
+msgid "Cost of goods & margin"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:251
+msgid "Product reviews"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:252
+msgid "FAQ / Q&A content"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:256
+msgid "Applicability"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:257
+msgid "Non-applicable groups are skipped entirely and excluded from the health score."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:261
+msgid "Check group"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:262
+msgid "Setting"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:263
+msgid "Auto-detect currently says"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:273
+msgid "Auto-detect (recommended)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:275
+msgid "Report, but do not score"
+msgstr ""
+
+#. translators: %s: auto-detect reasoning.
+#: includes/admin/class-wpfchs-admin-settings.php:285
+msgid "Applicable — %s"
+msgstr ""
+
+#. translators: %s: auto-detect reasoning.
+#: includes/admin/class-wpfchs-admin-settings.php:287
+msgid "Not applicable — %s"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:311
+msgid "Individual checks"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:312
+msgid "Untick a check to disable it everywhere. To silence a single product instead, use Ignore on the issue."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:346
+msgid "Minimum margin (%)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:346
+msgid "0 disables the margin check."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:347
+msgid "Minimum image resolution (px)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:347
+msgid "Featured images below this width or height are flagged."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:348
+msgid "Minimum description length (characters)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:349
+msgid "Long-term out of stock after (days)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:350
+msgid "Grace period for new products (days)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:350
+msgid "Newly published products are not counted until this passes."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:351
+msgid "Fix undo window (days)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:352
+msgid "Maximum plausible weight"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:352
+msgid "In your store weight unit. 0 disables the upper bound."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:353
+msgid "Price deviation factor"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:353
+msgid "Flag prices this many times above or below the category median."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:354
+msgid "Image reuse threshold (products)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:355
+msgid "Feed description limit (characters)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:359
+msgid "Thresholds"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:397
+msgid "Scheduled scans & email digest"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:402
+msgid "The digest is only sent when there is something new. Silence means a clean catalog."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:404
+msgid "Scans that run themselves, an email digest of new issues, and instant critical alerts."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:408
+msgid "Scheduled scans"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:409
+msgid "Run scans automatically"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:412
+msgid "Frequency"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:415
+msgid "Daily"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:416
+msgid "Weekly"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:417
+msgid "Monthly"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:432
+msgid "Email digest"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:433
+msgid "Email a digest after scheduled scans when new issues are found"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:436
+msgid "Digest recipients"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:438
+msgid "Comma-separated email addresses."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:441
+msgid "Immediate critical alerts"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:442
+msgid "Email as soon as a scan finds new critical issues"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:445
+msgid "Alert recipients"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:449
+msgid "Auto-fix after scheduled scans"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:450
+msgid "Automatically apply the unambiguous \"quick win\" fixes after each scheduled scan"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:451
+msgid "Only fully reversible auto-fixes run (expired sales, dead references, stock-status sync, and similar). Every change is logged and can be undone from the History tab."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:483
+msgid "PDF report branding (white label)"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:488
+msgid "Shown on the PDF audit report cover. Leave empty to use the store name."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:490
+msgid "A client-ready PDF audit report carrying your agency name and logo."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:494
+msgid "Agency / brand name"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:498
+msgid "Logo"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:507
+msgid "Choose logo"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:508
+msgid "Remove"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:510
+msgid "Shown on the PDF report cover. JPEG, PNG, WebP, and GIF all work — transparent areas are flattened onto white."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:512
+msgid "Shown on the PDF report cover. The GD image library is not available on this server, so only JPEG logos can be rendered."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:518
+msgid "Report footer line"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:546
+msgid "Scan scope"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:547
+msgid "Products in excluded categories are skipped. Scans that skip anything never auto-resolve issues, so a skipped product is never reported as fixed."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:549
+msgid "Exclude product categories"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:581
+msgid "Ignored issues"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:582
+msgid "Ignored issues count as passing and never resurface until restored here."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:585
+msgid "Nothing is ignored."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:591
+#: includes/admin/class-wpfchs-ajax.php:431
+msgid "Select all on this page"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:592
+#: includes/admin/class-wpfchs-ajax.php:434
+msgid "selected"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:594
+msgid "Restore selected"
+msgstr ""
+
+#. translators: %s: number of ignored issues.
+#: includes/admin/class-wpfchs-admin-settings.php:598
+msgid "Restore all %s issue"
+msgid_plural "Restore all %s issues"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:608
+#: includes/admin/class-wpfchs-ajax.php:77
+#: includes/admin/class-wpfchs-ajax.php:501
+#: includes/admin/class-wpfchs-ajax.php:811
+#: includes/class-wpfchs-export.php:93
+msgid "Product"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:609
+#: includes/class-wpfchs-export.php:96
+msgid "Check"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:610
+msgid "Ignored by"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:611
+msgid "Ignored on"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-settings.php:624
+msgid "Restore"
+msgstr ""
+
+#. translators: %1$s: rows shown, %2$s: total ignored issues.
+#: includes/admin/class-wpfchs-admin-settings.php:634
+msgid "Showing the %1$s most recent of %2$s. \"Restore all\" covers every ignored issue, not just this page."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-upgrade.php:76
+msgid "Catalog Health Scanner for WooCommerce Pro"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-upgrade.php:108
+msgid "Locked options can be unlocked using <a href=\"%pro_version_url%\" target=\"_blank\"><strong>%pro_version_title%</strong></a>"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-upgrade.php:109
+msgid "Upgrade to Pro version"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-upgrade.php:131
+msgid "Pro"
+msgstr ""
+
+#. translators: %s: feature name.
+#: includes/admin/class-wpfchs-admin-upgrade.php:157
+msgid "%s — available in Pro"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-upgrade.php:201
+#: includes/admin/class-wpfchs-admin.php:319
+#: includes/report/class-wpfchs-report.php:114
+msgid "Unlock with Pro"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:43
+msgid "Does your shipping cost depend on weight or size?"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:44
+#: includes/checks/class-wpfchs-checks.php:39
+msgid "Shipping"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:47
+msgid "Yes, my shipping rates use weight or dimensions"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:48
+msgid "Weight and dimension checks stay on and count toward your score."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:51
+msgid "No, I ship manually or use flat rates"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:52
+msgid "Shipping checks are marked not applicable. They will not lower your score."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:55
+msgid "I still want weights recorded for warehouse or customs purposes"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:56
+#: includes/class-wpfchs-applicability.php:105
+msgid "Checks run and are reported, but stay out of the health score."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:62
+msgid "Do you list products on Google Shopping, Meta, or a comparison engine?"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:63
+msgid "Feeds"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:66
+msgid "Yes, I run product feeds"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:67
+msgid "Feed readiness checks (identifiers, brand, image requirements) stay on."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:70
+msgid "No feeds"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:71
+msgid "Feed checks are skipped and excluded from your score."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:77
+msgid "Do you track cost of goods and margin?"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:78
+msgid "Costs"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:81
+msgid "Yes, products carry cost data"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:82
+msgid "Margin checks warn you when a product sells at a loss."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:85
+msgid "No cost tracking"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:86
+msgid "Cost and margin checks are skipped and excluded from your score."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:92
+msgid "Do you sell downloadable or virtual products?"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:96
+#: includes/admin/class-wpfchs-admin-wizard.php:111
+msgid "Yes"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:97
+msgid "Download checks verify every file actually exists and is attached."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:100
+msgid "No"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:101
+msgid "Download checks are skipped and excluded from your score."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:107
+msgid "Do you sell to multiple tax regions or use multiple tax classes?"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:112
+msgid "Tax class checks stay on and count toward your score."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:115
+msgid "No, one region and one rate"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:116
+msgid "Tax checks are skipped and excluded from your score."
+msgstr ""
+
+#. translators: %1$d: current step number, %2$d: total steps.
+#: includes/admin/class-wpfchs-admin-wizard.php:205
+msgid "Step %1$d of %2$d"
+msgstr ""
+
+#. translators: %s: auto-detect reasoning.
+#: includes/admin/class-wpfchs-admin-wizard.php:227
+msgid "We looked at your store configuration: %s If that is right, just continue."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:240
+msgid "Detected"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:249
+msgid "You can change this later in Settings › Applicability."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:252
+msgid "Skip setup"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:254
+msgid "Back"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:257
+msgid "Finish"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin-wizard.php:257
+msgid "Continue"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:140
+#: includes/admin/class-wpfchs-admin.php:151
+#: includes/admin/class-wpfchs-admin.php:162
+#: includes/admin/class-wpfchs-admin.php:378
+msgid "Catalog Health Scanner"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:163
+#: includes/admin/class-wpfchs-admin.php:418
+#: includes/class-wpfchs.php:186
+msgid "Dashboard"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:182
+msgid "Scan Profiles"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:186
+#: includes/admin/class-wpfchs-admin.php:431
+#: includes/class-wpfchs.php:192
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:190
+msgid "Catalog Health Scanner Setup"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:295
+msgid "Scanning…"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:296
+msgid "Scan complete."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:297
+msgid "The scan could not continue. You can resume it from the dashboard."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:298
+msgid "Cancel this scan? Progress so far is kept."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:299
+msgid "Ignored. This check will no longer flag this product."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:300
+msgid "Restored."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:301
+msgid "Fixed."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:303
+msgid "Fix undone. The issues are open again."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:304
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:305
+msgid "Loading…"
+msgstr ""
+
+#. translators: %d: number of products the fix will be applied to.
+#: includes/admin/class-wpfchs-admin.php:307
+msgid "Apply to %d products"
+msgstr ""
+
+#. translators: %d: number of products the fix will be applied to.
+#: includes/admin/class-wpfchs-admin.php:308
+#: includes/admin/class-wpfchs-ajax.php:691
+#: includes/admin/class-wpfchs-ajax.php:731
+msgid "Select at least one product first."
+msgstr ""
+
+#. translators: %d: number of rows currently selected.
+#: includes/admin/class-wpfchs-admin.php:311
+msgid "%d selected"
+msgstr ""
+
+#. translators: %d: number of rows currently selected.
+#: includes/admin/class-wpfchs-admin.php:312
+msgid "Delete this profile? Scans that used it keep their history."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:313
+msgid "Reset all settings and re-run the setup wizard? Scan history is kept."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:314
+msgid "Preview and apply all auto-fixable quick wins?"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:315
+msgid "Applying fixes…"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:316
+msgid "Choose report logo"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:317
+msgid "Use this logo"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:318
+msgid "Apply all fixes"
+msgstr ""
+
+#. translators: %s: feature name.
+#: includes/admin/class-wpfchs-admin.php:321
+msgid "%s is a Pro feature"
+msgstr ""
+
+#. translators: %s: feature name.
+#: includes/admin/class-wpfchs-admin.php:322
+msgid "This feature"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:323
+msgid "Available in the Pro version, along with bulk fixing, scheduled scans, email alerts, scan comparison, and the white-label PDF audit report."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:324
+msgid "The free version fixes one product at a time. Pro applies a reviewed fix to every affected product in one click."
+msgstr ""
+
+#. translators: %d: number of selected products that will be ignored.
+#: includes/admin/class-wpfchs-admin.php:326
+msgid "Ignore %d selected products for this check? They will count as passing until you restore them from Settings."
+msgstr ""
+
+#. translators: %d: total number of products that will be ignored.
+#: includes/admin/class-wpfchs-admin.php:328
+msgid "Ignore all %d products for this check? They will count as passing until you restore them from Settings."
+msgstr ""
+
+#. translators: %d: number of selected issues that will be restored.
+#: includes/admin/class-wpfchs-admin.php:330
+msgid "Restore %d selected issues? They become open again and count against your score."
+msgstr ""
+
+#. translators: %d: total number of ignored issues that will be restored.
+#: includes/admin/class-wpfchs-admin.php:332
+msgid "Restore all %d ignored issues? They become open again and count against your score."
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:420
+msgid "History"
+msgstr ""
+
+#: includes/admin/class-wpfchs-admin.php:435
+msgid "Setup"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:55
+#: includes/admin/class-wpfchs-ajax.php:139
+msgid "Nothing auto-fixable right now."
+msgstr ""
+
+#. translators: %1$d: total products, %2$d: number of checks.
+#: includes/admin/class-wpfchs-ajax.php:63
+msgid "%1$d product will be fixed across %2$d check."
+msgid_plural "%1$d products will be fixed across %2$d checks."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: count.
+#. translators: %d: number of affected products.
+#: includes/admin/class-wpfchs-ajax.php:71
+#: includes/class-wpfchs-schedule.php:382
+msgid "%d product"
+msgid_plural "%d products"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-wpfchs-ajax.php:79
+#: includes/admin/class-wpfchs-ajax.php:812
+msgid "Current"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:80
+msgid "After"
+msgstr ""
+
+#. translators: %d: undo window in days.
+#: includes/admin/class-wpfchs-ajax.php:95
+msgid "Every change is logged and can be undone for %d days."
+msgstr ""
+
+#. translators: %d: number of products.
+#: includes/admin/class-wpfchs-ajax.php:104
+msgid "Preview: fix %d products"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:129
+msgid "Fixing every quick win in one click is a Pro feature. The free version fixes one product at a time."
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:131
+msgid "Fix all quick wins"
+msgstr ""
+
+#. translators: %1$d: number of products fixed, %2$d: number of checks.
+#: includes/admin/class-wpfchs-ajax.php:144
+msgid "Fixed %1$d product across %2$d check."
+msgid_plural "Fixed %1$d products across %2$d checks."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of products in the request.
+#: includes/admin/class-wpfchs-ajax.php:204
+msgid "Fixing %d products at once is a Pro feature. The free version fixes one product at a time."
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:208
+msgid "Bulk fixing"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:270
+msgid "Could not update the scan."
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:292
+msgid "Unknown check."
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:362
+msgid "SKUs are generated from the product slug and id, guaranteed unique."
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:366
+msgid "Weight to assign"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:372
+msgid "Shipping class to assign"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:376
+msgid "Category to assign"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:382
+msgid "Brand to assign"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:387
+msgid "Tax class to assign"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:389
+#: includes/admin/class-wpfchs-ajax.php:477
+msgid "— Select —"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:390
+#: includes/class-wpfchs-fixes.php:546
+#: includes/class-wpfchs-fixes.php:691
+#: includes/class-wpfchs-fixes.php:692
+msgid "Standard rate"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:398
+msgid "Cost as % of price"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:401
+msgid "A starting estimate; refine per product later."
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:406
+msgid "Preview changes"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:440
+msgid "Fix selected"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:443
+msgid "Ignore selected"
+msgstr ""
+
+#. translators: %s: number of matching issues.
+#: includes/admin/class-wpfchs-ajax.php:448
+msgid "Ignore all %s product"
+msgid_plural "Ignore all %s products"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-wpfchs-ajax.php:502
+msgid "Type"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:503
+msgid "Offending value"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:533
+msgid "Ignore"
+msgstr ""
+
+#. translators: %1$d: current page, %2$d: total pages.
+#: includes/admin/class-wpfchs-ajax.php:572
+msgid "%1$d of %2$d"
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:595
+msgid "Could not ignore this issue."
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:618
+msgid "Could not restore this issue."
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:699
+msgid "Nothing left to ignore here."
+msgstr ""
+
+#. translators: %s: number of issues ignored.
+#: includes/admin/class-wpfchs-ajax.php:707
+msgid "%s issue ignored. It counts as passing until you restore it from Settings. Re-run the scan to refresh your score."
+msgid_plural "%s issues ignored. They count as passing until you restore them from Settings. Re-run the scan to refresh your score."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-wpfchs-ajax.php:739
+msgid "Nothing to restore."
+msgstr ""
+
+#. translators: %s: number of issues restored.
+#: includes/admin/class-wpfchs-ajax.php:747
+msgid "%s issue restored. Re-run the scan to refresh your score."
+msgid_plural "%s issues restored. Re-run the scan to refresh your score."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/admin/class-wpfchs-ajax.php:804
+msgid "Nothing to change with these settings. Check the bulk value."
+msgstr ""
+
+#: includes/admin/class-wpfchs-ajax.php:813
+msgid "After fix"
+msgstr ""
+
+#. translators: %1$d: rows shown, %2$d: total products affected.
+#: includes/admin/class-wpfchs-ajax.php:830
+msgid "Showing %1$d of %2$d."
+msgstr ""
+
+#. translators: %d: undo window in days.
+#: includes/admin/class-wpfchs-ajax.php:840
+msgid "This action can be undone for %d days."
+msgstr ""
+
+#. translators: %1$s: check label, %2$d: number of products.
+#: includes/admin/class-wpfchs-ajax.php:851
+msgid "Preview: %1$s — %2$d products"
+msgstr ""
+
+#: includes/checks/class-wpfchs-checks.php:37
+msgid "Purchasability"
+msgstr ""
+
+#: includes/checks/class-wpfchs-checks.php:38
+msgid "Inventory"
+msgstr ""
+
+#: includes/checks/class-wpfchs-checks.php:41
+msgid "Media"
+msgstr ""
+
+#: includes/checks/class-wpfchs-checks.php:42
+msgid "Structure"
+msgstr ""
+
+#: includes/checks/class-wpfchs-checks.php:44
+msgid "Content"
+msgstr ""
+
+#: includes/checks/class-wpfchs-checks.php:45
+#: includes/class-wpfchs-profiles.php:77
+msgid "Feed Readiness"
+msgstr ""
+
+#: includes/checks/class-wpfchs-checks.php:46
+msgid "Pricing"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:19
+msgid "Missing short description"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:20
+msgid "The space next to the price and buy button is empty on this product page."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:23
+msgid "Empty"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:29
+msgid "Missing or very thin main description"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:30
+msgid "Thin product pages rank poorly and give customers nothing to base a purchase on."
+msgstr ""
+
+#. translators: %1$d: current description length, %2$d: minimum length.
+#. translators: %1$d: description length, %2$d: limit.
+#: includes/checks/defs-wpfchs-content.php:38
+#: includes/checks/defs-wpfchs-feed.php:133
+msgid "%1$d of %2$d characters"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:49
+msgid "Duplicate product titles"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:50
+msgid "Identically named products compete with each other in search and confuse customers and staff."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:86
+msgid "Product title containing import artefacts or encoding errors"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:87
+msgid "Garbled characters in the title show on the product page, in search results, and in feeds."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:103
+msgid "Product pages emit no structured data (schema.org)"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:104
+msgid "Without Product structured data, your listings cannot earn Google rich results and are far less likely to be surfaced by AI shopping assistants. This is usually a store-wide theme or SEO setting."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:114
+msgid "No Product schema on the page"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:120
+msgid "Placeholder or lorem-ipsum content"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:121
+msgid "This product still has sample or template text. It reads as unfinished to shoppers and to AI shopping assistants."
+msgstr ""
+
+#. translators: %s: the placeholder phrase found.
+#: includes/checks/defs-wpfchs-content.php:142
+msgid "Contains \"%s\""
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:153
+msgid "Description duplicated across multiple products"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:154
+msgid "Identical descriptions compete with each other in search and give AI answer engines nothing to tell these products apart."
+msgstr ""
+
+#. translators: %d: number of products sharing the description.
+#: includes/checks/defs-wpfchs-content.php:186
+msgid "Shared with %d other product(s)"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:198
+msgid "No attributes or specifications"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:199
+msgid "Without structured attributes (material, size, colour…), filtered navigation and AI shopping assistants have no facts to match this product against a query."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:205
+msgid "No attributes set"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:211
+msgid "No reviews"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:212
+msgid "Products without reviews lack the star ratings that shoppers and AI assistants use as social proof, and miss the review rich-result in search."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:219
+msgid "No reviews yet"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:225
+msgid "No FAQ / question-and-answer content"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:226
+msgid "FAQ content is what AI answer engines quote directly. Products without it are far less likely to be surfaced in AI shopping answers."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:250
+msgid "No FAQ content"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:256
+msgid "Description containing broken shortcodes or leftover markup"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-content.php:257
+msgid "Raw shortcode text from a removed plugin is printed to customers instead of content."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-downloads.php:19
+msgid "Downloadable product with no files attached"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-downloads.php:20
+msgid "Customers pay and receive nothing. This produces refunds and disputes, not just complaints."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-downloads.php:26
+msgid "No files attached"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-downloads.php:32
+msgid "Download file missing from the server"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-downloads.php:33
+msgid "Customers paid and got a broken download link."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-downloads.php:63
+msgid "Download files stored in a publicly guessable location"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-downloads.php:64
+msgid "Anyone who guesses the URL gets your paid file for free."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-downloads.php:86
+msgid "Download URL returning an error"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-downloads.php:87
+msgid "The remote file behind this download answers with an error, so customers get nothing after paying."
+msgstr ""
+
+#. translators: %1$s: file name, %2$s: HTTP status.
+#: includes/checks/defs-wpfchs-downloads.php:116
+msgid "%1$s (HTTP %2$s)"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-downloads.php:118
+msgid "unreachable"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:36
+msgid "Missing GTIN, EAN, UPC, or MPN"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:37
+msgid "Feed platforms reject listings without a product identifier, so this product earns no paid traffic."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:52
+msgid "No identifier"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:58
+msgid "Missing brand"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:59
+msgid "Most feed platforms require a brand; listings without one are rejected or demoted."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:68
+#: includes/class-wpfchs-fixes.php:668
+msgid "No brand"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:74
+msgid "Missing product condition"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:75
+msgid "Feed platforms assume \"new\" when condition is missing; wrong assumptions get listings suspended."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:94
+msgid "No condition"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:100
+msgid "Missing Google product category mapping"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:101
+msgid "Unmapped products land in the wrong Google Shopping category and reach the wrong buyers."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:118
+msgid "No mapping"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:124
+msgid "Description exceeding feed platform character limits"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:125
+msgid "Feed platforms truncate or reject descriptions past their limit."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:144
+msgid "Title exceeding feed platform character limits"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-feed.php:145
+msgid "Google Shopping truncates titles over 150 characters, cutting off what you wrote."
+msgstr ""
+
+#. translators: %d: title length in characters.
+#: includes/checks/defs-wpfchs-feed.php:152
+msgid "%d characters"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:19
+msgid "Missing SKU"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:20
+msgid "These products cannot be tracked in inventory systems or matched to supplier data."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:25
+#: includes/class-wpfchs-fixes.php:585
+msgid "No SKU"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:31
+msgid "Duplicate SKU across products or variations"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:32
+msgid "Your inventory counts are wrong, and orders may be fulfilled with the wrong item."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:76
+msgid "Near-duplicate SKU differing only by case or whitespace"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:77
+msgid "Two SKUs that only differ by case or spaces are treated as different products by some systems and the same by others."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:117
+msgid "Variations missing SKUs while parent has one"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:118
+msgid "Individual variations cannot be told apart in exports, feeds, or fulfilment."
+msgstr ""
+
+#. translators: %d: number of variations without a SKU.
+#: includes/checks/defs-wpfchs-inventory.php:139
+msgid "%d variation(s) without a SKU"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:149
+msgid "Negative stock quantity"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:150
+msgid "Stock has gone below zero, which usually means orders were placed that could not be fulfilled."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:163
+msgid "Stock quantity set while stock management is off"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:164
+msgid "These numbers are stored but ignored, which misleads anyone reading them."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:179
+msgid "Stock status contradicting stock quantity"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-inventory.php:180
+msgid "Products showing in stock with zero units, or out of stock with units available."
+msgstr ""
+
+#. translators: %d: stock quantity.
+#: includes/checks/defs-wpfchs-inventory.php:196
+msgid "Out of stock with %d units"
+msgstr ""
+
+#. translators: %d: stock quantity.
+#: includes/checks/defs-wpfchs-inventory.php:203
+msgid "In stock with %d units"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:19
+#: includes/checks/defs-wpfchs-media.php:23
+msgid "No featured image"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:20
+msgid "Products without images convert dramatically worse, and most feed platforms reject them outright."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:29
+msgid "Image record exists but file is missing from the server"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:30
+msgid "The product shows a broken image placeholder to every visitor."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:47
+msgid "Gallery images referencing deleted attachments"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:48
+msgid "The product gallery contains slots pointing at images that no longer exist."
+msgstr ""
+
+#. translators: %d: number of deleted gallery attachments.
+#: includes/checks/defs-wpfchs-media.php:62
+msgid "%d deleted attachment(s) referenced"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:72
+msgid "Featured image has no alt text"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:73
+msgid "Alt text is what screen readers, image search, and AI vision models read. Without it the image is invisible to all three."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:81
+msgid "No alt text"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:87
+msgid "Only the WooCommerce placeholder image"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:88
+msgid "Customers see the generic grey placeholder instead of the product."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:94
+msgid "Placeholder set as product image"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:102
+msgid "Same featured image reused across many different products"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:103
+msgid "Identical thumbnails make products indistinguishable in the catalog and in feeds."
+msgstr ""
+
+#. translators: %d: attachment id.
+#: includes/checks/defs-wpfchs-media.php:146
+msgid "Image #%d shared with other products"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:157
+msgid "Variations with no image on a product where other variations have one"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:158
+msgid "Switching variations makes the image flicker between real photos and the parent fallback."
+msgstr ""
+
+#. translators: %d: number of variations without an image.
+#: includes/checks/defs-wpfchs-media.php:176
+msgid "%d variation(s) without an image"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:186
+msgid "Featured image below minimum usable resolution"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-media.php:187
+msgid "The image pixelates on zoom and fails the minimum size requirements of most feed platforms."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:33
+msgid "Price of zero on a product not marked as free"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:34
+msgid "This product sells for nothing. If that is not deliberate, every order is pure loss."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:47
+msgid "Price far outside the category median"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:48
+msgid "A price several times above or below everything comparable is usually a misplaced decimal point."
+msgstr ""
+
+#. translators: %1$s: product price, %2$s: category median price.
+#: includes/checks/defs-wpfchs-pricing.php:110
+msgid "Price %1$s vs category median %2$s"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:123
+msgid "Price with more decimals than the store currency supports"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:124
+msgid "The displayed price is rounded, so what customers see is not what is charged."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:138
+msgid "Cost of goods missing"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:139
+msgid "Without a cost you cannot see margin, so you cannot see which products lose money."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:145
+msgid "No cost set"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:151
+msgid "Cost of goods higher than selling price"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:152
+msgid "You lose money on every unit sold."
+msgstr ""
+
+#. translators: %1$s: cost of goods, %2$s: selling price.
+#: includes/checks/defs-wpfchs-pricing.php:161
+msgid "Cost %1$s vs price %2$s"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:172
+msgid "Margin below your minimum threshold"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-pricing.php:173
+msgid "This product sells below the margin floor you set in settings."
+msgstr ""
+
+#. translators: %1$s: actual margin percentage, %2$s: minimum margin percentage.
+#: includes/checks/defs-wpfchs-pricing.php:190
+msgid "%1$s%% margin, minimum is %2$s%%"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:20
+msgid "Published product with no price"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:21
+msgid "This product cannot be bought right now. It shows no price and no add to cart button."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:27
+msgid "No price set"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:33
+msgid "Variable product where no variation is purchasable"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:34
+msgid "This product cannot be bought right now. None of its variations has a price."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:42
+msgid "No variations exist"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:50
+msgid "No variation has a price"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:56
+msgid "Variable product where some variations have no price"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:57
+msgid "Customers who select these variations see no price and cannot buy them."
+msgstr ""
+
+#. translators: %d: number of variations without a price.
+#: includes/checks/defs-wpfchs-purchasability.php:80
+msgid "%d variation(s) without a price"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:90
+msgid "Sale price equal to or higher than regular price"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:91
+msgid "This product is showing a fake discount. Customers who notice lose trust in every other price."
+msgstr ""
+
+#. translators: %1$s: sale price, %2$s: regular price.
+#: includes/checks/defs-wpfchs-purchasability.php:99
+msgid "Sale %1$s vs regular %2$s"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:110
+msgid "Sale schedule expired but sale price still set"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:111
+msgid "The sale ended but the discounted price is still stored, so the product may still sell at the old sale price."
+msgstr ""
+
+#. translators: %s: date the sale ended.
+#: includes/checks/defs-wpfchs-purchasability.php:120
+msgid "Sale ended %s"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:130
+msgid "Sale end date earlier than start date"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:131
+msgid "The sale can never run with these dates, so the planned discount never shows."
+msgstr ""
+
+#. translators: %1$s: sale start date, %2$s: sale end date.
+#: includes/checks/defs-wpfchs-purchasability.php:139
+msgid "Starts %1$s, ends %2$s"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:150
+msgid "Product hidden from catalog and search"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:151
+msgid "This product is published but customers cannot find it anywhere on your store."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:154
+msgid "Visibility: hidden"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:160
+msgid "Long-term out of stock, published, backorders disabled"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:161
+msgid "This product has been unbuyable for a long time while still taking up space in your catalog and search results."
+msgstr ""
+
+#. translators: %s: date of last product update.
+#: includes/checks/defs-wpfchs-purchasability.php:172
+msgid "Out of stock, last updated %s"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:182
+msgid "External product with a missing or malformed product URL"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:183
+msgid "The buy button leads nowhere, so this product cannot be bought."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:191
+msgid "No product URL"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:202
+msgid "Grouped product with no purchasable children"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:203
+msgid "This grouped product page is empty or lists nothing that can be added to the cart."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:218
+msgid "No children assigned"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-purchasability.php:219
+msgid "No purchasable children"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:27
+msgid "Physical product with no weight"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:28
+msgid "Shipping is being calculated incorrectly for this product, so you overcharge or undercharge on every order."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:45
+#: includes/class-wpfchs-fixes.php:623
+msgid "No weight"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:51
+msgid "Physical product with no dimensions"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:52
+msgid "Carriers that price by size cannot quote this product correctly."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:67
+msgid "No dimensions"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:73
+msgid "Virtual product carrying weight or dimensions"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:74
+msgid "Virtual products are never shipped; stored weights and sizes here only confuse exports and feeds."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:91
+msgid "Downloadable product not marked virtual, so shipping is charged"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:92
+msgid "Customers pay shipping on a file. That is a refund request waiting to happen."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:98
+msgid "Downloadable but shippable"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:104
+msgid "Missing shipping class where classes are in use"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:105
+msgid "This product falls through your class-based shipping rules and ships at the wrong rate."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:128
+#: includes/class-wpfchs-fixes.php:635
+msgid "No shipping class"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:134
+msgid "Weight or dimension values outside plausible range"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:135
+msgid "A zero, negative, or absurdly large weight is almost always a data-entry or import error, and it corrupts every shipping quote."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:153
+msgid "Product referencing a deleted term"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-shipping.php:154
+msgid "This product still points at a shipping class, category, or tag whose term was deleted. Class-based rates and filters silently fall back, and the stale row confuses exports."
+msgstr ""
+
+#. translators: %d: number of orphaned term references.
+#: includes/checks/defs-wpfchs-shipping.php:186
+msgid "%d deleted term still referenced"
+msgid_plural "%d deleted terms still referenced"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/checks/defs-wpfchs-structure.php:19
+msgid "Product in no category, or only Uncategorized"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:20
+msgid "This product is invisible to category browsing and filtered navigation."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:31
+#: includes/class-wpfchs-fixes.php:651
+msgid "No category"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:32
+msgid "Only the default category"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:41
+msgid "Cross-sells or upsells pointing at deleted or unpublished products"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:42
+msgid "Recommendation slots on this product page are silently empty or broken."
+msgstr ""
+
+#. translators: %d: number of broken linked product references.
+#: includes/checks/defs-wpfchs-structure.php:60
+msgid "%d broken linked product(s)"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:70
+msgid "Orphaned variation with no surviving parent"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:71
+msgid "These variations belong to no product but still exist in the database, and can leak into feeds and search."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:101
+msgid "Variable product with attributes not enabled for variations"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:102
+msgid "The product has variations but no attribute drives them, so the variation picker is broken or empty."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:109
+msgid "No attribute is marked \"used for variations\""
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:117
+msgid "Variation with missing or invalid attribute value"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:118
+msgid "These variations reference attribute options that no longer exist, so they can never be selected."
+msgstr ""
+
+#. translators: %d: number of variations with invalid attribute values.
+#: includes/checks/defs-wpfchs-structure.php:156
+msgid "%d variation(s) with invalid attribute values"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:166
+msgid "Variation count not matching possible attribute combinations"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:167
+msgid "Some attribute combinations have no variation behind them, so customers can select options that cannot be bought."
+msgstr ""
+
+#. translators: %1$d: existing variation count, %2$d: possible combination count.
+#: includes/checks/defs-wpfchs-structure.php:189
+msgid "%1$d of %2$d combinations covered"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:200
+msgid "Product assigned to a category that no longer appears in the menu structure"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:201
+msgid "The only path to this product is search; browsing customers never reach it."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:238
+msgid "No assigned category is reachable from a menu"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:246
+msgid "Grouped product with deleted or unpublished children"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-structure.php:247
+msgid "Part of this grouped product silently disappeared, so the page sells less than intended."
+msgstr ""
+
+#. translators: %d: number of broken child product references.
+#: includes/checks/defs-wpfchs-structure.php:264
+msgid "%d broken child reference(s)"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-tax.php:19
+msgid "Product referencing a deleted tax class"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-tax.php:20
+msgid "This product falls back to the standard rate, which may be the wrong tax for it."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-tax.php:40
+msgid "Tax status set to none"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-tax.php:41
+msgid "No tax is ever charged on this product. If that is not deliberate, you are under-collecting tax."
+msgstr ""
+
+#: includes/checks/defs-wpfchs-tax.php:44
+msgid "Tax status: none"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-tax.php:50
+msgid "Inconsistent tax class within a product category"
+msgstr ""
+
+#: includes/checks/defs-wpfchs-tax.php:51
+msgid "A handful of products taxed differently from the rest of their category is usually a mistake, not a policy."
+msgstr ""
+
+#. translators: %1$s: product's tax class, %2$s: dominant tax class in the category.
+#: includes/checks/defs-wpfchs-tax.php:90
+msgid "\"%1$s\" while the category uses \"%2$s\""
+msgstr ""
+
+#. translators: %1$s: product's tax class, %2$s: dominant tax class in the category.
+#: includes/checks/defs-wpfchs-tax.php:91
+#: includes/checks/defs-wpfchs-tax.php:92
+msgid "standard"
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:77
+msgid "Always applies to every store."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:98
+msgid "Enabled manually in settings."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:112
+msgid "Disabled manually in settings."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:149
+msgid "Stock management is enabled store-wide."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:150
+msgid "Stock management is disabled store-wide."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:158
+msgid "An active shipping method appears to use weight or dimensions."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:159
+msgid "Your store uses flat rate, free shipping, or local pickup with no weight-based rules."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:167
+msgid "Tax is enabled and more than one tax class exists."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:168
+msgid "Tax is disabled, or only the standard tax class exists."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:176
+msgid "Downloadable products exist in the catalog."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:177
+msgid "No downloadable products found."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:185
+msgid "A product feed plugin was detected, or feed fields are populated on products."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:186
+msgid "No product feed detected."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:194
+msgid "Cost of goods data is present on products."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:195
+msgid "No cost of goods data found on any product."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:203
+msgid "Product reviews are enabled store-wide."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:204
+msgid "Product reviews are disabled store-wide."
+msgstr ""
+
+#: includes/class-wpfchs-applicability.php:210
+msgid "Question-and-answer content helps AI assistants answer buyer questions from your product pages."
+msgstr ""
+
+#: includes/class-wpfchs-export.php:69
+#: includes/report/class-wpfchs-report.php:105
+msgid "Link expired."
+msgstr ""
+
+#: includes/class-wpfchs-export.php:92
+msgid "Product ID"
+msgstr ""
+
+#: includes/class-wpfchs-export.php:94
+msgid "SKU"
+msgstr ""
+
+#: includes/class-wpfchs-export.php:95
+msgid "Category"
+msgstr ""
+
+#: includes/class-wpfchs-export.php:97
+msgid "Severity"
+msgstr ""
+
+#: includes/class-wpfchs-export.php:99
+msgid "Value"
+msgstr ""
+
+#: includes/class-wpfchs-export.php:100
+msgid "First seen"
+msgstr ""
+
+#: includes/class-wpfchs-export.php:101
+msgid "Edit link"
+msgstr ""
+
+#: includes/class-wpfchs-fixes.php:75
+#: includes/class-wpfchs-fixes.php:113
+msgid "This check has no automatic fix."
+msgstr ""
+
+#: includes/class-wpfchs-fixes.php:134
+msgid "Nothing needed fixing."
+msgstr ""
+
+#: includes/class-wpfchs-fixes.php:302
+msgid "Fix batch not found or already undone."
+msgstr ""
+
+#: includes/class-wpfchs-fixes.php:307
+msgid "The undo window for this fix has expired."
+msgstr ""
+
+#: includes/class-wpfchs-fixes.php:387
+msgid "Orphaned variation"
+msgstr ""
+
+#: includes/class-wpfchs-fixes.php:388
+msgid "Moved to trash"
+msgstr ""
+
+#: includes/class-wpfchs-fixes.php:416
+msgid "Sale removed"
+msgstr ""
+
+#: includes/class-wpfchs-fixes.php:431
+#: includes/class-wpfchs-fixes.php:432
+msgid "In stock"
+msgstr ""
+
+#: includes/class-wpfchs-fixes.php:431
+#: includes/class-wpfchs-fixes.php:432
+msgid "Out of stock"
+msgstr ""
+
+#: includes/class-wpfchs-fixes.php:443
+#: includes/class-wpfchs-fixes.php:561
+msgid "Cleared"
+msgstr ""
+
+#. translators: %d: number of linked product references.
+#: includes/class-wpfchs-fixes.php:461
+msgid "%d broken link(s)"
+msgstr ""
+
+#. translators: %d: number of linked product references.
+#. translators: %d: number of gallery references.
+#. translators: %d: number of child references.
+#: includes/class-wpfchs-fixes.php:462
+#: includes/class-wpfchs-fixes.php:482
+#: includes/class-wpfchs-fixes.php:505
+msgid "References removed"
+msgstr ""
+
+#. translators: %d: number of gallery references.
+#: includes/class-wpfchs-fixes.php:481
+msgid "%d dead reference(s)"
+msgstr ""
+
+#. translators: %d: number of child references.
+#: includes/class-wpfchs-fixes.php:504
+msgid "%d broken child(ren)"
+msgstr ""
+
+#. translators: %d: number of orphaned term references.
+#: includes/class-wpfchs-fixes.php:529
+msgid "%d deleted term referenced"
+msgid_plural "%d deleted terms referenced"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-wpfchs-fixes.php:532
+msgid "Stale references removed"
+msgstr ""
+
+#. translators: %d: number of variations without a SKU.
+#: includes/class-wpfchs-fixes.php:607
+msgid "%d variation with no SKU"
+msgid_plural "%d variations with no SKU"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-wpfchs-fixes.php:708
+msgid "No cost"
+msgstr ""
+
+#. translators: %1$s: computed cost, %2$s: percentage of price.
+#: includes/class-wpfchs-fixes.php:710
+msgid "%1$s (%2$s%% of price)"
+msgstr ""
+
+#: includes/class-wpfchs-profiles.php:43
+msgid "Revenue Blockers"
+msgstr ""
+
+#: includes/class-wpfchs-profiles.php:44
+msgid "Critical severity only, across all categories. The recommended routine scan."
+msgstr ""
+
+#: includes/class-wpfchs-profiles.php:48
+msgid "Pre-launch"
+msgstr ""
+
+#: includes/class-wpfchs-profiles.php:49
+msgid "Purchasability, media, structure, and content, for a store about to go live."
+msgstr ""
+
+#: includes/class-wpfchs-profiles.php:58
+msgid "Post-migration"
+msgstr ""
+
+#: includes/class-wpfchs-profiles.php:59
+msgid "Orphans, broken references, duplicates, encoding errors, and missing images after an import."
+msgstr ""
+
+#: includes/class-wpfchs-profiles.php:78
+msgid "Feed checks plus media resolution and content limits, for stores running shopping campaigns."
+msgstr ""
+
+#: includes/class-wpfchs-profiles.php:85
+msgid "Inventory Audit"
+msgstr ""
+
+#: includes/class-wpfchs-profiles.php:86
+msgid "Inventory plus stock-related purchasability checks, for reconciling physical stock."
+msgstr ""
+
+#: includes/class-wpfchs-profiles.php:93
+msgid "Full Scan"
+msgstr ""
+
+#: includes/class-wpfchs-profiles.php:94
+msgid "Every applicable check. The periodic deep audit."
+msgstr ""
+
+#: includes/class-wpfchs-recommendations.php:34
+msgid "EAN for WooCommerce"
+msgstr ""
+
+#: includes/class-wpfchs-recommendations.php:36
+msgid "manages GTIN, EAN, and UPC codes in bulk, including auto-generation."
+msgstr ""
+
+#: includes/class-wpfchs-recommendations.php:39
+msgid "Cost of Goods for WooCommerce"
+msgstr ""
+
+#: includes/class-wpfchs-recommendations.php:41
+msgid "tracks cost and profit per product and per order."
+msgstr ""
+
+#: includes/class-wpfchs-recommendations.php:44
+msgid "EU VAT for WooCommerce"
+msgstr ""
+
+#: includes/class-wpfchs-recommendations.php:46
+msgid "handles VAT validation and tax handling across EU regions."
+msgstr ""
+
+#: includes/class-wpfchs-recommendations.php:128
+msgid "Dismiss"
+msgstr ""
+
+#: includes/class-wpfchs-scanner.php:131
+msgid "A scan is already running."
+msgstr ""
+
+#: includes/class-wpfchs-scanner.php:136
+msgid "Unknown scan profile."
+msgstr ""
+
+#: includes/class-wpfchs-scanner.php:141
+msgid "No applicable checks in this profile."
+msgstr ""
+
+#: includes/class-wpfchs-scanner.php:241
+msgid "Scan not found."
+msgstr ""
+
+#. translators: %d: number of new critical issues.
+#: includes/class-wpfchs-schedule.php:149
+msgid "Critical: %d product just became unsellable"
+msgid_plural "Critical: %d products just became unsellable"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-wpfchs-schedule.php:160
+msgid "The latest catalog scan found new critical issues:"
+msgstr ""
+
+#: includes/class-wpfchs-schedule.php:166
+#: includes/class-wpfchs-schedule.php:392
+msgid "Open the Catalog Health dashboard"
+msgstr ""
+
+#. translators: %d: number of products with critical issues.
+#: includes/class-wpfchs-schedule.php:283
+msgid "%d product cannot be sold correctly"
+msgid_plural "%d products cannot be sold correctly"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of new catalog issues.
+#: includes/class-wpfchs-schedule.php:294
+msgid "%d new catalog issue found"
+msgid_plural "%d new catalog issues found"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: previous score percentage.
+#: includes/class-wpfchs-schedule.php:347
+msgid "up from %s%%"
+msgstr ""
+
+#. translators: %s: previous score percentage.
+#: includes/class-wpfchs-schedule.php:349
+msgid "down from %s%%"
+msgstr ""
+
+#. translators: %s: health score percentage.
+#: includes/class-wpfchs-schedule.php:362
+msgid "Catalog health: %s%%"
+msgstr ""
+
+#: includes/class-wpfchs-schedule.php:368
+msgid "New issues since the last scan:"
+msgstr ""
+
+#: includes/class-wpfchs-scores.php:172
+msgid "Healthy"
+msgstr ""
+
+#: includes/class-wpfchs-scores.php:179
+msgid "Minor issues"
+msgstr ""
+
+#: includes/class-wpfchs-scores.php:186
+msgid "Needs attention"
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:112
+msgid "The PDF report is a Pro feature."
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:115
+msgid "Pro feature"
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:124
+msgid "No completed scan to report on."
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:160
+msgid "Generated by Catalog Health Scanner for WooCommerce"
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:242
+msgid "Catalog Health Audit"
+msgstr ""
+
+#. translators: %1$s: products scanned, %2$s: issues found.
+#: includes/report/class-wpfchs-report.php:250
+msgid "%1$s products scanned  ·  %2$s open issues"
+msgstr ""
+
+#. translators: %s: scan profile name.
+#: includes/report/class-wpfchs-report.php:258
+msgid "Profile: %s"
+msgstr ""
+
+#. translators: %s: number of ignored issues.
+#: includes/report/class-wpfchs-report.php:271
+msgid "%s issue ignored"
+msgid_plural "%s issues ignored"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of products skipped.
+#: includes/report/class-wpfchs-report.php:278
+msgid "%s product not checked"
+msgid_plural "%s products not checked"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/report/class-wpfchs-report.php:286
+msgid "Excluded from this score:"
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:310
+msgid "Open issues"
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:312
+msgid "vs last scan"
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:325
+msgid "Open issues by severity"
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:350
+msgid "What to fix first"
+msgstr ""
+
+#. translators: %s: number of affected products.
+#: includes/report/class-wpfchs-report.php:359
+msgid "%s products"
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:379
+msgid "Category scorecard"
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:399
+msgid "Severity distribution"
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:449
+msgid "All findings"
+msgstr ""
+
+#: includes/report/class-wpfchs-report.php:455
+msgid "No open issues. Every applicable check passed."
+msgstr ""
+
+#. Plugin Name of the plugin
+#: catalog-health-scanner-for-woocommerce.php
+msgid "Catalog Health Scanner for WooCommerce"
+msgstr ""
+
+#. Description of the plugin
+#: catalog-health-scanner-for-woocommerce.php
+msgid "Scan your WooCommerce catalog and find the products that are silently costing you sales."
+msgstr ""
+
+#. Author of the plugin
+#: catalog-health-scanner-for-woocommerce.php
+msgid "WPFactory"
+msgstr ""
+
