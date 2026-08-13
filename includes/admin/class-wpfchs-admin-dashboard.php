@@ -178,8 +178,15 @@ class WPFCHS_Admin_Dashboard {
 
 		$core    = wpfchs()->core;
 		$score   = (float) $scan->score;
-		$band    = $core->scores->get_band( $score );
-		$open    = $core->issues->count( array( 'status' => 'open' ) );
+		// The badge may never read kinder than the worst open issue: severity
+		// presence overrides the score band (only scored checks count — a
+		// group the user switched off cannot redden the badge).
+		$band    = $core->scores->get_status_badge(
+			$score,
+			array_sum( $core->issues->count_open_scored_by_category( 'critical' ) ),
+			array_sum( $core->issues->count_open_scored_by_category( 'high' ) )
+		);
+		$open    = $core->issues->count_open_effective();
 		$ignored = $core->issues->count( array( 'status' => 'ignored' ) );
 
 		$history = array_reverse( $core->scanner->get_history( 8 ) );
@@ -288,8 +295,14 @@ class WPFCHS_Admin_Dashboard {
 		echo '</span>';
 		echo '<svg width="' . esc_attr( $width ) . '" height="' . esc_attr( $height ) . '" viewBox="0 0 ' . esc_attr( $width ) . ' ' . esc_attr( $height ) . '" role="img" aria-hidden="true">';
 		echo '<polyline points="' . esc_attr( implode( ' ', $points ) ) . '" fill="none" stroke="#2271b1" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></polyline>';
-		$last_point = explode( ',', end( $points ) );
-		echo '<circle cx="' . esc_attr( $last_point[0] ) . '" cy="' . esc_attr( $last_point[1] ) . '" r="3.5" fill="#2271b1"></circle>';
+		// A dot per scan, so the number of plotted points is countable and
+		// matches the label. Without them a run of identical scores is a
+		// featureless line that reads as two points however many there are.
+		foreach ( $points as $i => $point ) {
+			list( $px, $py ) = explode( ',', $point );
+			$is_last         = ( $i === count( $points ) - 1 );
+			echo '<circle cx="' . esc_attr( $px ) . '" cy="' . esc_attr( $py ) . '" r="' . ( $is_last ? '3.5' : '2' ) . '" fill="' . ( $is_last ? '#2271b1' : '#8ab6dc' ) . '"></circle>';
+		}
 		echo '</svg>';
 		echo '<span class="wpfchs-trend-range"><span>' . esc_html( wc_format_decimal( $first, 0 ) ) . '%</span><span>' . esc_html( wc_format_decimal( $last, 0 ) ) . '%</span></span>';
 		echo '</div>';
@@ -371,7 +384,10 @@ class WPFCHS_Admin_Dashboard {
 
 		$core       = wpfchs()->core;
 		$categories = $core->checks->get_categories();
-		$by_cat     = $core->issues->count_open_by_category( 'critical' );
+		// Scored checks only: an alarm about issues the user has marked "not
+		// applicable" (a catalog store and its unpriced products, say) is
+		// noise shouted in red.
+		$by_cat     = $core->issues->count_open_scored_by_category( 'critical' );
 		$critical   = array_sum( $by_cat );
 
 		if ( $critical < 1 ) {
@@ -418,7 +434,28 @@ class WPFCHS_Admin_Dashboard {
 		echo '</span>';
 
 		echo '</span>';
-		echo '<a class="wpfchs-cta-danger" href="' . esc_url( $cta_url ) . '">' . esc_html__( 'Review & fix', 'catalog-health-scanner-for-woocommerce' ) . ' &rarr;</a>';
+
+		// "Review & fix" only when at least one open critical check actually
+		// has a fixer. Every current critical check is manual-only, so the
+		// button must not promise a fix the screen cannot deliver.
+		$fixable = false;
+		foreach ( array_keys( $core->issues->count_open_by_check() ) as $check_id ) {
+			$check = $core->checks->get( $check_id );
+			if ( $check && 'critical' === $check->get_severity() && $check->get_fixer() ) {
+				$fixable = true;
+				break;
+			}
+		}
+		$cta_text = (
+			$fixable ?
+			__( 'Review & fix', 'catalog-health-scanner-for-woocommerce' ) :
+			sprintf(
+				/* translators: %s: number of critical issues. */
+				__( 'Review the %s', 'catalog-health-scanner-for-woocommerce' ),
+				number_format_i18n( $critical )
+			)
+		);
+		echo '<a class="wpfchs-cta-danger" href="' . esc_url( $cta_url ) . '">' . esc_html( $cta_text ) . ' &rarr;</a>';
 		echo '</div>';
 
 	}
@@ -489,6 +526,14 @@ class WPFCHS_Admin_Dashboard {
 		echo '</span>';
 		echo '</div>';
 
+		// Per-category open counts by severity (scored checks only): the card
+		// badge must never read kinder than the worst open issue, and the
+		// foot names that severity so "Healthy · 16 issues" cannot happen.
+		$crit_by_cat = $core->issues->count_open_scored_by_category( 'critical' );
+		$high_by_cat = $core->issues->count_open_scored_by_category( 'high' );
+		$med_by_cat  = $core->issues->count_open_scored_by_category( 'medium' );
+		$low_by_cat  = $core->issues->count_open_scored_by_category( 'low' );
+
 		echo '<div class="wpfchs-category-grid">';
 
 		foreach ( $cards as $category_id => $card ) {
@@ -511,7 +556,9 @@ class WPFCHS_Admin_Dashboard {
 				admin_url( 'admin.php' )
 			);
 
-			$band       = ( null !== $card['score'] ? wpfchs()->core->scores->get_category_band( $card['score']['earned'], $card['score']['possible'] ) : null );
+			$crit_open  = (int) ( $crit_by_cat[ $category_id ] ?? 0 );
+			$high_open  = (int) ( $high_by_cat[ $category_id ] ?? 0 );
+			$band       = ( null !== $card['score'] ? wpfchs()->core->scores->get_category_badge( $card['score']['earned'], $card['score']['possible'], $crit_open, $high_open ) : null );
 			$accent     = ( $band ? $band['color'] : '#c3c4c7' );
 			$band_class = ( $band ? ' wpfchs-band-' . $band['id'] : '' );
 
@@ -535,6 +582,21 @@ class WPFCHS_Admin_Dashboard {
 				esc_html( _n( '%s issue', '%s issues', $card['open'], 'catalog-health-scanner-for-woocommerce' ) ),
 				esc_html( number_format_i18n( $card['open'] ) )
 			);
+			// Name the worst open severity, so a good score next to a pile of
+			// low-weight issues does not read as a contradiction.
+			$highest = '';
+			if ( $crit_open > 0 ) {
+				$highest = __( 'highest: Critical', 'catalog-health-scanner-for-woocommerce' );
+			} elseif ( $high_open > 0 ) {
+				$highest = __( 'highest: High', 'catalog-health-scanner-for-woocommerce' );
+			} elseif ( ! empty( $med_by_cat[ $category_id ] ) ) {
+				$highest = __( 'highest: Medium', 'catalog-health-scanner-for-woocommerce' );
+			} elseif ( ! empty( $low_by_cat[ $category_id ] ) ) {
+				$highest = __( 'highest: Low', 'catalog-health-scanner-for-woocommerce' );
+			}
+			if ( '' !== $highest && $card['open'] > 0 ) {
+				echo ' <span class="wpfchs-muted">&middot; ' . esc_html( $highest ) . '</span>';
+			}
 			echo '</div>';
 			echo '</a>';
 
@@ -557,6 +619,12 @@ class WPFCHS_Admin_Dashboard {
 
 		$wins = array();
 		foreach ( $core->checks->get_all() as $check_id => $check ) {
+			// Skip checks in a non-applicable group: pushing fixes for issues
+			// the user has said do not apply to their store is noise.
+			$group = $check->get_group();
+			if ( '' !== $group && ! $core->applicability->resolve( $group )['applicable'] ) {
+				continue;
+			}
 			if ( 'auto' === $check->get_fix_type() && ! empty( $open_counts[ $check_id ] ) ) {
 				$wins[ $check_id ] = array(
 					'check' => $check,
@@ -633,10 +701,19 @@ class WPFCHS_Admin_Dashboard {
 			if ( ! $check ) {
 				continue;
 			}
+			// Same rule as the quick wins panel: never headline issues from a
+			// group the user has marked not applicable.
+			$group = $check->get_group();
+			if ( '' !== $group && ! wpfchs()->core->applicability->resolve( $group )['applicable'] ) {
+				continue;
+			}
 			$rows[] = array(
 				'check'  => $check,
 				'count'  => $count,
-				'weight' => $count * $check->get_weight(),
+				// A store-level check is one finding however many products it
+				// reaches — its reach must not let it outrank real per-product
+				// problems.
+				'weight' => ( $check->is_store_level() ? 1 : $count ) * $check->get_weight(),
 			);
 		}
 

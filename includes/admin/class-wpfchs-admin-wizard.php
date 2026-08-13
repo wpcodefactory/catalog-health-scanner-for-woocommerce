@@ -2,7 +2,7 @@
 /**
  * Catalog Health Scanner for WooCommerce - Setup Wizard Class
  *
- * Five questions, all skippable, each pre-answered with the auto-detect
+ * Six questions, all skippable, each pre-answered with the auto-detect
  * result. The user is confirming, not filling in a form. Answers become
  * the applicability settings.
  *
@@ -38,6 +38,25 @@ class WPFCHS_Admin_Wizard {
 	 */
 	function get_steps() {
 		return array(
+			'selling' => array(
+				'group'   => 'selling',
+				'title'   => __( 'Do customers buy directly on this site?', 'catalog-health-scanner-for-woocommerce' ),
+				'name'    => __( 'Selling', 'catalog-health-scanner-for-woocommerce' ),
+				'options' => array(
+					'yes'         => array(
+						__( 'Yes, this is a store with prices and checkout', 'catalog-health-scanner-for-woocommerce' ),
+						__( 'Price and purchasability checks stay on and count toward your score.', 'catalog-health-scanner-for-woocommerce' ),
+					),
+					'no'          => array(
+						__( 'No, it is a catalog — customers order by quote, phone, or elsewhere', 'catalog-health-scanner-for-woocommerce' ),
+						__( 'Missing-price and sale-price checks are skipped, so products without prices never count against you.', 'catalog-health-scanner-for-woocommerce' ),
+					),
+					'report_only' => array(
+						__( 'Mostly catalog, but I still want price problems reported', 'catalog-health-scanner-for-woocommerce' ),
+						__( 'Checks run and are reported, but stay out of the health score.', 'catalog-health-scanner-for-woocommerce' ),
+					),
+				),
+			),
 			'shipping' => array(
 				'group'    => 'shipping',
 				'title'    => __( 'Does your shipping cost depend on weight or size?', 'catalog-health-scanner-for-woocommerce' ),

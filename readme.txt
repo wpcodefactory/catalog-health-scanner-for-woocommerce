@@ -45,7 +45,7 @@ The free version scans everything and hides nothing: all 70 checks, every profil
 
 1. Upload the plugin files to the `/wp-content/plugins/` directory, or install through the WordPress plugins screen directly.
 2. Activate the plugin through the "Plugins" screen.
-3. Answer the five setup questions (all pre-answered from your store's configuration).
+3. Answer the six setup questions (all pre-answered from your store's configuration).
 4. Run your first scan from "Catalog Health".
 
 == Frequently Asked Questions ==

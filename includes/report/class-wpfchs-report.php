@@ -182,9 +182,6 @@ class WPFCHS_Report {
 		$categories = (array) ( $data['categories'] ?? array() );
 		$labels     = $core->checks->get_categories();
 		$score      = (float) $scan->score;
-		$band        = $core->scores->get_band( $score );
-		$this->band  = $band;
-		$this->brand = $branding;
 		$date       = get_date_from_gmt( $scan->completed_at, get_option( 'date_format' ) );
 
 		$severities = array(
@@ -194,22 +191,162 @@ class WPFCHS_Report {
 			'low'      => array( __( 'Low', 'catalog-health-scanner-for-woocommerce' ), '#646970' ),
 		);
 
+		// The exact severity counts the dashboard uses: open issues of scored
+		// checks only. The PDF and the dashboard describing the same scan with
+		// different numbers is the one failure a client-facing report cannot
+		// have — every number below flows from these helpers, never from raw
+		// issue-table counts.
 		$sev_counts = array();
 		foreach ( $severities as $severity => $meta ) {
-			$sev_counts[ $severity ] = $core->issues->count(
-				array(
-					'status'   => 'open',
-					'severity' => $severity,
-				)
-			);
+			$sev_counts[ $severity ] = array_sum( $core->issues->count_open_scored_by_category( $severity ) );
 		}
 
+		// Badge: severity presence overrides the score band (same rule as the
+		// dashboard hero). Drives the label AND the report's accent colour.
+		$band        = $core->scores->get_status_badge( $score, $sev_counts['critical'], $sev_counts['high'] );
+		$this->band  = $band;
+		$this->brand = $branding;
+
+		// Applicability as this scan resolved it (snapshot preferred; live
+		// resolution as fallback for scans that predate the snapshot).
+		$applicability = ( isset( $data['applicability'] ) && is_array( $data['applicability'] )
+			? $data['applicability']
+			: $core->applicability->snapshot()
+		);
+
 		$this->render_cover( $scan, $score, $band, $branding, $date, $sev_counts, $categories, $labels );
-		$this->render_scorecard( $core, $categories, $labels, $severities, $sev_counts );
-		$this->render_findings( $core, $labels, $severities );
+		$this->render_scorecard( $core, $categories, $labels, $severities, $sev_counts, $applicability );
+		$this->render_findings( $core, $labels, $severities, $sev_counts );
 
 		return $this->pdf->output();
 
+	}
+
+	/**
+	 * Whether a check belongs in this report's findings and counts: its
+	 * applicability group is on. Mirrors the dashboard's filtering exactly.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   WPFCHS_Check $check
+	 * @return  bool
+	 */
+	protected function is_reportable( $check ) {
+		$group = $check->get_group();
+		return ( '' === $group || wpfchs()->core->applicability->resolve( $group )['applicable'] );
+	}
+
+	/**
+	 * Open findings as sortable rows, applicability-filtered, severity first
+	 * and reach second — a Low touching 90 products never outranks a
+	 * Critical touching one. Store-level checks count as one finding.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @return  array [{check, count, weight}]
+	 */
+	protected function get_finding_rows() {
+		$core           = wpfchs()->core;
+		$severity_order = array( 'critical' => 0, 'high' => 1, 'medium' => 2, 'low' => 3 );
+		$rows           = array();
+		foreach ( $core->issues->count_open_by_check() as $check_id => $count ) {
+			$check = $core->checks->get( $check_id );
+			if ( ! $check || ! $this->is_reportable( $check ) ) {
+				continue;
+			}
+			$rows[] = array(
+				'check' => $check,
+				'count' => $count,
+				'rank'  => ( $check->is_store_level() ? 1 : $count ),
+			);
+		}
+		usort( $rows, function ( $a, $b ) use ( $severity_order ) {
+			$cmp = $severity_order[ $a['check']->get_severity() ] <=> $severity_order[ $b['check']->get_severity() ];
+			return ( 0 !== $cmp ? $cmp : $b['rank'] <=> $a['rank'] );
+		} );
+		return $rows;
+	}
+
+	/**
+	 * Up to three named products behind a finding, plus "and N more".
+	 *
+	 * A count with no names is a summary; names are evidence. SKU when the
+	 * product has one, the id otherwise.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   WPFCHS_Check $check
+	 * @param   int          $total Open count for the check.
+	 * @return  string
+	 */
+	protected function example_products( $check, $total ) {
+		$issues = wpfchs()->core->issues->query(
+			array(
+				'check_id' => $check->get_id(),
+				'status'   => 'open',
+				'limit'    => 3,
+			)
+		);
+		$names = array();
+		foreach ( $issues as $issue ) {
+			$product_id = (int) $issue->product_id;
+			$title      = get_the_title( $product_id );
+			if ( '' === $title ) {
+				continue;
+			}
+			$sku     = (string) get_post_meta( (int) $issue->object_id, '_sku', true );
+			$names[] = $title . ' (' . ( '' !== $sku ? $sku : '#' . $product_id ) . ')';
+		}
+		if ( empty( $names ) ) {
+			return '';
+		}
+		$line = implode( ', ', $names );
+		if ( $total > count( $names ) ) {
+			$line .= ' ' . sprintf(
+				/* translators: %s: number of further affected products. */
+				__( 'and %s more', 'catalog-health-scanner-for-woocommerce' ),
+				number_format_i18n( $total - count( $names ) )
+			);
+		}
+		return $line;
+	}
+
+	/**
+	 * Draws wrapped text and returns the y cursor after the last line.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   float  $x
+	 * @param   float  $y
+	 * @param   string $text
+	 * @param   float  $max_w
+	 * @param   float  $size
+	 * @param   string $hex
+	 * @return  float
+	 */
+	protected function text_wrap( $x, $y, $text, $max_w, $size, $hex ) {
+		$pdf   = $this->pdf;
+		$words = preg_split( '/\s+/', (string) $text );
+		$line  = '';
+		foreach ( $words as $word ) {
+			$candidate = ( '' === $line ? $word : $line . ' ' . $word );
+			if ( $pdf->width( $candidate, $size ) > $max_w && '' !== $line ) {
+				$pdf->text( $x, $y, $line, $size, false, $hex );
+				$y    += $size + 3;
+				$line  = $word;
+			} else {
+				$line = $candidate;
+			}
+		}
+		if ( '' !== $line ) {
+			$pdf->text( $x, $y, $line, $size, false, $hex );
+			$y += $size + 3;
+		}
+		return $y;
 	}
 
 	/**
@@ -240,7 +377,18 @@ class WPFCHS_Report {
 		}
 		$pdf->text( 60 + $logo_shift, 44, $branding['agency_name'], 16, true, '#ffffff' );
 		$pdf->text( 60 + $logo_shift, 64, __( 'Catalog Health Audit', 'catalog-health-scanner-for-woocommerce' ), 11, false, '#c3c4c7' );
-		$pdf->text( WPFCHS_PDF::PAGE_W - 60, 54, wp_parse_url( home_url(), PHP_URL_HOST ) . '  ·  ' . $date, 10, false, '#c3c4c7', 'right' );
+
+		/**
+		 * The store label printed on the report header. Filterable so demo or
+		 * staging environments can present a client-appropriate name instead
+		 * of an internal hostname.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $label Defaults to the site host.
+		 */
+		$site_label = apply_filters( 'wpfchs_report_site_label', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
+		$pdf->text( WPFCHS_PDF::PAGE_W - 60, 54, $site_label . '  ·  ' . $date, 10, false, '#c3c4c7', 'right' );
 
 		// Hero score.
 		$pdf->text( 60, 190, wc_format_decimal( $score, 0 ) . '%', 84, true, $band['color'] );
@@ -249,7 +397,7 @@ class WPFCHS_Report {
 			/* translators: %1$s: products scanned, %2$s: issues found. */
 			__( '%1$s products scanned  ·  %2$s open issues', 'catalog-health-scanner-for-woocommerce' ),
 			number_format_i18n( (int) $scan->products_scanned ),
-			number_format_i18n( (int) $scan->issues_found )
+			number_format_i18n( $core->issues->count_open_effective() )
 		), 11, false, '#646970' );
 
 		$profiles = $core->profiles->get_all();
@@ -294,11 +442,27 @@ class WPFCHS_Report {
 		$pdf->rect( 60, 210, 475, 10, '#e5e5e6' );
 		$pdf->rect( 60, 210, 475 * max( 0, min( 1, $score / 100 ) ), 10, $band['color'] );
 
-		// Stat tiles.
+		// Stat tiles. On a first scan there is no delta to show — "Baseline
+		// set" is the honest tile, not "+0.0 vs last scan".
 		$critical  = $sev_counts['critical'];
 		$previous  = $core->schedule->get_previous_score( (int) $scan->id );
-		$delta_str = ( null !== $previous ? ( ( $score - $previous >= 0 ? '+' : '' ) . wc_format_decimal( $score - $previous, 1 ) ) : '—' );
-		$delta_col = ( null === $previous ? '#646970' : ( $score - $previous >= 0 ? '#00812c' : '#d63638' ) );
+		$delta     = ( null !== $previous ? round( $score - $previous, 1 ) : null );
+		$unchanged = ( null !== $delta && abs( $delta ) < 0.05 );
+
+		if ( null === $delta ) {
+			$delta_str = '—';
+			$delta_lbl = __( 'Baseline set', 'catalog-health-scanner-for-woocommerce' );
+			$delta_col = '#646970';
+		} elseif ( $unchanged ) {
+			// "+0.0" reads as a measurement error rather than a result.
+			$delta_str = '—';
+			$delta_lbl = __( 'No change', 'catalog-health-scanner-for-woocommerce' );
+			$delta_col = '#646970';
+		} else {
+			$delta_str = ( $delta > 0 ? '+' : '' ) . wc_format_decimal( $delta, 1 );
+			$delta_lbl = __( 'vs last scan', 'catalog-health-scanner-for-woocommerce' );
+			$delta_col = ( $delta > 0 ? '#00812c' : '#d63638' );
+		}
 
 		$applicable = 0;
 		foreach ( $categories as $cat ) {
@@ -307,9 +471,9 @@ class WPFCHS_Report {
 
 		$tiles = array(
 			array( number_format_i18n( (int) $scan->products_scanned ), __( 'Products', 'catalog-health-scanner-for-woocommerce' ), '#1d2327' ),
-			array( number_format_i18n( (int) $scan->issues_found ), __( 'Open issues', 'catalog-health-scanner-for-woocommerce' ), '#1d2327' ),
+			array( number_format_i18n( $core->issues->count_open_effective() ), __( 'Open issues', 'catalog-health-scanner-for-woocommerce' ), '#1d2327' ),
 			array( number_format_i18n( $critical ), __( 'Critical', 'catalog-health-scanner-for-woocommerce' ), ( $critical > 0 ? '#d63638' : '#00812c' ) ),
-			array( $delta_str, __( 'vs last scan', 'catalog-health-scanner-for-woocommerce' ), $delta_col ),
+			array( $delta_str, $delta_lbl, $delta_col ),
 		);
 		$tile_w = ( 475 - 3 * 13 ) / 4;
 		$tx     = 60;
@@ -335,30 +499,53 @@ class WPFCHS_Report {
 			$sx += 118;
 		}
 
-		// Most-severe findings teaser.
-		$open_counts = $core->issues->count_open_by_check();
-		$rows        = array();
-		foreach ( $open_counts as $check_id => $count ) {
-			$check = $core->checks->get( $check_id );
-			if ( $check ) {
-				$rows[] = array( 'check' => $check, 'count' => $count, 'weight' => $count * $check->get_weight() );
-			}
-		}
-		usort( $rows, function ( $a, $b ) { return $b['weight'] <=> $a['weight']; } );
+		$y = 412;
 
+		// The critical banner — the dashboard's red banner, on paper. When
+		// products cannot be bought, that is the first thing the reader sees,
+		// not a footnote below a count-sorted list.
+		if ( $sev_counts['critical'] > 0 ) {
+			$by_cat = $core->issues->count_open_scored_by_category( 'critical' );
+			$pdf->rect( 60, $y - 16, 475, 46, '#fcf0f1' );
+			$pdf->rect( 60, $y - 16, 4, 46, '#d63638' );
+			$pdf->text( 76, $y, sprintf(
+				/* translators: %s: number of critical issues. */
+				_n( '%s critical issue is costing you sales right now.', '%s critical issues are costing you sales right now.', $sev_counts['critical'], 'catalog-health-scanner-for-woocommerce' ),
+				number_format_i18n( $sev_counts['critical'] )
+			), 12, true, '#8a1f21' );
+			$chips = array();
+			foreach ( $by_cat as $category_id => $count ) {
+				$chips[] = ( $labels[ $category_id ] ?? $category_id ) . ' ' . number_format_i18n( $count );
+			}
+			$pdf->text( 76, $y + 17, implode( '  ·  ', $chips ), 9, false, '#8a1f21' );
+			$y += 52;
+		}
+
+		// What to fix first: severity before reach. A Low finding on ninety
+		// products never outranks a Critical on one.
+		$rows = $this->get_finding_rows();
 		if ( ! empty( $rows ) ) {
-			$pdf->text( 60, 430, __( 'What to fix first', 'catalog-health-scanner-for-woocommerce' ), 13, true );
-			$y = 452;
+			$pdf->text( 60, $y + 12, __( 'What to fix first', 'catalog-health-scanner-for-woocommerce' ), 13, true );
+			$y += 34;
 			foreach ( array_slice( $rows, 0, 5 ) as $row ) {
 				$sev = $row['check']->get_severity();
 				$col = array( 'critical' => '#d63638', 'high' => '#e65054', 'medium' => '#dba617', 'low' => '#646970' )[ $sev ] ?? '#646970';
 				$pdf->rect( 60, $y - 8, 8, 8, $col );
 				$pdf->text( 76, $y, $row['check']->get_label(), 11 );
-				$pdf->text( 535, $y, sprintf(
-					/* translators: %s: number of affected products. */
-					__( '%s products', 'catalog-health-scanner-for-woocommerce' ),
-					number_format_i18n( $row['count'] )
-				), 10, false, '#646970', 'right' );
+				$reach = (
+					$row['check']->is_store_level() ?
+					sprintf(
+						/* translators: %s: number of affected products. */
+						__( 'store-wide (%s products)', 'catalog-health-scanner-for-woocommerce' ),
+						number_format_i18n( $row['count'] )
+					) :
+					sprintf(
+						/* translators: %s: number of affected products. */
+						_n( '%s product', '%s products', $row['count'], 'catalog-health-scanner-for-woocommerce' ),
+						number_format_i18n( $row['count'] )
+					)
+				);
+				$pdf->text( 535, $y, $reach, 10, false, '#646970', 'right' );
 				$y += 22;
 			}
 		}
@@ -373,11 +560,14 @@ class WPFCHS_Report {
 	 * @version 1.0.0
 	 * @since   1.0.0
 	 */
-	protected function render_scorecard( $core, $categories, $labels, $severities, $sev_counts ) {
+	protected function render_scorecard( $core, $categories, $labels, $severities, $sev_counts, $applicability = array() ) {
 
 		$pdf = $this->pdf;
 		$this->start_page( __( 'Category scorecard', 'catalog-health-scanner-for-woocommerce' ) );
 		$y = 120;
+
+		$crit_by_cat = $core->issues->count_open_scored_by_category( 'critical' );
+		$high_by_cat = $core->issues->count_open_scored_by_category( 'high' );
 
 		foreach ( $labels as $category_id => $label ) {
 			if ( ! isset( $categories[ $category_id ] ) ) {
@@ -385,7 +575,12 @@ class WPFCHS_Report {
 			}
 			$earned   = (float) $categories[ $category_id ]['earned'];
 			$possible = (float) $categories[ $category_id ]['possible'];
-			$cat_band = $core->scores->get_category_band( $earned, $possible );
+			$cat_band = $core->scores->get_category_badge(
+				$earned,
+				$possible,
+				(int) ( $crit_by_cat[ $category_id ] ?? 0 ),
+				(int) ( $high_by_cat[ $category_id ] ?? 0 )
+			);
 			$percent  = ( $possible > 0 ? $earned / $possible : 1 );
 
 			$pdf->text( 60, $y, $label, 11, true );
@@ -395,29 +590,37 @@ class WPFCHS_Report {
 			$y += 26;
 		}
 
-		$y += 24;
-		$pdf->text( 60, $y, __( 'Severity distribution', 'catalog-health-scanner-for-woocommerce' ), 14, true );
-		$y += 20;
-
-		$total = array_sum( $sev_counts );
-		if ( $total > 0 ) {
-			$bx = 60;
-			foreach ( $severities as $severity => $meta ) {
-				$w = 475 * ( $sev_counts[ $severity ] / $total );
-				if ( $w > 0 ) {
-					$pdf->rect( $bx, $y, $w, 18, $meta[1] );
-					$bx += $w;
-				}
+		// Anything the scan excluded is declared, with its reason — the same
+		// grey cards the dashboard shows. Silently dropping a category would
+		// let a reader conclude the score was inflated by omission.
+		$excluded = array();
+		foreach ( (array) $applicability as $group => $state ) {
+			if ( empty( $state['applicable'] ) ) {
+				$excluded[] = array( $core->applicability->get_group_label( $group ), (string) ( $state['reason'] ?? '' ) );
+			} elseif ( empty( $state['scored'] ) ) {
+				$excluded[] = array(
+					$core->applicability->get_group_label( $group ),
+					__( 'Reported, but excluded from the score at your request.', 'catalog-health-scanner-for-woocommerce' ),
+				);
 			}
-			$y += 30;
+		}
+		if ( ! empty( $excluded ) ) {
+			$y += 16;
+			$pdf->text( 60, $y, __( 'Excluded from this audit', 'catalog-health-scanner-for-woocommerce' ), 14, true );
+			$y += 8;
+			$pdf->text( 60, $y + 10, __( 'These checks were not run against your store, and neither side of the score includes them.', 'catalog-health-scanner-for-woocommerce' ), 9, false, '#646970' );
+			$y += 28;
+			foreach ( $excluded as $row ) {
+				$y = $this->ensure_space( $y, 20 );
+				$pdf->rect( 60, $y - 7, 7, 7, '#c3c4c7' );
+				$pdf->text( 74, $y, $row[0], 10, true, '#646970' );
+				$y = $this->text_wrap( 74, $y + 14, $row[1], 440, 9, '#8c8f94' );
+				$y += 8;
+			}
 		}
 
-		$lx = 60;
-		foreach ( $severities as $severity => $meta ) {
-			$pdf->rect( $lx, $y - 9, 10, 10, $meta[1] );
-			$pdf->text( $lx + 16, $y, $meta[0] . ': ' . number_format_i18n( $sev_counts[ $severity ] ), 11 );
-			$lx += 118;
-		}
+		// The severity breakdown lives on page 1 beside the headline figures.
+		// Repeating it here told the reader the same thing twice.
 
 		$this->footer();
 
@@ -430,26 +633,22 @@ class WPFCHS_Report {
 	 * @version 1.0.0
 	 * @since   1.0.0
 	 */
-	protected function render_findings( $core, $labels, $severities ) {
+	protected function render_findings( $core, $labels, $severities, $sev_counts = array() ) {
 
-		$pdf         = $this->pdf;
-		$open_counts = $core->issues->count_open_by_check();
-		$last        = $core->admin->get_last_scan_data();
-		$cat_scores  = $last['categories'];
+		$pdf        = $this->pdf;
+		$last       = $core->admin->get_last_scan_data();
+		$cat_scores = $last['categories'];
 
-		// Group check rows by category.
+		// Applicability-filtered, severity-sorted rows (same source as the
+		// cover's fix-first list), grouped by category.
+		$all_rows    = $this->get_finding_rows();
 		$by_category = array();
-		foreach ( $open_counts as $check_id => $count ) {
-			$check = $core->checks->get( $check_id );
-			if ( $check ) {
-				$by_category[ $check->get_category() ][] = array( 'check' => $check, 'count' => $count );
-			}
+		foreach ( $all_rows as $row ) {
+			$by_category[ $row['check']->get_category() ][] = $row;
 		}
 
 		$this->start_page( __( 'All findings', 'catalog-health-scanner-for-woocommerce' ) );
 		$y = 120;
-
-		$severity_order = array( 'critical' => 0, 'high' => 1, 'medium' => 2, 'low' => 3 );
 
 		if ( empty( $by_category ) ) {
 			$pdf->text( 60, $y, __( 'No open issues. Every applicable check passed.', 'catalog-health-scanner-for-woocommerce' ), 12, false, '#00812c' );
@@ -463,12 +662,6 @@ class WPFCHS_Report {
 				continue;
 			}
 
-			$rows = $by_category[ $category_id ];
-			usort( $rows, function ( $a, $b ) use ( $severity_order ) {
-				$cmp = $severity_order[ $a['check']->get_severity() ] <=> $severity_order[ $b['check']->get_severity() ];
-				return ( 0 !== $cmp ? $cmp : $b['count'] <=> $a['count'] );
-			} );
-
 			$y = $this->ensure_space( $y, 46 );
 
 			// Category heading with its score fraction.
@@ -480,17 +673,85 @@ class WPFCHS_Report {
 			$pdf->rect( 60, $y, 475, 0.7, '#dcdcde' );
 			$y += 18;
 
-			foreach ( $rows as $row ) {
-				$y   = $this->ensure_space( $y, 22 );
-				$sev = $row['check']->get_severity();
-				$col = $severities[ $sev ][1];
+			foreach ( $by_category[ $category_id ] as $row ) {
+
+				$check   = $row['check'];
+				$sev     = $check->get_severity();
+				$col     = $severities[ $sev ][1];
+				$serious = in_array( $sev, array( 'critical', 'high' ), true );
+
+				// Row + explanation + examples move to the next page as one
+				// unit; a finding split from its evidence reads as two.
+				$y = $this->ensure_space( $y, ( $serious ? 68 : 22 ) );
+
 				$pdf->rect( 60, $y - 8, 8, 8, $col );
-				$pdf->text( 76, $y, $row['check']->get_label(), 10 );
+				$pdf->text( 76, $y, $check->get_label(), 10, true );
 				$pdf->text( 470, $y, $severities[ $sev ][0], 9, false, '#646970' );
-				$pdf->text( 535, $y, number_format_i18n( $row['count'] ), 10, true, '#1d2327', 'right' );
-				$y += 22;
+				$count_str = (
+					$check->is_store_level() ?
+					__( 'Store-wide', 'catalog-health-scanner-for-woocommerce' ) :
+					number_format_i18n( $row['count'] )
+				);
+				$pdf->text( 535, $y, $count_str, 10, true, '#1d2327', 'right' );
+				$y += 14;
+
+				// The plain-language impact line — the register the reader
+				// bought this report for, not the internal check name alone.
+				if ( $serious ) {
+					$explanation = $check->get_explanation();
+					if ( $check->is_store_level() ) {
+						$explanation .= ' ' . sprintf(
+							/* translators: %s: number of affected products. */
+							__( 'One store-level cause — currently reaching %s products.', 'catalog-health-scanner-for-woocommerce' ),
+							number_format_i18n( $row['count'] )
+						);
+					}
+					$y = $this->text_wrap( 76, $y, $explanation, 440, 9, '#646970' );
+
+					// Evidence: named products, not just a count.
+					if ( ! $check->is_store_level() ) {
+						$examples = $this->example_products( $check, $row['count'] );
+						if ( '' !== $examples ) {
+							$y = $this->text_wrap( 76, $y + 2, __( 'e.g.', 'catalog-health-scanner-for-woocommerce' ) . ' ' . $examples, 440, 9, '#8c8f94' );
+						}
+					}
+					$y += 10;
+				} else {
+					$y += 8;
+				}
 			}
 			$y += 14;
+		}
+
+		// Closing block: where the reader goes from here. A report that stops
+		// mid-table leaves the next step to guesswork.
+		$critical_total = (int) ( $sev_counts['critical'] ?? 0 );
+		$top            = ( ! empty( $all_rows ) ? $all_rows[0] : null );
+
+		$y = $this->ensure_space( $y, 96 );
+		$pdf->rect( 60, $y - 4, 475, 0.7, '#dcdcde' );
+		$y += 18;
+		$pdf->text( 60, $y, __( 'Where to go from here', 'catalog-health-scanner-for-woocommerce' ), 14, true );
+		$y += 20;
+
+		if ( $critical_total > 0 ) {
+			$y = $this->text_wrap( 60, $y, sprintf(
+				/* translators: %s: number of critical issues. */
+				_n( '%s critical issue is open. Products affected by critical issues cannot be bought, mislead customers, or lose money on every order — resolve these before anything else in this report.', '%s critical issues are open. Products affected by critical issues cannot be bought, mislead customers, or lose money on every order — resolve these before anything else in this report.', $critical_total, 'catalog-health-scanner-for-woocommerce' ),
+				number_format_i18n( $critical_total )
+			), 475, 10, '#1d2327' );
+		} else {
+			$y = $this->text_wrap( 60, $y, __( 'No critical issues are open. Work down the findings above in order — each list is already sorted by what costs you most.', 'catalog-health-scanner-for-woocommerce' ), 475, 10, '#1d2327' );
+		}
+
+		if ( $top ) {
+			$y += 6;
+			$y = $this->text_wrap( 60, $y, sprintf(
+				/* translators: %1$s: check name, %2$s: category name. */
+				__( 'Start with: %1$s — open WooCommerce › Catalog Health › %2$s to see every affected product with actions beside it.', 'catalog-health-scanner-for-woocommerce' ),
+				$top['check']->get_label(),
+				( $labels[ $top['check']->get_category() ] ?? $top['check']->get_category() )
+			), 475, 10, '#646970' );
 		}
 
 		$this->footer();

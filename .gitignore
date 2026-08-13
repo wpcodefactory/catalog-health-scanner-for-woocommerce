@@ -1,0 +1,13 @@
+# This repository is GENERATED. Do not hand-edit it.
+#
+# Its contents come from `build-free.php` in the Pro repository, which strips
+# includes/pro/, the dev docs, the QA suites, and this build script, then
+# renames the main file. Edit the Pro repo and re-run the build.
+
+*.bak
+*.orig
+*.rej
+*.log
+.DS_Store
+Thumbs.db
+node_modules/

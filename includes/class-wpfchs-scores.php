@@ -47,6 +47,14 @@ class WPFCHS_Scores {
 
 			$checked = (int) $counters[ $check_id ]['checked'];
 			$failed  = min( $checked, (int) $counters[ $check_id ]['failed'] );
+
+			// A store-level check is one finding, pass or fail: its single
+			// root cause must not cost N products' worth of category score.
+			if ( $check->is_store_level() ) {
+				$checked = 1;
+				$failed  = min( 1, $failed );
+			}
+
 			$weight  = $check->get_weight();
 			$earned  = $weight * ( ( $checked - $failed ) / $checked );
 
@@ -206,6 +214,64 @@ class WPFCHS_Scores {
 	 */
 	function get_category_band( $earned, $possible ) {
 		return $this->get_band( $possible > 0 ? ( $earned / $possible ) * 100 : 100 );
+	}
+
+	/**
+	 * The health badge: severity presence overrides the score band.
+	 *
+	 * Severity weighting can hold the arithmetic at 84% while a product
+	 * nobody can buy sits open — and "Minor issues" a hundred pixels above a
+	 * red critical banner reads as a contradiction. A badge may never say
+	 * anything kinder than the worst open issue:
+	 *
+	 * - any open Critical  → "Critical issues open"
+	 * - open High, no Crit → "Needs attention"
+	 * - otherwise          → the score band as before
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   float $score
+	 * @param   int   $critical_open Open critical issues in scope.
+	 * @param   int   $high_open     Open high issues in scope.
+	 * @return  array {id, label, color}
+	 */
+	function get_status_badge( $score, $critical_open, $high_open ) {
+		if ( $critical_open > 0 ) {
+			return array(
+				'id'    => 'critical-open',
+				'label' => __( 'Critical issues open', 'catalog-health-scanner-for-woocommerce' ),
+				'color' => '#d63638',
+			);
+		}
+		if ( $high_open > 0 ) {
+			return array(
+				'id'    => 'attention',
+				'label' => __( 'Needs attention', 'catalog-health-scanner-for-woocommerce' ),
+				'color' => '#e65054',
+			);
+		}
+		return $this->get_band( $score );
+	}
+
+	/**
+	 * Category variant of the severity-overridden badge.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   float $earned
+	 * @param   float $possible
+	 * @param   int   $critical_open Open critical issues in the category.
+	 * @param   int   $high_open     Open high issues in the category.
+	 * @return  array {id, label, color}
+	 */
+	function get_category_badge( $earned, $possible, $critical_open, $high_open ) {
+		return $this->get_status_badge(
+			( $possible > 0 ? ( $earned / $possible ) * 100 : 100 ),
+			$critical_open,
+			$high_open
+		);
 	}
 
 }

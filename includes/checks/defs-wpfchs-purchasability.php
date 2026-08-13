@@ -17,6 +17,7 @@ return array(
 
 	array(
 		'id'          => 'no_price',
+		'group'       => 'selling',
 		'label'       => __( 'Published product with no price', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'This product cannot be bought right now. It shows no price and no add to cart button.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'critical',
@@ -30,6 +31,7 @@ return array(
 
 	array(
 		'id'          => 'variable_no_purchasable',
+		'group'       => 'selling',
 		'label'       => __( 'Variable product where no variation is purchasable', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'This product cannot be bought right now. None of its variations has a price.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'critical',
@@ -53,6 +55,7 @@ return array(
 
 	array(
 		'id'          => 'variation_price_missing',
+		'group'       => 'selling',
 		'label'       => __( 'Variable product where some variations have no price', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'Customers who select these variations see no price and cannot buy them.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'critical',
@@ -87,6 +90,7 @@ return array(
 
 	array(
 		'id'          => 'sale_not_lower',
+		'group'       => 'selling',
 		'label'       => __( 'Sale price equal to or higher than regular price', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'This product is showing a fake discount. Customers who notice lose trust in every other price.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
@@ -107,6 +111,7 @@ return array(
 
 	array(
 		'id'          => 'sale_expired',
+		'group'       => 'selling',
 		'label'       => __( 'Sale schedule expired but sale price still set', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'The sale ended but the discounted price is still stored, so the product may still sell at the old sale price.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
@@ -127,6 +132,7 @@ return array(
 
 	array(
 		'id'          => 'sale_dates_inverted',
+		'group'       => 'selling',
 		'label'       => __( 'Sale end date earlier than start date', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'The sale can never run with these dates, so the planned discount never shows.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',

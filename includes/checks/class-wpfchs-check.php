@@ -43,6 +43,7 @@ class WPFCHS_Check {
 				'explanation' => '',
 				'severity'    => 'medium',
 				'group'       => null,
+				'store_level' => false,
 				'pass'        => 'product',
 				'applies'     => null,
 				'check'       => null,
@@ -132,6 +133,22 @@ class WPFCHS_Check {
 	 *
 	 * @return  string
 	 */
+	/**
+	 * Whether one store-level cause produces this check's findings.
+	 *
+	 * A store-level check flags every product for a single root cause (a
+	 * theme setting, say). Scoring and reporting treat it as one finding —
+	 * the per-product rows exist only so the product tables can show reach.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @return  bool
+	 */
+	function is_store_level() {
+		return ! empty( $this->def['store_level'] );
+	}
+
 	function get_group() {
 		if ( null !== $this->def['group'] ) {
 			return $this->def['group'];

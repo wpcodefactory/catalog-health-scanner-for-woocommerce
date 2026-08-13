@@ -16,6 +16,7 @@ return array(
 
 	array(
 		'id'          => 'sku_missing',
+		'group'       => 'sku',
 		'label'       => __( 'Missing SKU', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'These products cannot be tracked in inventory systems or matched to supplier data.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
@@ -28,6 +29,7 @@ return array(
 
 	array(
 		'id'          => 'sku_duplicate',
+		'group'       => 'sku',
 		'label'       => __( 'Duplicate SKU across products or variations', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'Your inventory counts are wrong, and orders may be fulfilled with the wrong item.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'critical',
@@ -73,6 +75,7 @@ return array(
 
 	array(
 		'id'          => 'sku_near_duplicate',
+		'group'       => 'sku',
 		'label'       => __( 'Near-duplicate SKU differing only by case or whitespace', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'Two SKUs that only differ by case or spaces are treated as different products by some systems and the same by others.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
@@ -114,6 +117,7 @@ return array(
 
 	array(
 		'id'          => 'variation_sku_missing',
+		'group'       => 'sku',
 		'label'       => __( 'Variations missing SKUs while parent has one', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'Individual variations cannot be told apart in exports, feeds, or fulfilment.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',

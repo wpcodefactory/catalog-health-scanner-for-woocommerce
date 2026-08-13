@@ -37,7 +37,53 @@ class WPFCHS_Applicability {
 	 * @return  array
 	 */
 	function get_groups() {
-		return array( 'inventory', 'shipping', 'tax', 'downloads', 'feed', 'cog', 'reviews', 'faq' );
+		return array( 'selling', 'sku', 'inventory', 'shipping', 'shipping_class', 'tax', 'tax_status', 'downloads', 'feed', 'cog', 'reviews', 'faq' );
+	}
+
+	/**
+	 * Human label for a group — one source for the settings table, the
+	 * dashboard, and the PDF's excluded-groups section.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   string $group
+	 * @return  string
+	 */
+	function get_group_label( $group ) {
+		$labels = array(
+			'selling'        => __( 'Direct selling (prices & purchasability)', 'catalog-health-scanner-for-woocommerce' ),
+			'sku'            => __( 'SKUs', 'catalog-health-scanner-for-woocommerce' ),
+			'inventory'      => __( 'Stock levels', 'catalog-health-scanner-for-woocommerce' ),
+			'shipping'       => __( 'Shipping weight & dimensions', 'catalog-health-scanner-for-woocommerce' ),
+			'shipping_class' => __( 'Shipping classes', 'catalog-health-scanner-for-woocommerce' ),
+			'tax'            => __( 'Tax classes', 'catalog-health-scanner-for-woocommerce' ),
+			'tax_status'     => __( 'Tax status', 'catalog-health-scanner-for-woocommerce' ),
+			'downloads'      => __( 'Downloads', 'catalog-health-scanner-for-woocommerce' ),
+			'feed'           => __( 'Product feed readiness', 'catalog-health-scanner-for-woocommerce' ),
+			'cog'            => __( 'Cost of goods & margin', 'catalog-health-scanner-for-woocommerce' ),
+			'reviews'        => __( 'Product reviews', 'catalog-health-scanner-for-woocommerce' ),
+			'faq'            => __( 'FAQ / Q&A content', 'catalog-health-scanner-for-woocommerce' ),
+		);
+		return ( $labels[ $group ] ?? $group );
+	}
+
+	/**
+	 * Snapshot of every group's resolution, stored into a scan's score_data
+	 * at finish so a report of that scan can explain what was excluded and
+	 * why, exactly as it stood when the scan ran.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @return  array group => {applicable, scored, reason, source}
+	 */
+	function snapshot() {
+		$snapshot = array();
+		foreach ( $this->get_groups() as $group ) {
+			$snapshot[ $group ] = $this->resolve( $group );
+		}
+		return $snapshot;
 	}
 
 	/**
@@ -142,30 +188,110 @@ class WPFCHS_Applicability {
 
 		switch ( $group ) {
 
+			case 'selling':
+				$signal     = $this->selling_signal();
+				$applicable = ( 'selling' === $signal['result'] );
+				$reason     = $signal['reason'];
+				break;
+
+			case 'sku':
+				// SKU checks are governed by whether the store uses SKUs at
+				// all — NOT by stock management. A store that turns stock
+				// management off still needs unique SKUs for feeds, imports,
+				// and order management, and hiding a duplicate-SKU critical
+				// behind an unrelated setting is a false negative.
+				$sku_count  = $this->count_products_with_sku();
+				$applicable = ( $sku_count > 0 );
+				$reason     = (
+					$applicable ?
+					sprintf(
+						/* translators: %s: number of products carrying a SKU. */
+						_n( '%s product in this catalog carries a SKU, so SKU checks apply.', '%s products in this catalog carry a SKU, so SKU checks apply.', $sku_count, 'catalog-health-scanner-for-woocommerce' ),
+						number_format_i18n( $sku_count )
+					) :
+					__( 'No product in this catalog carries a SKU, so this store does not appear to use them.', 'catalog-health-scanner-for-woocommerce' )
+				);
+				break;
+
 			case 'inventory':
 				$applicable = ( 'yes' === get_option( 'woocommerce_manage_stock', 'yes' ) );
 				$reason     = (
 					$applicable ?
 					__( 'Stock management is enabled store-wide.', 'catalog-health-scanner-for-woocommerce' ) :
-					__( 'Stock management is disabled store-wide.', 'catalog-health-scanner-for-woocommerce' )
+					__( 'Stock management is disabled store-wide (WooCommerce › Settings › Products › Inventory).', 'catalog-health-scanner-for-woocommerce' )
 				);
 				break;
 
 			case 'shipping':
+				$methods    = $this->get_enabled_shipping_methods();
 				$applicable = $this->store_shipping_uses_dimensions();
 				$reason     = (
 					$applicable ?
-					__( 'An active shipping method appears to use weight or dimensions.', 'catalog-health-scanner-for-woocommerce' ) :
-					__( 'Your store uses flat rate, free shipping, or local pickup with no weight-based rules.', 'catalog-health-scanner-for-woocommerce' )
+					sprintf(
+						/* translators: %s: shipping method title. */
+						__( 'Your store uses %s, which can price by weight or dimensions.', 'catalog-health-scanner-for-woocommerce' ),
+						$this->list_method_titles( $methods, true )
+					) :
+					(
+						empty( $methods ) ?
+						__( 'No shipping method is enabled in any zone, so nothing prices by weight.', 'catalog-health-scanner-for-woocommerce' ) :
+						sprintf(
+							/* translators: %s: shipping method titles. */
+							_n( 'Your only shipping method is %s, which does not price by weight or dimensions.', 'Your shipping methods are %s, none of which price by weight or dimensions.', count( $methods ), 'catalog-health-scanner-for-woocommerce' ),
+							$this->list_method_titles( $methods )
+						)
+					)
+				);
+				break;
+
+			case 'shipping_class':
+				// Shipping classes are independent of whether any rate uses
+				// weight: a store on flat rate can still price per class.
+				$class_count = (int) wp_count_terms(
+					array(
+						'taxonomy'   => 'product_shipping_class',
+						'hide_empty' => false,
+					)
+				);
+				$applicable = ( $class_count > 0 );
+				$reason     = (
+					$applicable ?
+					sprintf(
+						/* translators: %s: number of shipping classes. */
+						_n( '%s shipping class is defined in this store.', '%s shipping classes are defined in this store.', $class_count, 'catalog-health-scanner-for-woocommerce' ),
+						number_format_i18n( $class_count )
+					) :
+					__( 'No shipping class is defined in this store.', 'catalog-health-scanner-for-woocommerce' )
 				);
 				break;
 
 			case 'tax':
-				$applicable = ( wc_tax_enabled() && count( \WC_Tax::get_tax_classes() ) > 0 );
+				// Tax CLASS checks need more than the standard class.
+				$classes    = \WC_Tax::get_tax_classes();
+				$applicable = ( wc_tax_enabled() && count( $classes ) > 0 );
 				$reason     = (
 					$applicable ?
-					__( 'Tax is enabled and more than one tax class exists.', 'catalog-health-scanner-for-woocommerce' ) :
-					__( 'Tax is disabled, or only the standard tax class exists.', 'catalog-health-scanner-for-woocommerce' )
+					sprintf(
+						/* translators: %s: comma-separated additional tax class names. */
+						__( 'Tax is enabled and this store defines additional tax classes (%s).', 'catalog-health-scanner-for-woocommerce' ),
+						implode( ', ', array_slice( $classes, 0, 4 ) )
+					) :
+					(
+						! wc_tax_enabled() ?
+						__( 'Tax is disabled store-wide (WooCommerce › Settings › General).', 'catalog-health-scanner-for-woocommerce' ) :
+						__( 'Only the standard tax class exists in this store.', 'catalog-health-scanner-for-woocommerce' )
+					)
+				);
+				break;
+
+			case 'tax_status':
+				// "Tax status: none" under-collects tax whenever tax is on,
+				// with or without additional tax classes.
+				$applicable = wc_tax_enabled();
+				$reason     = (
+					$applicable ?
+					__( 'Tax is enabled store-wide, so a product set to "none" collects no tax.', 'catalog-health-scanner-for-woocommerce' ) :
+					__( 'Tax is disabled store-wide (WooCommerce › Settings › General).', 'catalog-health-scanner-for-woocommerce' )
 				);
 				break;
 
@@ -179,11 +305,17 @@ class WPFCHS_Applicability {
 				break;
 
 			case 'feed':
-				$applicable = $this->feed_plugin_detected() || $this->any_feed_field_populated();
-				$reason     = (
-					$applicable ?
-					__( 'A product feed plugin was detected, or feed fields are populated on products.', 'catalog-health-scanner-for-woocommerce' ) :
-					__( 'No product feed detected.', 'catalog-health-scanner-for-woocommerce' )
+				$feed_plugin = $this->feed_plugin_detected();
+				$feed_fields = ( ! $feed_plugin && $this->any_feed_field_populated() );
+				$applicable  = ( $feed_plugin || $feed_fields );
+				$reason      = (
+					$feed_plugin ?
+					__( 'A product feed plugin is active on this site.', 'catalog-health-scanner-for-woocommerce' ) :
+					(
+						$feed_fields ?
+						__( 'Products in this catalog already carry feed fields such as GTIN or brand.', 'catalog-health-scanner-for-woocommerce' ) :
+						__( 'No feed plugin is active and no product carries feed fields.', 'catalog-health-scanner-for-woocommerce' )
+					)
 				);
 				break;
 
@@ -245,6 +377,111 @@ class WPFCHS_Applicability {
 	}
 
 	/**
+	 * Whether customers buy directly on this site, as opposed to a catalog or
+	 * quote-based store that displays products without selling them.
+	 *
+	 * Two independent signals, either one flips the answer to "not selling":
+	 *
+	 * 1. A catalog-mode or request-a-quote plugin is active. Matching on slug
+	 *    substrings covers the whole family (YITH, Webkul, Barn2, ELEX, …)
+	 *    without maintaining a plugin list.
+	 * 2. Price coverage: when fewer than 20% of published products carry a
+	 *    price — measured on a catalog big enough to mean something — the
+	 *    store is displaying products, not selling them. A store that simply
+	 *    forgot prices on a handful of products stays "selling", which is
+	 *    exactly when the no-price checks should fire.
+	 *
+	 * Fails open: an empty or tiny catalog counts as selling.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @return  bool
+	 */
+	function store_sells_directly() {
+		return ( 'selling' === $this->selling_signal()['result'] );
+	}
+
+	/**
+	 * The selling decision together with the signal that produced it, so the
+	 * reason can name what was actually detected rather than list what it
+	 * might have been.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @return  array {result: 'selling'|'catalog', reason: string}
+	 */
+	function selling_signal() {
+		global $wpdb;
+
+		foreach ( (array) get_option( 'active_plugins', array() ) as $plugin ) {
+			foreach ( array( 'catalog-mode', 'catalogue-mode', 'request-a-quote', 'catalog-enquiry', 'quote-request' ) as $needle ) {
+				if ( false !== stripos( (string) $plugin, $needle ) ) {
+					$name = ( function_exists( 'get_plugin_data' ) && file_exists( WP_PLUGIN_DIR . '/' . $plugin ) )
+						? (string) ( get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin, false, false )['Name'] ?? '' )
+						: '';
+					if ( '' === $name ) {
+						$name = dirname( (string) $plugin );
+					}
+					return array(
+						'result' => 'catalog',
+						'reason' => sprintf(
+							/* translators: %s: plugin name. */
+							__( '%s is active, which turns this site into a catalog rather than a checkout.', 'catalog-health-scanner-for-woocommerce' ),
+							$name
+						),
+					);
+				}
+			}
+		}
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Two aggregate counts; the caller caches the result for an hour.
+		$total = (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'product' AND post_status = 'publish'"
+		);
+		if ( $total < 10 ) {
+			return array(
+				'result' => 'selling',
+				'reason' => __( 'This catalog is too small to infer catalog mode from, so price checks stay on.', 'catalog-health-scanner-for-woocommerce' ),
+			);
+		}
+		$priced = (int) $wpdb->get_var(
+			"SELECT COUNT(DISTINCT p.ID)
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = '_price' AND pm.meta_value != ''
+			WHERE p.post_type = 'product' AND p.post_status = 'publish'"
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+
+		$percent = (int) round( ( $priced / max( 1, $total ) ) * 100 );
+
+		if ( ( $priced / $total ) >= 0.2 ) {
+			return array(
+				'result' => 'selling',
+				'reason' => sprintf(
+					/* translators: %1$s: percentage, %2$s: priced count, %3$s: total products. */
+					__( '%1$s%% of published products carry a price (%2$s of %3$s), so customers buy directly here.', 'catalog-health-scanner-for-woocommerce' ),
+					number_format_i18n( $percent ),
+					number_format_i18n( $priced ),
+					number_format_i18n( $total )
+				),
+			);
+		}
+
+		return array(
+			'result' => 'catalog',
+			'reason' => sprintf(
+				/* translators: %1$s: priced count, %2$s: total products, %3$s: percentage. */
+				__( 'Only %1$s of %2$s published products carry a price (%3$s%%), which reads as a catalog rather than a checkout.', 'catalog-health-scanner-for-woocommerce' ),
+				number_format_i18n( $priced ),
+				number_format_i18n( $total ),
+				number_format_i18n( $percent )
+			),
+		);
+	}
+
+	/**
 	 * Checks whether any enabled shipping method could depend on product
 	 * weight or dimensions.
 	 *
@@ -259,31 +496,112 @@ class WPFCHS_Applicability {
 	 */
 	function store_shipping_uses_dimensions() {
 
-		if ( ! class_exists( 'WC_Shipping_Zones' ) ) {
-			return false;
+		$dimensionless = apply_filters(
+			'wpfchs_dimensionless_shipping_methods',
+			array( 'flat_rate', 'free_shipping', 'local_pickup', 'pickup_location' )
+		);
+
+		foreach ( $this->get_enabled_shipping_methods() as $method ) {
+			if ( ! in_array( $method['id'], $dimensionless, true ) ) {
+				return true;
+			}
 		}
+
+		return false;
+
+	}
+
+	/**
+	 * Every enabled shipping method across all zones, deduplicated by method
+	 * id — the raw material for naming which method was actually detected
+	 * rather than listing the ones it might have been.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @return  array [{id, title}]
+	 */
+	function get_enabled_shipping_methods() {
+
+		if ( ! class_exists( 'WC_Shipping_Zones' ) ) {
+			return array();
+		}
+
+		$zones = \WC_Shipping_Zones::get_zones();
+		$zone0 = \WC_Shipping_Zones::get_zone_by( 'zone_id', 0 );
+		if ( $zone0 ) {
+			$zones[] = array( 'shipping_methods' => $zone0->get_shipping_methods() );
+		}
+
+		$found = array();
+		foreach ( $zones as $zone ) {
+			foreach ( (array) ( $zone['shipping_methods'] ?? array() ) as $method ) {
+				if ( 'yes' !== $method->enabled || isset( $found[ $method->id ] ) ) {
+					continue;
+				}
+				$title              = ( method_exists( $method, 'get_method_title' ) ? $method->get_method_title() : $method->id );
+				$found[ $method->id ] = array(
+					'id'    => $method->id,
+					'title' => ( '' !== $title ? $title : $method->id ),
+				);
+			}
+		}
+
+		return array_values( $found );
+
+	}
+
+	/**
+	 * Formats detected shipping method titles for an applicability reason.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   array $methods       From get_enabled_shipping_methods().
+	 * @param   bool  $dimensional   Name only the weight-capable methods.
+	 * @return  string
+	 */
+	protected function list_method_titles( $methods, $dimensional = false ) {
 
 		$dimensionless = apply_filters(
 			'wpfchs_dimensionless_shipping_methods',
 			array( 'flat_rate', 'free_shipping', 'local_pickup', 'pickup_location' )
 		);
 
-		$zones   = \WC_Shipping_Zones::get_zones();
-		$zones[] = array( 'shipping_methods' => \WC_Shipping_Zones::get_zone_by( 'zone_id', 0 )->get_shipping_methods() );
-
-		foreach ( $zones as $zone ) {
-			foreach ( $zone['shipping_methods'] as $method ) {
-				if ( 'yes' !== $method->enabled ) {
-					continue;
-				}
-				if ( ! in_array( $method->id, $dimensionless, true ) ) {
-					return true;
-				}
+		$titles = array();
+		foreach ( $methods as $method ) {
+			if ( $dimensional && in_array( $method['id'], $dimensionless, true ) ) {
+				continue;
 			}
+			$titles[] = $method['title'];
 		}
 
-		return false;
+		if ( empty( $titles ) ) {
+			return __( 'a custom shipping method', 'catalog-health-scanner-for-woocommerce' );
+		}
 
+		return implode( ', ', array_slice( $titles, 0, 3 ) );
+
+	}
+
+	/**
+	 * Number of published products carrying a non-empty SKU.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @return  int
+	 */
+	function count_products_with_sku() {
+		global $wpdb;
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- One aggregate count; the caller caches the result for an hour.
+		return (int) $wpdb->get_var(
+			"SELECT COUNT(*)
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = '_sku' AND pm.meta_value != ''
+			WHERE p.post_type IN ( 'product', 'product_variation' ) AND p.post_status = 'publish'"
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 	}
 
 	/**

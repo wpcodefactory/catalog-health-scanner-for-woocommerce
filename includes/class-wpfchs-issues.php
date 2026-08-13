@@ -373,6 +373,74 @@ class WPFCHS_Issues {
 	 * @param   string $severity Optional severity filter.
 	 * @return  array category => count
 	 */
+	/**
+	 * Open-issue counts per category, counting only checks that are currently
+	 * scored — i.e. their applicability group is on and not report-only.
+	 *
+	 * This is what user-facing alarms should count. A store that switches a
+	 * group off (a catalog store turning off selling checks, say) still has
+	 * the old issues in the table until the next scan resolves them; an alarm
+	 * fed by raw counts would keep shouting about problems the user just said
+	 * do not apply to them.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   string $severity Optional severity filter.
+	 * @return  array  category => count, largest first.
+	 */
+	function count_open_scored_by_category( $severity = '' ) {
+		global $wpdb;
+
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Custom issues table; no WP API exists.
+		if ( '' !== $severity ) {
+			$rows = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT check_id, category, COUNT(*) AS cnt FROM {$wpdb->prefix}wpfchs_issues WHERE status = 'open' AND severity = %s GROUP BY check_id, category",
+					$severity
+				)
+			);
+		} else {
+			$rows = $wpdb->get_results(
+				"SELECT check_id, category, COUNT(*) AS cnt FROM {$wpdb->prefix}wpfchs_issues WHERE status = 'open' GROUP BY check_id, category"
+			);
+		}
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+
+		$checks = wpfchs()->core->checks;
+		$counts = array();
+		foreach ( (array) $rows as $row ) {
+			$check = $checks->get( $row->check_id );
+			if ( ! $check || ! $checks->is_scored( $check ) ) {
+				continue;
+			}
+			// A store-level finding is ONE issue however many products it
+			// reaches. Counting its reach would let a single theme setting be
+			// 40% of the report and dominate the severity distribution; the
+			// reach is shown as context on the finding itself instead.
+			$counts[ $row->category ] = ( $counts[ $row->category ] ?? 0 ) + ( $check->is_store_level() ? 1 : (int) $row->cnt );
+		}
+		arsort( $counts );
+		return $counts;
+	}
+
+	/**
+	 * The catalog's open-issue total, counted the way every user-facing
+	 * surface must count: applicable and scored checks only, store-level
+	 * findings collapsed to one.
+	 *
+	 * The dashboard headline and the PDF cover both read this, so the two
+	 * cannot print different totals for the same scan.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @return  int
+	 */
+	function count_open_effective() {
+		return (int) array_sum( $this->count_open_scored_by_category() );
+	}
+
 	function count_open_by_category( $severity = '' ) {
 		global $wpdb;
 
@@ -819,16 +887,38 @@ class WPFCHS_Issues {
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 
-		$open = array();
-		foreach ( (array) $rows as $row ) {
-			$open[ (int) $row->product_id ] = (int) $row->cnt;
-		}
+		// Set-based rewrite of what used to be one update_post_meta() per
+		// product. The per-row version was the single slowest thing the
+		// plugin did (~17s at 3k products, minutes at 30k) and it runs inside
+		// the scan's final request, where a host's max_execution_time is the
+		// difference between "scan complete" and "scan stuck at 99%".
+		//
+		// Products losing their count need their meta cache flushed too, so
+		// collect them before deleting.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Bulk postmeta swap with explicit cache invalidation below; a per-row API call per product does not survive catalog scale.
+		$stale = array_map(
+			'intval',
+			(array) $wpdb->get_col(
+				"SELECT DISTINCT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_wpfchs_open_issues'"
+			)
+		);
 
-		// Clear stale counts, then write current ones.
-		delete_metadata( 'post', 0, '_wpfchs_open_issues', '', true );
-		foreach ( $open as $product_id => $count ) {
-			update_post_meta( $product_id, '_wpfchs_open_issues', $count );
+		$wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key = '_wpfchs_open_issues'" );
+
+		$cache_keys = $stale;
+		foreach ( array_chunk( (array) $rows, 500 ) as $chunk ) {
+			$values = array();
+			foreach ( $chunk as $row ) {
+				$values[]     = $wpdb->prepare( '(%d, %s, %d)', (int) $row->product_id, '_wpfchs_open_issues', (int) $row->cnt );
+				$cache_keys[] = (int) $row->product_id;
+			}
+			$wpdb->query(
+				"INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value) VALUES " . implode( ',', $values )
+			);
 		}
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+
+		wp_cache_delete_multiple( array_unique( $cache_keys ), 'post_meta' );
 
 	}
 

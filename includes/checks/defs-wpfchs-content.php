@@ -103,6 +103,10 @@ return array(
 		'label'       => __( 'Product pages emit no structured data (schema.org)', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'Without Product structured data, your listings cannot earn Google rich results and are far less likely to be surfaced by AI shopping assistants. This is usually a store-wide theme or SEO setting.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
+		// One store-level cause blanket-flags every product. Reported and
+		// scored as ONE finding, or a single theme setting is 30% of the
+		// issue total and drowns out every real per-product problem.
+		'store_level' => true,
 		'applies'     => function () {
 			// One cached store-level probe decides this for the whole catalog:
 			// if the store emits Product JSON-LD, the check is a no-op.

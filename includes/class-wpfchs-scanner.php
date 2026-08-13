@@ -127,8 +127,18 @@ class WPFCHS_Scanner {
 	function start( $profile_id, $trigger = 'manual' ) {
 		global $wpdb;
 
-		if ( $this->get_running() ) {
-			return new WP_Error( 'wpfchs_scan_running', __( 'A scan is already running.', 'catalog-health-scanner-for-woocommerce' ) );
+		$running = $this->get_running();
+		if ( $running ) {
+			// A scan whose worker died (timeout, server restart, killed cron)
+			// stays 'running' in the table forever and would block every
+			// future scan. If it has not made progress for a while it is dead,
+			// not running — clear it and let the user scan. Never lock the
+			// user out over our own corpse.
+			if ( $this->is_stalled( $running ) ) {
+				$this->set_status( (int) $running->id, 'cancelled' );
+			} else {
+				return new WP_Error( 'wpfchs_scan_running', __( 'A scan is already running.', 'catalog-health-scanner-for-woocommerce' ) );
+			}
 		}
 
 		$profile = wpfchs()->core->profiles->get( $profile_id );
@@ -332,8 +342,16 @@ class WPFCHS_Scanner {
 		$data['skipped'] = $skipped;
 
 		if ( $done ) {
-			$this->run_catalog_passes( $scan_id, $checks, $data, $issues_found );
-			$this->finish( $scan_id, $checks, $data, $scanned, $last_id, $issues_found );
+			// Catalog passes honour the same time budget as the product loop,
+			// resuming across requests: everything this scan does stays inside
+			// one request-sized slice, because the request that runs "just the
+			// last bit" unbudgeted is the one that hits a host's
+			// max_execution_time and strands the scan at 99%.
+			if ( $this->run_catalog_passes( $scan_id, $checks, $data, $issues_found, $started, $time_budget ) ) {
+				$this->finish( $scan_id, $checks, $data, $scanned, $last_id, $issues_found );
+			} else {
+				$this->save_progress( $scan_id, $data, $scanned, $last_id, $issues_found );
+			}
 		} else {
 			$this->save_progress( $scan_id, $data, $scanned, $last_id, $issues_found );
 		}
@@ -398,22 +416,55 @@ class WPFCHS_Scanner {
 	 * @param   array $data          Passed by reference via return.
 	 * @param   int   $issues_found  Passed by reference via return.
 	 */
-	protected function run_catalog_passes( $scan_id, $checks, &$data, &$issues_found ) {
+	protected function run_catalog_passes( $scan_id, $checks, &$data, &$issues_found, $started = 0.0, $time_budget = 0.0 ) {
 
 		$scan  = $this->get_scan( $scan_id );
 		$total = max( 1, (int) $scan->products_total );
 
+		// Resumable state: which passes are done, and how far into the current
+		// pass's result set recording has progressed. A pass can produce one
+		// issue per product (a store-wide finding maps to every product), so
+		// recording alone can outlast a request and must be sliceable.
+		$state = ( isset( $data['catalog'] ) && is_array( $data['catalog'] )
+			? $data['catalog']
+			: array(
+				'passed' => array(),
+				'offset' => 0,
+				'failed' => array(),
+			)
+		);
+
+		$out_of_time = function () use ( $started, $time_budget ) {
+			return ( $time_budget > 0 && ( microtime( true ) - $started ) >= $time_budget );
+		};
+
 		foreach ( $checks as $check_id => $check ) {
 
-			if ( ! $check->is_catalog_pass() ) {
+			if ( ! $check->is_catalog_pass() || in_array( $check_id, $state['passed'], true ) ) {
 				continue;
 			}
 
-			$results          = $check->run_catalog();
-			$failed_products  = array();
+			if ( $out_of_time() ) {
+				$data['catalog'] = $state;
+				return false;
+			}
 
-			foreach ( $results as $object_id => $result ) {
-				$status = wpfchs()->core->issues->record(
+			// Re-run the pass query on resume: the query itself is one cheap
+			// SQL statement — it is the per-result recording that costs time.
+			// ksort makes the result order stable so the resume offset lands
+			// on the same rows the previous request left off at.
+			$results = $check->run_catalog();
+			ksort( $results );
+
+			$keys            = array_keys( $results );
+			$offset          = (int) $state['offset'];
+			$failed_products = array_fill_keys( array_map( 'intval', (array) $state['failed'] ), true );
+
+			$count = count( $keys );
+			for ( $i = $offset; $i < $count; $i++ ) {
+				$object_id = $keys[ $i ];
+				$result    = $results[ $object_id ];
+				$status    = wpfchs()->core->issues->record(
 					(int) $object_id,
 					(int) ( $result['product_id'] ?? $object_id ),
 					$check,
@@ -424,6 +475,12 @@ class WPFCHS_Scanner {
 					$failed_products[ (int) ( $result['product_id'] ?? $object_id ) ] = true;
 					$issues_found++;
 				}
+				if ( 0 === ( $i + 1 ) % 100 && $out_of_time() ) {
+					$state['offset'] = $i + 1;
+					$state['failed'] = array_keys( $failed_products );
+					$data['catalog'] = $state;
+					return false;
+				}
 			}
 
 			$data['counters'][ $check_id ] = array(
@@ -431,7 +488,14 @@ class WPFCHS_Scanner {
 				'failed'  => min( $total, count( $failed_products ) ),
 			);
 
+			$state['passed'][] = $check_id;
+			$state['offset']   = 0;
+			$state['failed']   = array();
+
 		}
+
+		$data['catalog'] = $state;
+		return true;
 
 	}
 
@@ -465,6 +529,11 @@ class WPFCHS_Scanner {
 		$scores = wpfchs()->core->scores->compute( $data['counters'], $checks );
 
 		$data['categories'] = $scores['categories'];
+
+		// Applicability as it stood for THIS scan. The PDF report reads this
+		// to declare excluded groups with their reason — a score that quietly
+		// omits categories reads as inflated by omission.
+		$data['applicability'] = wpfchs()->core->applicability->snapshot();
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Custom scans table; no WP API exists.
 		$wpdb->update(
@@ -503,8 +572,36 @@ class WPFCHS_Scanner {
 	 * @param   int   $last_id
 	 * @param   int   $issues_found
 	 */
+	/**
+	 * Whether a 'running' scan has actually died.
+	 *
+	 * Every step writes a heartbeat into score_data; a scan that has not
+	 * beaten in 15 minutes has no worker behind it. Paused scans are the
+	 * user's choice and are never stalled. Scans from before the heartbeat
+	 * existed fall back to started_at.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   object $scan
+	 * @return  bool
+	 */
+	function is_stalled( $scan ) {
+		if ( ! $scan || 'running' !== $scan->status ) {
+			return false;
+		}
+		$data = json_decode( (string) $scan->score_data, true );
+		$beat = (int) ( is_array( $data ) ? ( $data['heartbeat'] ?? 0 ) : 0 );
+		if ( $beat <= 0 ) {
+			$beat = (int) strtotime( $scan->started_at . ' UTC' );
+		}
+		$grace = (int) apply_filters( 'wpfchs_scan_stall_seconds', 15 * MINUTE_IN_SECONDS );
+		return ( $beat > 0 && ( time() - $beat ) > $grace );
+	}
+
 	protected function save_progress( $scan_id, $data, $scanned, $last_id, $issues_found ) {
 		global $wpdb;
+		$data['heartbeat'] = time();
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Custom scans table; no WP API exists.
 		$wpdb->update(
 			$this->table(),
@@ -532,22 +629,32 @@ class WPFCHS_Scanner {
 	 */
 	function progress( $scan ) {
 
-		$total = max( 1, (int) $scan->products_total );
-		$data  = json_decode( (string) $scan->score_data, true );
+		$data = json_decode( (string) $scan->score_data, true );
 
 		// Skipped products are not scanned, but they have been dealt with, so
 		// they count towards progress. Otherwise the bar never reaches 100%.
 		$skipped   = (int) ( is_array( $data ) ? ( $data['skipped'] ?? 0 ) : 0 );
 		$processed = (int) $scan->products_scanned + $skipped;
 
+		// products_total is a snapshot from the start of the scan; products
+		// created while it runs are still walked, so processed can exceed the
+		// snapshot. Grow the denominator rather than reporting 175 of 93.
+		$total = max( 1, (int) $scan->products_total, $processed );
+
+		// A running scan is never "100%": the catalog passes and finish work
+		// happen after the last product, and a bar frozen at 100 while state
+		// still says running reads as broken.
+		$running = ( 'running' === $scan->status );
+		$percent = (int) round( ( $processed / $total ) * 100 );
+
 		return array(
 			'id'      => (int) $scan->id,
 			'status'  => $scan->status,
-			'running' => ( 'running' === $scan->status ),
-			'total'   => (int) $scan->products_total,
+			'running' => $running,
+			'total'   => $total,
 			'scanned' => (int) $scan->products_scanned,
 			'skipped' => $skipped,
-			'percent' => min( 100, (int) round( ( $processed / $total ) * 100 ) ),
+			'percent' => min( ( $running ? 99 : 100 ), $percent ),
 			'issues'  => (int) $scan->issues_found,
 			'score'   => ( null !== $scan->score ? (float) $scan->score : null ),
 		);

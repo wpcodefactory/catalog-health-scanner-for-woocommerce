@@ -108,8 +108,149 @@ class WPFCHS_PDF {
 	}
 
 	/**
-	 * Escapes and transliterates text for a PDF string literal
-	 * (WinAnsi/Latin-1 font encoding).
+	 * Codepoints living in WinAnsi's 0x80-0x9F block — the range where
+	 * WinAnsi (CP1252) differs from Latin-1, and where nearly all of this
+	 * report's punctuation lives: en dash, em dash, curly quotes, bullet,
+	 * ellipsis, and the angle quotes used as breadcrumb separators.
+	 *
+	 * Converting to Latin-1 instead turns every one of them into "?", which
+	 * is why the fonts declare WinAnsiEncoding and this table exists.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @return  array Unicode codepoint => WinAnsi byte.
+	 */
+	protected static function winansi_high() {
+		return array(
+			0x20AC => 0x80, 0x201A => 0x82, 0x0192 => 0x83, 0x201E => 0x84,
+			0x2026 => 0x85, 0x2020 => 0x86, 0x2021 => 0x87, 0x02C6 => 0x88,
+			0x2030 => 0x89, 0x0160 => 0x8A, 0x2039 => 0x8B, 0x0152 => 0x8C,
+			0x017D => 0x8E, 0x2018 => 0x91, 0x2019 => 0x92, 0x201C => 0x93,
+			0x201D => 0x94, 0x2022 => 0x95, 0x2013 => 0x96, 0x2014 => 0x97,
+			0x02DC => 0x98, 0x2122 => 0x99, 0x0161 => 0x9A, 0x203A => 0x9B,
+			0x0153 => 0x9C, 0x017E => 0x9E, 0x0178 => 0x9F,
+		);
+	}
+
+	/**
+	 * ASCII stand-ins for characters WinAnsi has no glyph for at all.
+	 *
+	 * Emitting "?" for these is what makes a report look broken, so anything
+	 * unmappable gets a deliberate ASCII equivalent — or is dropped — but is
+	 * never turned into a question mark.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @return  array Unicode codepoint => replacement string.
+	 */
+	protected static function transliterations() {
+		return array(
+			0x2192 => '->', 0x2190 => '<-', 0x2194 => '<->',
+			0x2191 => '^',  0x2193 => 'v',
+			0x2011 => '-',  0x2012 => '-',  0x2015 => '-', 0x2212 => '-',
+			0x2264 => '<=', 0x2265 => '>=', 0x2260 => '!=',
+			0x2713 => 'v',  0x2714 => 'v',  0x2717 => 'x', 0x2718 => 'x',
+			0x00A0 => ' ',  0x202F => ' ',  0x2007 => ' ', 0x2009 => ' ',
+			0x00AD => '',   0x200B => '',   0xFEFF => '',
+		);
+	}
+
+	/**
+	 * Converts UTF-8 to the WinAnsi (CP1252) bytes the report fonts declare.
+	 *
+	 * Two rules govern this, and they pull in opposite directions:
+	 *
+	 * - Template text must render correctly. Anything WinAnsi cannot carry is
+	 *   transliterated to ASCII, never emitted as "?".
+	 * - Product data must render literally. Genuinely mojibake titles are a
+	 *   finding this plugin reports, so they are reproduced byte-faithfully
+	 *   rather than repaired on the way into the PDF.
+	 *
+	 * HTML entities are decoded first: WordPress stores titles encoded, and
+	 * "&#8211;" printed literally is a defect, not faithful reproduction.
+	 *
+	 * Decoding is done by hand rather than with mb_convert_encoding() because
+	 * that function substitutes "?" for anything unmappable, which is exactly
+	 * the outcome being prevented.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   string $text
+	 * @return  string
+	 */
+	protected function to_winansi( $text ) {
+
+		$text = wp_strip_all_tags( (string) $text );
+		$text = html_entity_decode( $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+
+		$high  = self::winansi_high();
+		$trans = self::transliterations();
+		$out   = '';
+		$len   = strlen( $text );
+
+		for ( $i = 0; $i < $len; $i++ ) {
+
+			$byte = ord( $text[ $i ] );
+
+			if ( $byte < 0x80 ) {
+				$out .= $text[ $i ];
+				continue;
+			}
+
+			// Decode one UTF-8 sequence. A stray or malformed byte is passed
+			// through as-is: it is already CP1252-ish, and mangling it would
+			// destroy exactly the corruption the report means to show.
+			if ( 0xC0 === ( $byte & 0xE0 ) ) {
+				$extra = 1;
+				$cp    = $byte & 0x1F;
+			} elseif ( 0xE0 === ( $byte & 0xF0 ) ) {
+				$extra = 2;
+				$cp    = $byte & 0x0F;
+			} elseif ( 0xF0 === ( $byte & 0xF8 ) ) {
+				$extra = 3;
+				$cp    = $byte & 0x07;
+			} else {
+				$out .= chr( $byte );
+				continue;
+			}
+
+			$valid = true;
+			for ( $k = 1; $k <= $extra; $k++ ) {
+				if ( $i + $k >= $len || 0x80 !== ( ord( $text[ $i + $k ] ) & 0xC0 ) ) {
+					$valid = false;
+					break;
+				}
+				$cp = ( $cp << 6 ) | ( ord( $text[ $i + $k ] ) & 0x3F );
+			}
+			if ( ! $valid ) {
+				$out .= chr( $byte );
+				continue;
+			}
+			$i += $extra;
+
+			if ( isset( $high[ $cp ] ) ) {
+				$out .= chr( $high[ $cp ] );
+			} elseif ( isset( $trans[ $cp ] ) ) {
+				$out .= $trans[ $cp ];
+			} elseif ( $cp <= 0xFF ) {
+				$out .= chr( $cp );
+			} else {
+				// Last resort: strip the accent to ASCII if that works, and
+				// drop the character if it does not. Anything but "?".
+				$ascii = remove_accents( substr( $text, $i - $extra, $extra + 1 ) );
+				$out  .= ( '' !== $ascii && ! preg_match( '/[\x80-\xFF]/', $ascii ) ? $ascii : '' );
+			}
+		}
+
+		return $out;
+
+	}
+
+	/**
+	 * Escapes text for a PDF string literal, in the fonts' WinAnsi encoding.
 	 *
 	 * @version 1.0.0
 	 * @since   1.0.0
@@ -118,32 +259,19 @@ class WPFCHS_PDF {
 	 * @return  string
 	 */
 	protected function escape( $text ) {
-		$text = wp_strip_all_tags( (string) $text );
-
-		// Transliterate the common Unicode punctuation that the built-in
-		// Helvetica (WinAnsi) can't encode, so it renders as real glyphs
-		// instead of "?".
-		$text = str_replace(
-			array( "\xE2\x86\x92", "\xE2\x86\x90", "\xE2\x80\x94", "\xE2\x80\x93", "\xE2\x80\xA6", "\xE2\x80\x9C", "\xE2\x80\x9D", "\xE2\x80\x98", "\xE2\x80\x99", "\xE2\x80\xA2" ),
-			array( '->', '<-', '-', '-', '...', '"', '"', "'", "'", '*' ),
-			$text
-		);
-
-		if ( function_exists( 'mb_convert_encoding' ) ) {
-			$converted = mb_convert_encoding( $text, 'ISO-8859-1', 'UTF-8' );
-			if ( false !== $converted ) {
-				$text = $converted;
-			}
-		}
 		return str_replace(
 			array( '\\', '(', ')', "\r", "\n" ),
 			array( '\\\\', '\\(', '\\)', ' ', ' ' ),
-			$text
+			$this->to_winansi( $text )
 		);
 	}
 
 	/**
 	 * Rough Helvetica string width in points (for alignment).
+	 *
+	 * Measured on the encoded bytes: a multi-byte character occupies one
+	 * glyph, so measuring the raw UTF-8 string would over-count it and push
+	 * right-aligned text off its anchor.
 	 *
 	 * @version 1.0.0
 	 * @since   1.0.0
@@ -154,7 +282,7 @@ class WPFCHS_PDF {
 	 * @return  float
 	 */
 	function width( $text, $size, $bold = false ) {
-		return strlen( (string) $text ) * $size * ( $bold ? 0.53 : 0.50 );
+		return strlen( $this->to_winansi( $text ) ) * $size * ( $bold ? 0.53 : 0.50 );
 	}
 
 	/**

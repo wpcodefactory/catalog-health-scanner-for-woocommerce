@@ -88,6 +88,10 @@ return array(
 
 	array(
 		'id'          => 'downloadable_not_virtual',
+		// Always on: a downloadable product that is not virtual asks the
+		// customer to pay shipping on a file. That is wrong in every store,
+		// whatever its shipping methods do with weight.
+		'group'       => '',
 		'label'       => __( 'Downloadable product not marked virtual, so shipping is charged', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'Customers pay shipping on a file. That is a refund request waiting to happen.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
@@ -101,6 +105,7 @@ return array(
 
 	array(
 		'id'          => 'shipping_class_missing',
+		'group'       => 'shipping_class',
 		'label'       => __( 'Missing shipping class where classes are in use', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'This product falls through your class-based shipping rules and ships at the wrong rate.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
@@ -150,6 +155,7 @@ return array(
 
 	array(
 		'id'          => 'shipping_class_deleted',
+		'group'       => 'shipping_class',
 		'label'       => __( 'Product referencing a deleted term', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'This product still points at a shipping class, category, or tag whose term was deleted. Class-based rates and filters silently fall back, and the stale row confuses exports.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',

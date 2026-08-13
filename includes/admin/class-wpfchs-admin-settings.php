@@ -241,16 +241,10 @@ class WPFCHS_Admin_Settings {
 		$core          = wpfchs()->core;
 		$applicability = $core->applicability;
 
-		$group_labels = array(
-			'inventory' => __( 'Inventory & stock', 'catalog-health-scanner-for-woocommerce' ),
-			'shipping'  => __( 'Shipping weight & dimensions', 'catalog-health-scanner-for-woocommerce' ),
-			'tax'       => __( 'Tax', 'catalog-health-scanner-for-woocommerce' ),
-			'downloads' => __( 'Downloads', 'catalog-health-scanner-for-woocommerce' ),
-			'feed'      => __( 'Product feed readiness', 'catalog-health-scanner-for-woocommerce' ),
-			'cog'       => __( 'Cost of goods & margin', 'catalog-health-scanner-for-woocommerce' ),
-			'reviews'   => __( 'Product reviews', 'catalog-health-scanner-for-woocommerce' ),
-			'faq'       => __( 'FAQ / Q&A content', 'catalog-health-scanner-for-woocommerce' ),
-		);
+		$group_labels = array();
+		foreach ( $applicability->get_groups() as $group ) {
+			$group_labels[ $group ] = $applicability->get_group_label( $group );
+		}
 
 		echo '<div class="wpfchs-card wpfchs-panel" id="wpfchs-applicability">';
 		echo '<div class="wpfchs-panel-head"><h2>' . esc_html__( 'Applicability', 'catalog-health-scanner-for-woocommerce' ) . '</h2>';

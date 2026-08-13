@@ -177,13 +177,24 @@ class WPFCHS_Admin_Category {
 			)
 		);
 
-		// Applicability summary: use the first grouped check's resolution.
+		// Applicability summary — only when every check in the category
+		// belongs to the same group. A mixed category (Purchasability holds
+		// selling-gated price checks next to always-on visibility checks)
+		// gets no single badge: "Not applicable" over checks that still run
+		// would be a lie in either direction.
 		$group_key = '';
+		$uniform   = true;
 		foreach ( $core->checks->get_by_category( $category ) as $check ) {
-			if ( '' !== $check->get_group() ) {
+			if ( '' === $group_key && '' !== $check->get_group() ) {
 				$group_key = $check->get_group();
+			}
+			if ( $check->get_group() !== $group_key ) {
+				$uniform = false;
 				break;
 			}
+		}
+		if ( ! $uniform ) {
+			$group_key = '';
 		}
 
 		echo '<div class="wpfchs-card wpfchs-category-header">';

@@ -37,6 +37,7 @@ return array(
 
 	array(
 		'id'          => 'tax_status_none',
+		'group'       => 'tax_status',
 		'label'       => __( 'Tax status set to none', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'No tax is ever charged on this product. If that is not deliberate, you are under-collecting tax.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',

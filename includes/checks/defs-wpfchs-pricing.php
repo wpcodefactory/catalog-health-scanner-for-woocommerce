@@ -30,6 +30,7 @@ return array(
 
 	array(
 		'id'          => 'price_zero',
+		'group'       => 'selling',
 		'label'       => __( 'Price of zero on a product not marked as free', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'This product sells for nothing. If that is not deliberate, every order is pure loss.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
@@ -44,6 +45,7 @@ return array(
 
 	array(
 		'id'          => 'price_outside_median',
+		'group'       => 'selling',
 		'label'       => __( 'Price far outside the category median', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'A price several times above or below everything comparable is usually a misplaced decimal point.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
@@ -120,6 +122,7 @@ return array(
 
 	array(
 		'id'          => 'price_decimals_excess',
+		'group'       => 'selling',
 		'label'       => __( 'Price with more decimals than the store currency supports', 'catalog-health-scanner-for-woocommerce' ),
 		'explanation' => __( 'The displayed price is rounded, so what customers see is not what is charged.', 'catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',

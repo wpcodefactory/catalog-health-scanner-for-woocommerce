@@ -19,15 +19,26 @@
 	}
 
 	function notice( message, type ) {
+		var isError = ( 'error' === type );
 		var $notice = $( '<div class="notice is-dismissible wpfchs-notice"><p></p></div>' )
-			.addClass( 'error' === type ? 'notice-error' : 'notice-success' );
+			.addClass( isError ? 'notice-error' : 'notice-success' );
 		$notice.find( 'p' ).text( message );
+		$notice.append(
+			$( '<button type="button" class="notice-dismiss"></button>' ).on( 'click', function () {
+				$notice.remove();
+			} )
+		);
 		$( '.wpfchs-wrap h1' ).first().after( $notice );
-		window.setTimeout( function () {
-			$notice.fadeOut( 300, function () {
-				$( this ).remove();
-			} );
-		}, 6000 );
+		// Success fades; errors stay until dismissed. An error that removes
+		// itself after six seconds is indistinguishable from "it did nothing"
+		// for anyone who glanced away.
+		if ( ! isError ) {
+			window.setTimeout( function () {
+				$notice.fadeOut( 300, function () {
+					$( this ).remove();
+				} );
+			}, 6000 );
+		}
 		return $notice;
 	}
 
