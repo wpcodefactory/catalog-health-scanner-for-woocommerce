@@ -45,6 +45,7 @@ class WPFCHS_Admin_Dashboard {
 			return;
 		}
 
+		$this->render_stale_notice( $last['scan'] );
 		$this->render_score_panel( $last['scan'] );
 		$this->render_skipped_notice( $last['scan'] );
 		$this->render_critical_banner();
@@ -310,6 +311,46 @@ class WPFCHS_Admin_Dashboard {
 	}
 
 	/**
+	 * Warns when the displayed results predate a settings reset.
+	 *
+	 * Scan history deliberately survives a reset, but the results on screen
+	 * were produced under the configuration that was just discarded. Without
+	 * this, finishing the setup wizard on a freshly reset store lands on a
+	 * full results page for a scan the user never ran under these settings.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   object $scan
+	 */
+	function render_stale_notice( $scan ) {
+
+		$changed_at = (int) get_option( 'wpfchs_settings_changed_at', 0 );
+		if ( $changed_at < 1 || empty( $scan->completed_at ) ) {
+			return;
+		}
+
+		$scanned_at = (int) strtotime( $scan->completed_at . ' UTC' );
+		if ( $scanned_at >= $changed_at ) {
+			return;
+		}
+
+		echo '<div class="wpfchs-alert wpfchs-alert-warning">';
+		echo '<span class="wpfchs-alert-icon wpfchs-alert-icon-warning" aria-hidden="true">i</span>';
+		echo '<span class="wpfchs-alert-text">';
+		echo '<strong>' . esc_html__( 'These results predate your settings change.', 'catalog-health-scanner-for-woocommerce' ) . '</strong> ';
+		printf(
+			/* translators: %s: human-readable time difference. */
+			esc_html__( 'This scan ran %s ago, under the settings you have since reset. Run a new scan for results that match your current configuration.', 'catalog-health-scanner-for-woocommerce' ),
+			esc_html( human_time_diff( $scanned_at ) )
+		);
+		echo '</span>';
+		echo '<button type="button" class="button button-primary wpfchs-start-scan">' . esc_html__( 'Run scan', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+		echo '</div>';
+
+	}
+
+	/**
 	 * Warns when the last scan did not cover the whole catalog.
 	 *
 	 * A score computed from part of the catalog is not a score for the
@@ -558,7 +599,9 @@ class WPFCHS_Admin_Dashboard {
 
 			$crit_open  = (int) ( $crit_by_cat[ $category_id ] ?? 0 );
 			$high_open  = (int) ( $high_by_cat[ $category_id ] ?? 0 );
-			$band       = ( null !== $card['score'] ? wpfchs()->core->scores->get_category_badge( $card['score']['earned'], $card['score']['possible'], $crit_open, $high_open ) : null );
+			// Card colour = score. Severity gets its own small chip below.
+			$band       = ( null !== $card['score'] ? wpfchs()->core->scores->get_category_band( $card['score']['earned'], $card['score']['possible'] ) : null );
+			$chip       = wpfchs()->core->scores->get_severity_chip( $crit_open, $high_open );
 			$accent     = ( $band ? $band['color'] : '#c3c4c7' );
 			$band_class = ( $band ? ' wpfchs-band-' . $band['id'] : '' );
 
@@ -566,7 +609,11 @@ class WPFCHS_Admin_Dashboard {
 			echo '<div class="wpfchs-card-head"><span class="wpfchs-card-title">' . esc_html( $card['label'] ) . '</span>';
 
 			if ( null !== $card['score'] ) {
-				echo '<span class="wpfchs-chip" style="color:' . esc_attr( $band['color'] ) . ';background:' . esc_attr( $band['color'] ) . '1a">' . esc_html( $band['label'] ) . '</span></div>';
+				// Severity chip when something serious is open, otherwise the
+				// score band. One chip, never two.
+				$chip_label = ( $chip ? $chip['label'] : $band['label'] );
+				$chip_color = ( $chip ? $chip['color'] : $band['color'] );
+				echo '<span class="wpfchs-chip" style="color:' . esc_attr( $chip_color ) . ';background:' . esc_attr( $chip_color ) . '1a">' . esc_html( $chip_label ) . '</span></div>';
 				echo '<div class="wpfchs-card-score">' . esc_html( wc_format_decimal( $card['score']['earned'], 1 ) ) . ' <span>/ ' . esc_html( wc_format_decimal( $card['score']['possible'], 0 ) ) . '</span></div>';
 				$percent = ( $card['score']['possible'] > 0 ? round( ( $card['score']['earned'] / $card['score']['possible'] ) * 100 ) : 100 );
 				echo '<div class="wpfchs-card-bar"><div style="width:' . esc_attr( $percent ) . '%;background:' . esc_attr( $band['color'] ) . '"></div></div>';

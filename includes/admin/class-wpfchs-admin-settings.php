@@ -69,7 +69,18 @@ class WPFCHS_Admin_Settings {
 			delete_option( $key );
 		}
 
+		// Scan history survives a settings reset by design, but every stored
+		// result was produced under the settings just discarded. Stamping the
+		// reset lets the dashboard say so instead of presenting old numbers as
+		// current — which is what made a fresh wizard land on a results page
+		// for a store that had not scanned yet.
+		update_option( 'wpfchs_settings_changed_at', time(), false );
+
 		wpfchs()->core->applicability->flush_cache();
+
+		// Bring stored scores in line with the reset configuration so the
+		// trend line stays comparable.
+		wpfchs()->core->scores->recalculate_history();
 
 		wp_safe_redirect( admin_url( 'admin.php?page=wpfchs-setup' ) );
 		exit;

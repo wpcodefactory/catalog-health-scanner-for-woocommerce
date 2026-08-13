@@ -448,9 +448,10 @@ a.wpfchs-category-card:focus {
 	color: #1d2327;
 }
 
-/* Draw the eye to categories in trouble. */
-a.wpfchs-category-card.wpfchs-band-critical,
-a.wpfchs-category-card.wpfchs-band-attention {
+/* Draw the eye to categories that actually score badly. Tinting on severity
+   instead painted every card with any critical the same shade, so a 96%
+   category looked identical to a 66% one and nothing stood out. */
+a.wpfchs-category-card.wpfchs-band-critical {
 	background: #fffbfb;
 }
 

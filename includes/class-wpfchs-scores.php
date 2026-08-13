@@ -237,41 +237,67 @@ class WPFCHS_Scores {
 	 * @return  array {id, label, color}
 	 */
 	function get_status_badge( $score, $critical_open, $high_open ) {
+
+		$band = $this->get_band( $score );
+
+		// Colour follows the SCORE. Severity only changes what the label says.
+		// Letting severity drive colour too painted every surface red at once
+		// — twelve red elements on one screen, in which nothing stands out and
+		// a 96% category is indistinguishable from a 66% one.
 		if ( $critical_open > 0 ) {
 			return array(
 				'id'    => 'critical-open',
 				'label' => __( 'Critical issues open', 'catalog-health-scanner-for-woocommerce' ),
-				'color' => '#d63638',
+				'color' => $band['color'],
 			);
 		}
 		if ( $high_open > 0 ) {
 			return array(
 				'id'    => 'attention',
 				'label' => __( 'Needs attention', 'catalog-health-scanner-for-woocommerce' ),
-				'color' => '#e65054',
+				'color' => $band['color'],
 			);
 		}
-		return $this->get_band( $score );
+		return $band;
 	}
 
 	/**
-	 * Category variant of the severity-overridden badge.
+	 * The severity chip for a category card: a small, separate signal that
+	 * says what the worst open issue is and how many there are.
+	 *
+	 * Deliberately independent of the card's colour, which follows the score.
+	 * A green card carrying a red "1 critical" chip is the correct reading of
+	 * a healthy category with one thing to fix today.
 	 *
 	 * @version 1.0.0
 	 * @since   1.0.0
 	 *
-	 * @param   float $earned
-	 * @param   float $possible
-	 * @param   int   $critical_open Open critical issues in the category.
-	 * @param   int   $high_open     Open high issues in the category.
-	 * @return  array {id, label, color}
+	 * @param   int $critical_open
+	 * @param   int $high_open
+	 * @return  array|null {label, color} or null when neither is open.
 	 */
-	function get_category_badge( $earned, $possible, $critical_open, $high_open ) {
-		return $this->get_status_badge(
-			( $possible > 0 ? ( $earned / $possible ) * 100 : 100 ),
-			$critical_open,
-			$high_open
-		);
+	function get_severity_chip( $critical_open, $high_open ) {
+		if ( $critical_open > 0 ) {
+			return array(
+				'label' => sprintf(
+					/* translators: %s: number of critical issues. */
+					_n( '%s critical', '%s critical', $critical_open, 'catalog-health-scanner-for-woocommerce' ),
+					number_format_i18n( $critical_open )
+				),
+				'color' => '#d63638',
+			);
+		}
+		if ( $high_open > 0 ) {
+			return array(
+				'label' => sprintf(
+					/* translators: %s: number of high-severity issues. */
+					_n( '%s high', '%s high', $high_open, 'catalog-health-scanner-for-woocommerce' ),
+					number_format_i18n( $high_open )
+				),
+				'color' => '#dba617',
+			);
+		}
+		return null;
 	}
 
 }

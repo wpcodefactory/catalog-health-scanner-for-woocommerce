@@ -575,15 +575,19 @@ class WPFCHS_Report {
 			}
 			$earned   = (float) $categories[ $category_id ]['earned'];
 			$possible = (float) $categories[ $category_id ]['possible'];
-			$cat_band = $core->scores->get_category_badge(
-				$earned,
-				$possible,
+			// Bar colour follows the score; severity gets its own chip, so a
+			// strong category with one critical does not read as a failing one.
+			$cat_band = $core->scores->get_category_band( $earned, $possible );
+			$chip     = $core->scores->get_severity_chip(
 				(int) ( $crit_by_cat[ $category_id ] ?? 0 ),
 				(int) ( $high_by_cat[ $category_id ] ?? 0 )
 			);
 			$percent  = ( $possible > 0 ? $earned / $possible : 1 );
 
 			$pdf->text( 60, $y, $label, 11, true );
+			if ( $chip ) {
+				$pdf->text( 190, $y, $chip['label'], 9, true, $chip['color'] );
+			}
 			$pdf->text( 320, $y, wc_format_decimal( $earned, 1 ) . ' / ' . wc_format_decimal( $possible, 0 ), 11, false, '#646970', 'right' );
 			$pdf->rect( 340, $y - 8, 195, 8, '#e5e5e6' );
 			$pdf->rect( 340, $y - 8, 195 * max( 0, min( 1, $percent ) ), 8, $cat_band['color'] );

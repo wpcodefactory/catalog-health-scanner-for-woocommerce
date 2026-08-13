@@ -245,24 +245,39 @@ class WPFCHS_Applicability {
 				break;
 
 			case 'shipping_class':
-				// Shipping classes are independent of whether any rate uses
-				// weight: a store on flat rate can still price per class.
+				// Independent of the weight condition — a flat-rate store can
+				// still price per class — but NOT unconditional. A missing
+				// shipping class costs nothing unless some enabled rate
+				// actually charges by class, so the check needs all three:
+				// classes defined, a method enabled, and that method pricing
+				// by class.
 				$class_count = (int) wp_count_terms(
 					array(
 						'taxonomy'   => 'product_shipping_class',
 						'hide_empty' => false,
 					)
 				);
-				$applicable = ( $class_count > 0 );
-				$reason     = (
-					$applicable ?
-					sprintf(
-						/* translators: %s: number of shipping classes. */
-						_n( '%s shipping class is defined in this store.', '%s shipping classes are defined in this store.', $class_count, 'catalog-health-scanner-for-woocommerce' ),
-						number_format_i18n( $class_count )
-					) :
-					__( 'No shipping class is defined in this store.', 'catalog-health-scanner-for-woocommerce' )
-				);
+				$methods    = $this->get_enabled_shipping_methods();
+				$class_rate = $this->shipping_class_rate_in_use();
+				$applicable = ( $class_count > 0 && ! empty( $methods ) && false !== $class_rate );
+				if ( $applicable ) {
+					$reason = sprintf(
+						/* translators: %1$s: number of shipping classes, %2$s: shipping method title. */
+						_n( '%1$s shipping class is defined and %2$s charges by class.', '%1$s shipping classes are defined and %2$s charges by class.', $class_count, 'catalog-health-scanner-for-woocommerce' ),
+						number_format_i18n( $class_count ),
+						$class_rate
+					);
+				} elseif ( 0 === $class_count ) {
+					$reason = __( 'No shipping class is defined in this store.', 'catalog-health-scanner-for-woocommerce' );
+				} elseif ( empty( $methods ) ) {
+					$reason = __( 'No shipping method is enabled in any zone, so a shipping class cannot affect any rate.', 'catalog-health-scanner-for-woocommerce' );
+				} else {
+					$reason = sprintf(
+						/* translators: %s: shipping method titles. */
+						__( 'Shipping classes exist, but no enabled rate (%s) charges by class.', 'catalog-health-scanner-for-woocommerce' ),
+						$this->list_method_titles( $methods )
+					);
+				}
 				break;
 
 			case 'tax':
@@ -581,6 +596,66 @@ class WPFCHS_Applicability {
 		}
 
 		return implode( ', ', array_slice( $titles, 0, 3 ) );
+
+	}
+
+	/**
+	 * Whether an enabled shipping rate actually prices by shipping class.
+	 *
+	 * Core flat rate stores per-class costs as `class_cost_<term_id>` in its
+	 * instance settings; `no_class_cost` alone is not class pricing. Any
+	 * non-core method (table rates, carrier plugins) is assumed to support
+	 * classes, since we cannot read its schema — failing open here risks a
+	 * false positive on one check, while failing closed would suppress a real
+	 * finding on every store using a third-party shipping plugin.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @return  string|false Method title that prices by class, or false.
+	 */
+	function shipping_class_rate_in_use() {
+
+		if ( ! class_exists( 'WC_Shipping_Zones' ) ) {
+			return false;
+		}
+
+		$core_methods = array( 'flat_rate', 'free_shipping', 'local_pickup', 'pickup_location' );
+
+		$zones = \WC_Shipping_Zones::get_zones();
+		$zone0 = \WC_Shipping_Zones::get_zone_by( 'zone_id', 0 );
+		if ( $zone0 ) {
+			$zones[] = array( 'shipping_methods' => $zone0->get_shipping_methods() );
+		}
+
+		foreach ( $zones as $zone ) {
+			foreach ( (array) ( $zone['shipping_methods'] ?? array() ) as $method ) {
+
+				if ( 'yes' !== $method->enabled ) {
+					continue;
+				}
+
+				$title = ( method_exists( $method, 'get_method_title' ) ? $method->get_method_title() : $method->id );
+
+				// A method we cannot introspect may well price by class.
+				if ( ! in_array( $method->id, $core_methods, true ) ) {
+					return $title;
+				}
+
+				if ( 'flat_rate' !== $method->id ) {
+					continue; // Free shipping and local pickup never use classes.
+				}
+
+				$settings = (array) get_option( 'woocommerce_flat_rate_' . $method->instance_id . '_settings', array() );
+				foreach ( $settings as $key => $value ) {
+					if ( 0 === strpos( $key, 'class_cost_' ) && '' !== trim( (string) $value ) ) {
+						return $title;
+					}
+				}
+			}
+		}
+
+		return false;
 
 	}
 
