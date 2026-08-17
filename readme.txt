@@ -58,6 +58,10 @@ No. Every fix shows you the exact before and after value for every product it wo
 
 Ignore it. Ignored issues stop counting against your score and stay out of future scans for that product, and the Settings screen keeps a reviewable list you can restore from at any time. Whole check groups that don't apply to your store (weights on a flat-rate store, for example) are detected automatically and can also be toggled manually.
 
+= Can I rescan only what changed? =
+
+Yes. After your first scan the dashboard offers a changes-only rescan, labelled with the number of products edited since the last scan. It visits just those products, which on a large catalog takes seconds rather than minutes. Because it deliberately skips the rest of the catalog, its score is marked as partial and the products it did not visit keep their existing findings.
+
 = Does the plugin slow down my storefront? =
 
 No. It has no frontend output and hooks nothing into the cart or checkout. Scans run in the admin (or via cron in Pro) in small batches with pause and resume, so even large catalogs scan without timeouts.

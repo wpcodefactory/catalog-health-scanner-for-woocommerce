@@ -74,7 +74,9 @@
 	$( document ).on( 'click', '.wpfchs-start-scan:not(#wpfchs-resume-scan)', function () {
 		var $button = $( this ).prop( 'disabled', true ).text( i18n.scanning );
 		var profile = $( '#wpfchs-profile' ).val() || 'revenue_blockers';
-		post( 'wpfchs_scan_start', { profile: profile } )
+		// A button may ask for a changes-only scan; anything else is a full scan.
+		var mode = $( this ).data( 'mode' ) === 'incremental' ? 'incremental' : 'full';
+		post( 'wpfchs_scan_start', { profile: profile, mode: mode } )
 			.done( function ( response ) {
 				if ( ! response.success ) {
 					$button.prop( 'disabled', false );

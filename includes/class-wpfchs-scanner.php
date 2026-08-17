@@ -124,7 +124,7 @@ class WPFCHS_Scanner {
 	 * @param   string $trigger    'manual' or 'scheduled'.
 	 * @return  int|WP_Error       Scan id.
 	 */
-	function start( $profile_id, $trigger = 'manual' ) {
+	function start( $profile_id, $trigger = 'manual', $mode = 'full' ) {
 		global $wpdb;
 
 		$running = $this->get_running();
@@ -151,11 +151,27 @@ class WPFCHS_Scanner {
 			return new WP_Error( 'wpfchs_no_checks', __( 'No applicable checks in this profile.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		}
 
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Product count for progress display; one query per scan start.
-		$total = (int) $wpdb->get_var(
-			"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'product' AND post_status = 'publish'"
-		);
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		// An incremental scan walks only products touched since the last
+		// completed scan. A profile narrows WHICH CHECKS run; this narrows
+		// WHICH PRODUCTS are visited, which is the difference between three
+		// minutes and one second on a large catalog after an import.
+		//
+		// It needs a previous scan to measure "since" from, so the first scan
+		// is always full.
+		$modified_since = '';
+		if ( 'incremental' === $mode ) {
+			$previous = $this->get_last_completed();
+			if ( $previous && ! empty( $previous->completed_at ) ) {
+				$modified_since = (string) $previous->completed_at;
+			} else {
+				$mode = 'full';
+			}
+		}
+
+		$catalog_total = $this->count_products();
+		// products_total drives the progress bar, so for an incremental scan it
+		// must be the number of products this scan will actually visit.
+		$total = ( '' !== $modified_since ? $this->count_products( $modified_since ) : $catalog_total );
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Custom scans table; no WP API exists.
 		$wpdb->insert(
@@ -166,7 +182,17 @@ class WPFCHS_Scanner {
 				'started_at'     => current_time( 'mysql', true ),
 				'products_total' => $total,
 				'check_ids'      => wp_json_encode( array_keys( $runnable ) ),
-				'score_data'     => wp_json_encode( array( 'counters' => array(), 'trigger' => $trigger ) ),
+				'score_data'     => wp_json_encode(
+					array(
+						'counters'       => array(),
+						'trigger'        => $trigger,
+						'mode'           => $mode,
+						'modified_since' => $modified_since,
+						// The whole catalog, so finish() can report how many
+						// products this scan did not look at.
+						'catalog_total'  => $catalog_total,
+					)
+				),
 			),
 			array( '%s', '%s', '%s', '%d', '%s', '%s' )
 		);
@@ -267,11 +293,12 @@ class WPFCHS_Scanner {
 		$grace_days     = (int) wpfchs()->core->get_threshold( 'grace_period_days' );
 		$grace_boundary = $this->get_grace_boundary( $scan_id, $grace_days );
 		$exclude_cats   = $this->get_excluded_category_ids();
+		$modified_since = (string) ( $data['modified_since'] ?? '' );
 		$done           = false;
 
 		do {
 
-			$product_ids = $this->get_next_product_ids( $last_id, $batch_size );
+			$product_ids = $this->get_next_product_ids( $last_id, $batch_size, $modified_since );
 
 			if ( empty( $product_ids ) ) {
 				$done = true;
@@ -515,6 +542,17 @@ class WPFCHS_Scanner {
 	protected function finish( $scan_id, $checks, $data, $scanned, $last_id, $issues_found ) {
 		global $wpdb;
 
+		// An incremental scan deliberately never looked at most of the catalog.
+		// Recording those products as skipped is not bookkeeping: the stale
+		// resolution below is guarded on `skipped`, and without this an
+		// incremental scan would mark every product it did not visit as fixed —
+		// silently wiping the whole issue list. It also makes the dashboard's
+		// "not everything was checked" notice fire, which is the truth.
+		if ( 'incremental' === ( $data['mode'] ?? 'full' ) ) {
+			$catalog_total   = (int) ( $data['catalog_total'] ?? $scanned );
+			$data['skipped'] = max( (int) ( $data['skipped'] ?? 0 ), $catalog_total - $scanned );
+		}
+
 		// An issue on a product that was not scanned must never be marked
 		// fixed. That applies to every reason a product can be missed —
 		// excluded categories AND the grace period — because stale resolution
@@ -711,9 +749,25 @@ class WPFCHS_Scanner {
 	 * @param   int $limit
 	 * @return  array of ids
 	 */
-	protected function get_next_product_ids( $last_id, $limit ) {
+	protected function get_next_product_ids( $last_id, $limit, $modified_since = '' ) {
 		global $wpdb;
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- WP_Query has no keyset (ID > x) pagination; required for resumable scans.
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- WP_Query has no keyset (ID > x) pagination; required for resumable scans. Every value goes through prepare().
+		if ( '' !== $modified_since ) {
+			return array_map(
+				'intval',
+				(array) $wpdb->get_col(
+					$wpdb->prepare(
+						"SELECT ID FROM {$wpdb->posts}
+						WHERE post_type = 'product' AND post_status = 'publish'
+						AND ID > %d AND post_modified_gmt >= %s
+						ORDER BY ID ASC LIMIT %d",
+						$last_id,
+						$modified_since,
+						$limit
+					)
+				)
+			);
+		}
 		return array_map(
 			'intval',
 			(array) $wpdb->get_col(
@@ -724,7 +778,34 @@ class WPFCHS_Scanner {
 				)
 			)
 		);
-		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+	}
+
+	/**
+	 * Published product count, optionally limited to those modified since a
+	 * given GMT timestamp.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   string $modified_since MySQL GMT datetime, or '' for the whole catalog.
+	 * @return  int
+	 */
+	function count_products( $modified_since = '' ) {
+		global $wpdb;
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- One aggregate count per scan start.
+		if ( '' !== $modified_since ) {
+			return (int) $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'product' AND post_status = 'publish' AND post_modified_gmt >= %s",
+					$modified_since
+				)
+			);
+		}
+		return (int) $wpdb->get_var(
+			"SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = 'product' AND post_status = 'publish'"
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 	}
 
 	/**

@@ -91,6 +91,25 @@ class WPFCHS_Admin_Dashboard {
 			echo '<button type="button" class="button" id="wpfchs-cancel-scan" data-scan="' . esc_attr( $running->id ) . '">' . esc_html__( 'Cancel', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 		} else {
 			echo '<button type="button" class="button button-primary wpfchs-start-scan" id="wpfchs-run-scan">' . esc_html__( 'Run Scan', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button> ';
+
+			// Changes-only rescan. Offered only once a previous scan exists to
+			// measure "since" from, and labelled with the number of products it
+			// will actually visit — "Scan 12 changed products" is a promise the
+			// user can check, where "Quick scan" is a guess they cannot.
+			if ( $last ) {
+				$changed = $core->scanner->count_products( (string) $last->completed_at );
+				echo '<button type="button" class="button wpfchs-start-scan" data-mode="incremental"' . ( $changed < 1 ? ' disabled' : '' ) . '>';
+				if ( $changed > 0 ) {
+					printf(
+						/* translators: %s: number of products edited since the last scan. */
+						esc_html( _n( 'Scan %s changed product', 'Scan %s changed products', $changed, 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
+						esc_html( number_format_i18n( $changed ) )
+					);
+				} else {
+					esc_html_e( 'No changes since last scan', 'wpfactory-catalog-health-scanner-for-woocommerce' );
+				}
+				echo '</button> ';
+			}
 			echo '<a class="button" href="' . esc_url( admin_url( 'admin.php?page=wpfchs-settings#wpfchs-schedule' ) ) . '">' . esc_html__( 'Schedule', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</a>';
 			if ( $last && $core->report ) {
 				echo ' <a class="button" href="' . esc_url( $core->report->get_url() ) . '">' . esc_html__( 'PDF report', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</a>';
@@ -386,6 +405,17 @@ class WPFCHS_Admin_Dashboard {
 			esc_html( number_format_i18n( $skipped ) )
 		);
 		echo '</strong> ';
+
+		// An incremental scan skipped them on purpose, so say that rather than
+		// blaming the grace period or an excluded category.
+		$data = json_decode( (string) $scan->score_data, true );
+		if ( 'incremental' === ( is_array( $data ) ? ( $data['mode'] ?? 'full' ) : 'full' ) ) {
+			esc_html_e( 'This was a changes-only scan, so it looked at products edited since the previous scan and left the rest as they were. Run a full scan for a score that covers the whole catalog.', 'wpfactory-catalog-health-scanner-for-woocommerce' );
+			echo '</span>';
+			echo '<button type="button" class="wpfchs-cta-warning wpfchs-start-scan" data-mode="full">' . esc_html__( 'Run a full scan', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . ' &rarr;</button>';
+			echo '</div>';
+			return;
+		}
 
 		if ( $grace_days > 0 && ! empty( $excluded ) ) {
 			printf(

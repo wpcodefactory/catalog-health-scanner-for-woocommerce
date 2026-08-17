@@ -74,7 +74,9 @@ class WPFCHS_Ajax {
 		$this->gate();
 
 		$profile = isset( $_POST['profile'] ) ? sanitize_key( wp_unslash( $_POST['profile'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce and capability are verified in gate(), called as the first statement of every handler.
-		$scan_id = wpfchs()->core->scanner->start( $profile, 'manual' );
+		$mode    = isset( $_POST['mode'] ) ? sanitize_key( wp_unslash( $_POST['mode'] ) ) : 'full'; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce and capability are verified in gate(), called as the first statement of every handler.
+		$mode    = ( 'incremental' === $mode ? 'incremental' : 'full' );
+		$scan_id = wpfchs()->core->scanner->start( $profile, 'manual', $mode );
 
 		if ( is_wp_error( $scan_id ) ) {
 			wp_send_json_error( array( 'message' => $scan_id->get_error_message() ) );
