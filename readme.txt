@@ -1,4 +1,4 @@
-=== Catalog Health Scanner for WooCommerce ===
+=== WPFactory Catalog Health Scanner for WooCommerce ===
 Contributors: wpcodefactory
 Tags: woocommerce, products, audit, catalog, inventory
 Requires at least: 6.0
@@ -33,7 +33,7 @@ Catalog Health Scanner checks every product and variation against a library of 7
 
 The free version scans everything and hides nothing: all 70 checks, every profile, the full dashboard, the health score and trend, ignore/restore, CSV export, and fixing products one at a time — each fix previewed and undoable.
 
-[Catalog Health Scanner for WooCommerce Pro](https://wpfactory.com/item/catalog-health-scanner-for-woocommerce/) unlocks the automation on top:
+[WPFactory Catalog Health Scanner for WooCommerce Pro](https://wpfactory.com/item/wpfactory-catalog-health-scanner-for-woocommerce/) unlocks the automation on top:
 
 * **Bulk fixing** — apply a previewed fix to every affected product in one click, including "Fix all quick wins" from the dashboard.
 * **Scheduled scans** with an email digest that only arrives when there is something new, plus immediate critical alerts.

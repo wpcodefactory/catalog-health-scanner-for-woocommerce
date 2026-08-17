@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Admin Profiles Page Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Admin Profiles Page Class
  *
  * Built-in and custom scan profiles; custom profile editor with checks
  * grouped by category; default profile selection.
@@ -45,7 +45,7 @@ class WPFCHS_Admin_Profiles {
 		check_admin_referer( 'wpfchs-profiles' );
 
 		if ( ! current_user_can( wpfchs()->core->get_capability() ) ) {
-			wp_die( esc_html__( 'You are not allowed to do this.', 'catalog-health-scanner-for-woocommerce' ) );
+			wp_die( esc_html__( 'You are not allowed to do this.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		}
 
 		$action   = sanitize_key( wp_unslash( $_POST['wpfchs_profiles_action'] ) );
@@ -79,7 +79,7 @@ class WPFCHS_Admin_Profiles {
 					'custom_' . sanitize_key( $source_id . '_copy_' . time() ),
 					sprintf(
 						/* translators: %s: source profile name. */
-						__( 'Copy of %s', 'catalog-health-scanner-for-woocommerce' ),
+						__( 'Copy of %s', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 						$source['label']
 					),
 					$checks
@@ -107,7 +107,7 @@ class WPFCHS_Admin_Profiles {
 		$core->admin->render_shell_open( 'profiles' );
 
 		if ( filter_input( INPUT_GET, 'wpfchs_saved', FILTER_SANITIZE_SPECIAL_CHARS ) ) {
-			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Profiles saved.', 'catalog-health-scanner-for-woocommerce' ) . '</p></div>';
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Profiles saved.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</p></div>';
 		}
 
 		// Profile list + default selection.
@@ -116,15 +116,15 @@ class WPFCHS_Admin_Profiles {
 		echo '<input type="hidden" name="wpfchs_profiles_action" value="save_default" />';
 
 		echo '<div class="wpfchs-card wpfchs-panel">';
-		echo '<div class="wpfchs-panel-head"><h2>' . esc_html__( 'Profiles', 'catalog-health-scanner-for-woocommerce' ) . '</h2></div>';
+		echo '<div class="wpfchs-panel-head"><h2>' . esc_html__( 'Profiles', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</h2></div>';
 
 		echo '<table class="widefat striped wpfchs-table">';
 		echo '<thead><tr>';
-		echo '<th>' . esc_html__( 'Default', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th>' . esc_html__( 'Profile', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th>' . esc_html__( 'Description', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th>' . esc_html__( 'Checks', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th>' . esc_html__( 'Actions', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th>' . esc_html__( 'Default', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th>' . esc_html__( 'Profile', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th>' . esc_html__( 'Description', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th>' . esc_html__( 'Checks', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th>' . esc_html__( 'Actions', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
 		echo '</tr></thead><tbody>';
 
 		$total_checks = count( $core->checks->get_all() );
@@ -133,23 +133,23 @@ class WPFCHS_Admin_Profiles {
 			$check_count = ( null === $profile['checks'] ? $total_checks : count( $profile['checks'] ) );
 			echo '<tr>';
 			echo '<td><input type="radio" name="wpfchs_default_profile" value="' . esc_attr( $profile_id ) . '"' . checked( $profile_id, $default, false ) . ' /></td>';
-			echo '<td><strong>' . esc_html( $profile['label'] ) . '</strong>' . ( $profile['custom'] ? ' <span class="wpfchs-muted">' . esc_html__( '(custom)', 'catalog-health-scanner-for-woocommerce' ) . '</span>' : '' ) . '</td>';
+			echo '<td><strong>' . esc_html( $profile['label'] ) . '</strong>' . ( $profile['custom'] ? ' <span class="wpfchs-muted">' . esc_html__( '(custom)', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</span>' : '' ) . '</td>';
 			echo '<td>' . esc_html( $profile['description'] ) . '</td>';
 			echo '<td>' . esc_html( number_format_i18n( $check_count ) ) . '</td>';
 			echo '<td class="wpfchs-profile-actions" data-profile="' . esc_attr( $profile_id ) . '">';
 			if ( $profile['custom'] ) {
-				echo '<a href="' . esc_url( admin_url( 'admin.php?page=wpfchs-profiles&edit=' . rawurlencode( $profile_id ) . '#wpfchs-profile-editor' ) ) . '">' . esc_html__( 'Edit', 'catalog-health-scanner-for-woocommerce' ) . '</a> | ';
+				echo '<a href="' . esc_url( admin_url( 'admin.php?page=wpfchs-profiles&edit=' . rawurlencode( $profile_id ) . '#wpfchs-profile-editor' ) ) . '">' . esc_html__( 'Edit', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</a> | ';
 			}
-			echo '<button type="button" class="button-link wpfchs-profile-duplicate">' . esc_html__( 'Duplicate', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+			echo '<button type="button" class="button-link wpfchs-profile-duplicate">' . esc_html__( 'Duplicate', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 			if ( $profile['custom'] ) {
-				echo ' | <button type="button" class="button-link wpfchs-profile-delete">' . esc_html__( 'Delete', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+				echo ' | <button type="button" class="button-link wpfchs-profile-delete">' . esc_html__( 'Delete', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 			}
 			echo '</td>';
 			echo '</tr>';
 		}
 
 		echo '</tbody></table>';
-		echo '<p class="wpfchs-panel-foot"><button type="submit" class="button button-primary">' . esc_html__( 'Save default profile', 'catalog-health-scanner-for-woocommerce' ) . '</button></p>';
+		echo '<p class="wpfchs-panel-foot"><button type="submit" class="button button-primary">' . esc_html__( 'Save default profile', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button></p>';
 		echo '</div>';
 		echo '</form>';
 
@@ -198,17 +198,17 @@ class WPFCHS_Admin_Profiles {
 		echo esc_html(
 			$editing ?
 			/* translators: %s: profile name. */
-			sprintf( __( 'Edit profile: %s', 'catalog-health-scanner-for-woocommerce' ), $editing['label'] ) :
-			__( 'New custom profile', 'catalog-health-scanner-for-woocommerce' )
+			sprintf( __( 'Edit profile: %s', 'wpfactory-catalog-health-scanner-for-woocommerce' ), $editing['label'] ) :
+			__( 'New custom profile', 'wpfactory-catalog-health-scanner-for-woocommerce' )
 		);
 		echo '</h2>';
 		if ( $editing ) {
-			echo '<a href="' . esc_url( admin_url( 'admin.php?page=wpfchs-profiles' ) ) . '">' . esc_html__( 'Cancel editing', 'catalog-health-scanner-for-woocommerce' ) . '</a>';
+			echo '<a href="' . esc_url( admin_url( 'admin.php?page=wpfchs-profiles' ) ) . '">' . esc_html__( 'Cancel editing', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</a>';
 		}
 		echo '</div>';
 
 		echo '<p class="wpfchs-panel-row">';
-		echo '<label for="wpfchs-profile-label">' . esc_html__( 'Profile name', 'catalog-health-scanner-for-woocommerce' ) . '</label> ';
+		echo '<label for="wpfchs-profile-label">' . esc_html__( 'Profile name', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</label> ';
 		echo '<input type="text" id="wpfchs-profile-label" name="wpfchs_profile_label" class="regular-text" value="' . esc_attr( $editing ? $editing['label'] : '' ) . '" required />';
 		echo '</p>';
 
@@ -230,7 +230,7 @@ class WPFCHS_Admin_Profiles {
 				echo esc_html( $check->get_label() );
 				echo ' ' . wp_kses_post( $core->admin->severity_badge( $check->get_severity() ) );
 				if ( ! $applicable ) {
-					echo ' <span class="wpfchs-muted">' . esc_html__( '(excluded by applicability)', 'catalog-health-scanner-for-woocommerce' ) . '</span>';
+					echo ' <span class="wpfchs-muted">' . esc_html__( '(excluded by applicability)', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</span>';
 				}
 				echo '</label>';
 			}
@@ -240,7 +240,7 @@ class WPFCHS_Admin_Profiles {
 		}
 
 		echo '<p class="wpfchs-panel-foot"><button type="submit" class="button button-primary">';
-		echo esc_html( $editing ? __( 'Save changes', 'catalog-health-scanner-for-woocommerce' ) : __( 'Save custom profile', 'catalog-health-scanner-for-woocommerce' ) );
+		echo esc_html( $editing ? __( 'Save changes', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : __( 'Save custom profile', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		echo '</button></p>';
 		echo '</div>';
 		echo '</form>';

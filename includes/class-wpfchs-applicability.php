@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Applicability Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Applicability Class
  *
  * Decides which check groups apply to this store: auto-detect from store
  * configuration, overridable per group from settings or the setup wizard.
@@ -52,18 +52,18 @@ class WPFCHS_Applicability {
 	 */
 	function get_group_label( $group ) {
 		$labels = array(
-			'selling'        => __( 'Direct selling (prices & purchasability)', 'catalog-health-scanner-for-woocommerce' ),
-			'sku'            => __( 'SKUs', 'catalog-health-scanner-for-woocommerce' ),
-			'inventory'      => __( 'Stock levels', 'catalog-health-scanner-for-woocommerce' ),
-			'shipping'       => __( 'Shipping weight & dimensions', 'catalog-health-scanner-for-woocommerce' ),
-			'shipping_class' => __( 'Shipping classes', 'catalog-health-scanner-for-woocommerce' ),
-			'tax'            => __( 'Tax classes', 'catalog-health-scanner-for-woocommerce' ),
-			'tax_status'     => __( 'Tax status', 'catalog-health-scanner-for-woocommerce' ),
-			'downloads'      => __( 'Downloads', 'catalog-health-scanner-for-woocommerce' ),
-			'feed'           => __( 'Product feed readiness', 'catalog-health-scanner-for-woocommerce' ),
-			'cog'            => __( 'Cost of goods & margin', 'catalog-health-scanner-for-woocommerce' ),
-			'reviews'        => __( 'Product reviews', 'catalog-health-scanner-for-woocommerce' ),
-			'faq'            => __( 'FAQ / Q&A content', 'catalog-health-scanner-for-woocommerce' ),
+			'selling'        => __( 'Direct selling (prices & purchasability)', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'sku'            => __( 'SKUs', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'inventory'      => __( 'Stock levels', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'shipping'       => __( 'Shipping weight & dimensions', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'shipping_class' => __( 'Shipping classes', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'tax'            => __( 'Tax classes', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'tax_status'     => __( 'Tax status', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'downloads'      => __( 'Downloads', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'feed'           => __( 'Product feed readiness', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'cog'            => __( 'Cost of goods & margin', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'reviews'        => __( 'Product reviews', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'faq'            => __( 'FAQ / Q&A content', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		);
 		return ( $labels[ $group ] ?? $group );
 	}
@@ -120,7 +120,7 @@ class WPFCHS_Applicability {
 			$result = array(
 				'applicable' => true,
 				'scored'     => true,
-				'reason'     => __( 'Always applies to every store.', 'catalog-health-scanner-for-woocommerce' ),
+				'reason'     => __( 'Always applies to every store.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'source'     => 'always',
 			);
 			$this->resolved[ $group ] = $result;
@@ -141,21 +141,21 @@ class WPFCHS_Applicability {
 			$result = array(
 				'applicable' => true,
 				'scored'     => true,
-				'reason'     => __( 'Enabled manually in settings.', 'catalog-health-scanner-for-woocommerce' ),
+				'reason'     => __( 'Enabled manually in settings.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'source'     => 'manual',
 			);
 		} elseif ( 'report_only' === $state ) {
 			$result = array(
 				'applicable' => true,
 				'scored'     => false,
-				'reason'     => __( 'Checks run and are reported, but stay out of the health score.', 'catalog-health-scanner-for-woocommerce' ),
+				'reason'     => __( 'Checks run and are reported, but stay out of the health score.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'source'     => 'manual',
 			);
 		} else {
 			$result = array(
 				'applicable' => false,
 				'scored'     => false,
-				'reason'     => __( 'Disabled manually in settings.', 'catalog-health-scanner-for-woocommerce' ),
+				'reason'     => __( 'Disabled manually in settings.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'source'     => 'manual',
 			);
 		}
@@ -206,10 +206,10 @@ class WPFCHS_Applicability {
 					$applicable ?
 					sprintf(
 						/* translators: %s: number of products carrying a SKU. */
-						_n( '%s product in this catalog carries a SKU, so SKU checks apply.', '%s products in this catalog carry a SKU, so SKU checks apply.', $sku_count, 'catalog-health-scanner-for-woocommerce' ),
+						_n( '%s product in this catalog carries a SKU, so SKU checks apply.', '%s products in this catalog carry a SKU, so SKU checks apply.', $sku_count, 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 						number_format_i18n( $sku_count )
 					) :
-					__( 'No product in this catalog carries a SKU, so this store does not appear to use them.', 'catalog-health-scanner-for-woocommerce' )
+					__( 'No product in this catalog carries a SKU, so this store does not appear to use them.', 'wpfactory-catalog-health-scanner-for-woocommerce' )
 				);
 				break;
 
@@ -217,8 +217,8 @@ class WPFCHS_Applicability {
 				$applicable = ( 'yes' === get_option( 'woocommerce_manage_stock', 'yes' ) );
 				$reason     = (
 					$applicable ?
-					__( 'Stock management is enabled store-wide.', 'catalog-health-scanner-for-woocommerce' ) :
-					__( 'Stock management is disabled store-wide (WooCommerce › Settings › Products › Inventory).', 'catalog-health-scanner-for-woocommerce' )
+					__( 'Stock management is enabled store-wide.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) :
+					__( 'Stock management is disabled store-wide (WooCommerce › Settings › Products › Inventory).', 'wpfactory-catalog-health-scanner-for-woocommerce' )
 				);
 				break;
 
@@ -229,15 +229,15 @@ class WPFCHS_Applicability {
 					$applicable ?
 					sprintf(
 						/* translators: %s: shipping method title. */
-						__( 'Your store uses %s, which can price by weight or dimensions.', 'catalog-health-scanner-for-woocommerce' ),
+						__( 'Your store uses %s, which can price by weight or dimensions.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 						$this->list_method_titles( $methods, true )
 					) :
 					(
 						empty( $methods ) ?
-						__( 'No shipping method is enabled in any zone, so nothing prices by weight.', 'catalog-health-scanner-for-woocommerce' ) :
+						__( 'No shipping method is enabled in any zone, so nothing prices by weight.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) :
 						sprintf(
 							/* translators: %s: shipping method titles. */
-							_n( 'Your only shipping method is %s, which does not price by weight or dimensions.', 'Your shipping methods are %s, none of which price by weight or dimensions.', count( $methods ), 'catalog-health-scanner-for-woocommerce' ),
+							_n( 'Your only shipping method is %s, which does not price by weight or dimensions.', 'Your shipping methods are %s, none of which price by weight or dimensions.', count( $methods ), 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 							$this->list_method_titles( $methods )
 						)
 					)
@@ -263,18 +263,18 @@ class WPFCHS_Applicability {
 				if ( $applicable ) {
 					$reason = sprintf(
 						/* translators: %1$s: number of shipping classes, %2$s: shipping method title. */
-						_n( '%1$s shipping class is defined and %2$s charges by class.', '%1$s shipping classes are defined and %2$s charges by class.', $class_count, 'catalog-health-scanner-for-woocommerce' ),
+						_n( '%1$s shipping class is defined and %2$s charges by class.', '%1$s shipping classes are defined and %2$s charges by class.', $class_count, 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 						number_format_i18n( $class_count ),
 						$class_rate
 					);
 				} elseif ( 0 === $class_count ) {
-					$reason = __( 'No shipping class is defined in this store.', 'catalog-health-scanner-for-woocommerce' );
+					$reason = __( 'No shipping class is defined in this store.', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				} elseif ( empty( $methods ) ) {
-					$reason = __( 'No shipping method is enabled in any zone, so a shipping class cannot affect any rate.', 'catalog-health-scanner-for-woocommerce' );
+					$reason = __( 'No shipping method is enabled in any zone, so a shipping class cannot affect any rate.', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				} else {
 					$reason = sprintf(
 						/* translators: %s: shipping method titles. */
-						__( 'Shipping classes exist, but no enabled rate (%s) charges by class.', 'catalog-health-scanner-for-woocommerce' ),
+						__( 'Shipping classes exist, but no enabled rate (%s) charges by class.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 						$this->list_method_titles( $methods )
 					);
 				}
@@ -288,13 +288,13 @@ class WPFCHS_Applicability {
 					$applicable ?
 					sprintf(
 						/* translators: %s: comma-separated additional tax class names. */
-						__( 'Tax is enabled and this store defines additional tax classes (%s).', 'catalog-health-scanner-for-woocommerce' ),
+						__( 'Tax is enabled and this store defines additional tax classes (%s).', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 						implode( ', ', array_slice( $classes, 0, 4 ) )
 					) :
 					(
 						! wc_tax_enabled() ?
-						__( 'Tax is disabled store-wide (WooCommerce › Settings › General).', 'catalog-health-scanner-for-woocommerce' ) :
-						__( 'Only the standard tax class exists in this store.', 'catalog-health-scanner-for-woocommerce' )
+						__( 'Tax is disabled store-wide (WooCommerce › Settings › General).', 'wpfactory-catalog-health-scanner-for-woocommerce' ) :
+						__( 'Only the standard tax class exists in this store.', 'wpfactory-catalog-health-scanner-for-woocommerce' )
 					)
 				);
 				break;
@@ -305,8 +305,8 @@ class WPFCHS_Applicability {
 				$applicable = wc_tax_enabled();
 				$reason     = (
 					$applicable ?
-					__( 'Tax is enabled store-wide, so a product set to "none" collects no tax.', 'catalog-health-scanner-for-woocommerce' ) :
-					__( 'Tax is disabled store-wide (WooCommerce › Settings › General).', 'catalog-health-scanner-for-woocommerce' )
+					__( 'Tax is enabled store-wide, so a product set to "none" collects no tax.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) :
+					__( 'Tax is disabled store-wide (WooCommerce › Settings › General).', 'wpfactory-catalog-health-scanner-for-woocommerce' )
 				);
 				break;
 
@@ -314,8 +314,8 @@ class WPFCHS_Applicability {
 				$applicable = $this->any_product_meta_equals( '_downloadable', 'yes' );
 				$reason     = (
 					$applicable ?
-					__( 'Downloadable products exist in the catalog.', 'catalog-health-scanner-for-woocommerce' ) :
-					__( 'No downloadable products found.', 'catalog-health-scanner-for-woocommerce' )
+					__( 'Downloadable products exist in the catalog.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) :
+					__( 'No downloadable products found.', 'wpfactory-catalog-health-scanner-for-woocommerce' )
 				);
 				break;
 
@@ -325,11 +325,11 @@ class WPFCHS_Applicability {
 				$applicable  = ( $feed_plugin || $feed_fields );
 				$reason      = (
 					$feed_plugin ?
-					__( 'A product feed plugin is active on this site.', 'catalog-health-scanner-for-woocommerce' ) :
+					__( 'A product feed plugin is active on this site.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) :
 					(
 						$feed_fields ?
-						__( 'Products in this catalog already carry feed fields such as GTIN or brand.', 'catalog-health-scanner-for-woocommerce' ) :
-						__( 'No feed plugin is active and no product carries feed fields.', 'catalog-health-scanner-for-woocommerce' )
+						__( 'Products in this catalog already carry feed fields such as GTIN or brand.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) :
+						__( 'No feed plugin is active and no product carries feed fields.', 'wpfactory-catalog-health-scanner-for-woocommerce' )
 					)
 				);
 				break;
@@ -338,8 +338,8 @@ class WPFCHS_Applicability {
 				$applicable = $this->any_product_meta_populated( array( '_alg_wc_cog_cost', '_wc_cog_cost' ) );
 				$reason     = (
 					$applicable ?
-					__( 'Cost of goods data is present on products.', 'catalog-health-scanner-for-woocommerce' ) :
-					__( 'No cost of goods data found on any product.', 'catalog-health-scanner-for-woocommerce' )
+					__( 'Cost of goods data is present on products.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) :
+					__( 'No cost of goods data found on any product.', 'wpfactory-catalog-health-scanner-for-woocommerce' )
 				);
 				break;
 
@@ -347,14 +347,14 @@ class WPFCHS_Applicability {
 				$applicable = ( 'yes' === get_option( 'woocommerce_enable_reviews', 'yes' ) );
 				$reason     = (
 					$applicable ?
-					__( 'Product reviews are enabled store-wide.', 'catalog-health-scanner-for-woocommerce' ) :
-					__( 'Product reviews are disabled store-wide.', 'catalog-health-scanner-for-woocommerce' )
+					__( 'Product reviews are enabled store-wide.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) :
+					__( 'Product reviews are disabled store-wide.', 'wpfactory-catalog-health-scanner-for-woocommerce' )
 				);
 				break;
 
 			case 'faq':
 				$applicable = true;
-				$reason     = __( 'Question-and-answer content helps AI assistants answer buyer questions from your product pages.', 'catalog-health-scanner-for-woocommerce' );
+				$reason     = __( 'Question-and-answer content helps AI assistants answer buyer questions from your product pages.', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				break;
 
 			default:
@@ -443,7 +443,7 @@ class WPFCHS_Applicability {
 						'result' => 'catalog',
 						'reason' => sprintf(
 							/* translators: %s: plugin name. */
-							__( '%s is active, which turns this site into a catalog rather than a checkout.', 'catalog-health-scanner-for-woocommerce' ),
+							__( '%s is active, which turns this site into a catalog rather than a checkout.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 							$name
 						),
 					);
@@ -458,7 +458,7 @@ class WPFCHS_Applicability {
 		if ( $total < 10 ) {
 			return array(
 				'result' => 'selling',
-				'reason' => __( 'This catalog is too small to infer catalog mode from, so price checks stay on.', 'catalog-health-scanner-for-woocommerce' ),
+				'reason' => __( 'This catalog is too small to infer catalog mode from, so price checks stay on.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			);
 		}
 		$priced = (int) $wpdb->get_var(
@@ -476,7 +476,7 @@ class WPFCHS_Applicability {
 				'result' => 'selling',
 				'reason' => sprintf(
 					/* translators: %1$s: percentage, %2$s: priced count, %3$s: total products. */
-					__( '%1$s%% of published products carry a price (%2$s of %3$s), so customers buy directly here.', 'catalog-health-scanner-for-woocommerce' ),
+					__( '%1$s%% of published products carry a price (%2$s of %3$s), so customers buy directly here.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					number_format_i18n( $percent ),
 					number_format_i18n( $priced ),
 					number_format_i18n( $total )
@@ -488,7 +488,7 @@ class WPFCHS_Applicability {
 			'result' => 'catalog',
 			'reason' => sprintf(
 				/* translators: %1$s: priced count, %2$s: total products, %3$s: percentage. */
-				__( 'Only %1$s of %2$s published products carry a price (%3$s%%), which reads as a catalog rather than a checkout.', 'catalog-health-scanner-for-woocommerce' ),
+				__( 'Only %1$s of %2$s published products carry a price (%3$s%%), which reads as a catalog rather than a checkout.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				number_format_i18n( $priced ),
 				number_format_i18n( $total ),
 				number_format_i18n( $percent )
@@ -592,7 +592,7 @@ class WPFCHS_Applicability {
 		}
 
 		if ( empty( $titles ) ) {
-			return __( 'a custom shipping method', 'catalog-health-scanner-for-woocommerce' );
+			return __( 'a custom shipping method', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 		}
 
 		return implode( ', ', array_slice( $titles, 0, 3 ) );

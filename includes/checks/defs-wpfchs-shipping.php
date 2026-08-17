@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Check Definitions - Shipping
+ * WPFactory Catalog Health Scanner for WooCommerce - Check Definitions - Shipping
  *
  * Auto-detected: off for stores where shipping cost does not depend on
  * product dimensions.
@@ -24,8 +24,8 @@ return array(
 
 	array(
 		'id'          => 'weight_missing',
-		'label'       => __( 'Physical product with no weight', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Shipping is being calculated incorrectly for this product, so you overcharge or undercharge on every order.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Physical product with no weight', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Shipping is being calculated incorrectly for this product, so you overcharge or undercharge on every order.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'fix'         => 'set_weight',
 		'fix_type'    => 'bulk',
@@ -42,14 +42,14 @@ return array(
 					}
 				}
 			}
-			return __( 'No weight', 'catalog-health-scanner-for-woocommerce' );
+			return __( 'No weight', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 		},
 	),
 
 	array(
 		'id'          => 'dimensions_missing',
-		'label'       => __( 'Physical product with no dimensions', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Carriers that price by size cannot quote this product correctly.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Physical product with no dimensions', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Carriers that price by size cannot quote this product correctly.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'applies'     => $wpfchs_is_physical,
 		'check'       => function ( $product ) {
@@ -64,14 +64,14 @@ return array(
 					}
 				}
 			}
-			return __( 'No dimensions', 'catalog-health-scanner-for-woocommerce' );
+			return __( 'No dimensions', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 		},
 	),
 
 	array(
 		'id'          => 'virtual_with_dimensions',
-		'label'       => __( 'Virtual product carrying weight or dimensions', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Virtual products are never shipped; stored weights and sizes here only confuse exports and feeds.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Virtual product carrying weight or dimensions', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Virtual products are never shipped; stored weights and sizes here only confuse exports and feeds.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'fix'         => 'clear_virtual_dimensions',
 		'fix_type'    => 'auto',
@@ -92,22 +92,22 @@ return array(
 		// customer to pay shipping on a file. That is wrong in every store,
 		// whatever its shipping methods do with weight.
 		'group'       => '',
-		'label'       => __( 'Downloadable product not marked virtual, so shipping is charged', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Customers pay shipping on a file. That is a refund request waiting to happen.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Downloadable product not marked virtual, so shipping is charged', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Customers pay shipping on a file. That is a refund request waiting to happen.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'applies'     => function ( $product ) {
 			return $product->is_downloadable();
 		},
 		'check'       => function ( $product ) {
-			return ( ! $product->is_virtual() && $product->needs_shipping() ? __( 'Downloadable but shippable', 'catalog-health-scanner-for-woocommerce' ) : false );
+			return ( ! $product->is_virtual() && $product->needs_shipping() ? __( 'Downloadable but shippable', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : false );
 		},
 	),
 
 	array(
 		'id'          => 'shipping_class_missing',
 		'group'       => 'shipping_class',
-		'label'       => __( 'Missing shipping class where classes are in use', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'This product falls through your class-based shipping rules and ships at the wrong rate.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Missing shipping class where classes are in use', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'This product falls through your class-based shipping rules and ships at the wrong rate.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'fix'         => 'assign_shipping_class',
 		'fix_type'    => 'bulk',
@@ -130,14 +130,14 @@ return array(
 			return $store_has_classes;
 		},
 		'check'       => function ( $product ) {
-			return ( 0 === $product->get_shipping_class_id( 'edit' ) ? __( 'No shipping class', 'catalog-health-scanner-for-woocommerce' ) : false );
+			return ( 0 === $product->get_shipping_class_id( 'edit' ) ? __( 'No shipping class', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : false );
 		},
 	),
 
 	array(
 		'id'          => 'weight_implausible',
-		'label'       => __( 'Weight or dimension values outside plausible range', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'A zero, negative, or absurdly large weight is almost always a data-entry or import error, and it corrupts every shipping quote.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Weight or dimension values outside plausible range', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'A zero, negative, or absurdly large weight is almost always a data-entry or import error, and it corrupts every shipping quote.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'applies'     => $wpfchs_is_physical,
 		'check'       => function ( $product ) {
@@ -156,8 +156,8 @@ return array(
 	array(
 		'id'          => 'shipping_class_deleted',
 		'group'       => 'shipping_class',
-		'label'       => __( 'Product referencing a deleted term', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'This product still points at a shipping class, category, or tag whose term was deleted. Class-based rates and filters silently fall back, and the stale row confuses exports.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Product referencing a deleted term', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'This product still points at a shipping class, category, or tag whose term was deleted. Class-based rates and filters silently fall back, and the stale row confuses exports.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'fix'         => 'unassign_deleted_shipping_class',
 		'fix_type'    => 'auto',
@@ -189,7 +189,7 @@ return array(
 					'product_id' => (int) $row->object_id,
 					'value'      => sprintf(
 						/* translators: %d: number of orphaned term references. */
-						_n( '%d deleted term still referenced', '%d deleted terms still referenced', (int) $row->orphans, 'catalog-health-scanner-for-woocommerce' ),
+						_n( '%d deleted term still referenced', '%d deleted terms still referenced', (int) $row->orphans, 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 						(int) $row->orphans
 					),
 				);

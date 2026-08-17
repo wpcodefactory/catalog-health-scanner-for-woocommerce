@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Scanner Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Scanner Class
  *
  * Batch scan engine. A scan is started once, then advanced in short,
  * resumable steps (AJAX polling for manual scans, cron for scheduled
@@ -137,18 +137,18 @@ class WPFCHS_Scanner {
 			if ( $this->is_stalled( $running ) ) {
 				$this->set_status( (int) $running->id, 'cancelled' );
 			} else {
-				return new WP_Error( 'wpfchs_scan_running', __( 'A scan is already running.', 'catalog-health-scanner-for-woocommerce' ) );
+				return new WP_Error( 'wpfchs_scan_running', __( 'A scan is already running.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 			}
 		}
 
 		$profile = wpfchs()->core->profiles->get( $profile_id );
 		if ( null === $profile ) {
-			return new WP_Error( 'wpfchs_bad_profile', __( 'Unknown scan profile.', 'catalog-health-scanner-for-woocommerce' ) );
+			return new WP_Error( 'wpfchs_bad_profile', __( 'Unknown scan profile.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		}
 
 		$runnable = wpfchs()->core->checks->get_runnable( $profile['checks'] );
 		if ( empty( $runnable ) ) {
-			return new WP_Error( 'wpfchs_no_checks', __( 'No applicable checks in this profile.', 'catalog-health-scanner-for-woocommerce' ) );
+			return new WP_Error( 'wpfchs_no_checks', __( 'No applicable checks in this profile.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		}
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Product count for progress display; one query per scan start.
@@ -248,7 +248,7 @@ class WPFCHS_Scanner {
 
 		$scan = $this->get_scan( $scan_id );
 		if ( ! $scan ) {
-			return new WP_Error( 'wpfchs_no_scan', __( 'Scan not found.', 'catalog-health-scanner-for-woocommerce' ) );
+			return new WP_Error( 'wpfchs_no_scan', __( 'Scan not found.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		}
 		if ( 'running' !== $scan->status ) {
 			return $this->progress( $scan );

@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Scan Profiles Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Scan Profiles Class
  *
  * @version 1.0.0
  * @since   1.0.0
@@ -40,13 +40,13 @@ class WPFCHS_Profiles {
 
 		$profiles = array(
 			'revenue_blockers' => array(
-				'label'       => __( 'Revenue Blockers', 'catalog-health-scanner-for-woocommerce' ),
-				'description' => __( 'Critical severity only, across all categories. The recommended routine scan.', 'catalog-health-scanner-for-woocommerce' ),
+				'label'       => __( 'Revenue Blockers', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'description' => __( 'Critical severity only, across all categories. The recommended routine scan.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'checks'      => $critical_ids,
 			),
 			'pre_launch' => array(
-				'label'       => __( 'Pre-launch', 'catalog-health-scanner-for-woocommerce' ),
-				'description' => __( 'Purchasability, media, structure, and content, for a store about to go live.', 'catalog-health-scanner-for-woocommerce' ),
+				'label'       => __( 'Pre-launch', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'description' => __( 'Purchasability, media, structure, and content, for a store about to go live.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'checks'      => array_merge(
 					$categories['purchasability'] ?? array(),
 					$categories['media'] ?? array(),
@@ -55,8 +55,8 @@ class WPFCHS_Profiles {
 				),
 			),
 			'post_migration' => array(
-				'label'       => __( 'Post-migration', 'catalog-health-scanner-for-woocommerce' ),
-				'description' => __( 'Orphans, broken references, duplicates, encoding errors, and missing images after an import.', 'catalog-health-scanner-for-woocommerce' ),
+				'label'       => __( 'Post-migration', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'description' => __( 'Orphans, broken references, duplicates, encoding errors, and missing images after an import.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'checks'      => array(
 					'orphaned_variation',
 					'linked_products_deleted',
@@ -74,24 +74,24 @@ class WPFCHS_Profiles {
 				),
 			),
 			'feed_readiness' => array(
-				'label'       => __( 'Feed Readiness', 'catalog-health-scanner-for-woocommerce' ),
-				'description' => __( 'Feed checks plus media resolution and content limits, for stores running shopping campaigns.', 'catalog-health-scanner-for-woocommerce' ),
+				'label'       => __( 'Feed Readiness', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'description' => __( 'Feed checks plus media resolution and content limits, for stores running shopping campaigns.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'checks'      => array_merge(
 					$categories['feed'] ?? array(),
 					array( 'image_missing', 'image_low_res', 'title_duplicate' )
 				),
 			),
 			'inventory_audit' => array(
-				'label'       => __( 'Inventory Audit', 'catalog-health-scanner-for-woocommerce' ),
-				'description' => __( 'Inventory plus stock-related purchasability checks, for reconciling physical stock.', 'catalog-health-scanner-for-woocommerce' ),
+				'label'       => __( 'Inventory Audit', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'description' => __( 'Inventory plus stock-related purchasability checks, for reconciling physical stock.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'checks'      => array_merge(
 					$categories['inventory'] ?? array(),
 					array( 'out_of_stock_stale' )
 				),
 			),
 			'full' => array(
-				'label'       => __( 'Full Scan', 'catalog-health-scanner-for-woocommerce' ),
-				'description' => __( 'Every applicable check. The periodic deep audit.', 'catalog-health-scanner-for-woocommerce' ),
+				'label'       => __( 'Full Scan', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'description' => __( 'Every applicable check. The periodic deep audit.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'checks'      => null,
 			),
 		);

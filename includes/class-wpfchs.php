@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Main Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Main Class
  *
  * @version 1.0.0
  * @since   1.0.0
@@ -88,7 +88,7 @@ final class WPFCHS {
 		add_action( 'before_woocommerce_init', array( $this, 'wc_declare_compatibility' ) );
 
 		// Pro
-		if ( 'catalog-health-scanner-for-woocommerce-pro.php' === basename( WPFCHS_FILE ) ) {
+		if ( 'wpfactory-catalog-health-scanner-for-woocommerce-pro.php' === basename( WPFCHS_FILE ) ) {
 			$this->pro = require_once plugin_dir_path( __FILE__ ) . 'pro/class-wpfchs-pro.php';
 		}
 
@@ -183,13 +183,13 @@ final class WPFCHS {
 		$custom_links[] = '<a' .
 			' href="' . admin_url( 'admin.php?page=wpfchs' ) . '"' .
 		'>' .
-			__( 'Dashboard', 'catalog-health-scanner-for-woocommerce' ) .
+			__( 'Dashboard', 'wpfactory-catalog-health-scanner-for-woocommerce' ) .
 		'</a>';
 
 		$custom_links[] = '<a' .
 			' href="' . admin_url( 'admin.php?page=wpfchs-settings' ) . '"' .
 		'>' .
-			__( 'Settings', 'catalog-health-scanner-for-woocommerce' ) .
+			__( 'Settings', 'wpfactory-catalog-health-scanner-for-woocommerce' ) .
 		'</a>';
 
 		return array_merge( $custom_links, $links );
@@ -246,26 +246,6 @@ final class WPFCHS {
 	 */
 	function has_wpfactory_admin_menu() {
 		return class_exists( '\WPFactory\WPFactory_Admin_Menu\WPFactory_Admin_Menu' );
-	}
-
-	/**
-	 * Whether the Pro build is the one running.
-	 *
-	 * This is the single source of truth for every locked feature. It is a
-	 * build-level question, not a licensing one: the Pro zip carries
-	 * `includes/pro/`, the free zip does not, and `$this->pro` is only ever set
-	 * when the Pro main file loaded it.
-	 *
-	 * Deliberately filterable — the QA suite exercises both code paths in one
-	 * process, and site owners with a private build have a supported way in.
-	 *
-	 * @version 1.0.0
-	 * @since   1.0.0
-	 *
-	 * @return  bool
-	 */
-	function is_pro() {
-		return (bool) apply_filters( 'wpfchs_is_pro', is_object( $this->pro ) );
 	}
 
 	/**

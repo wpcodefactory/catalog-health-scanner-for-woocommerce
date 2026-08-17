@@ -1,5 +1,5 @@
 /**
- * Catalog Health Scanner for WooCommerce - Admin JS
+ * WPFactory Catalog Health Scanner for WooCommerce - Admin JS
  *
  * @version 1.0.0
  * @since   1.0.0
@@ -395,28 +395,9 @@
 		$apply.trigger( 'focus' );
 	}
 
-	/* Pro upsell
-	--------------------------------------------------------------- */
-
-	// The modal whose primary action is the upgrade link. Used when a locked
-	// button is clicked, and as the apply-step wall after a free preview.
-	// Everything it fronts is enforced server-side; this only makes the wall
-	// polite.
-	function upsellModal( feature, bodyHtml ) {
-		var title = i18n.pro_feature.replace( '%s', feature || i18n.pro_generic );
-		openModal( title, bodyHtml, i18n.unlock, function () {
-			window.open( wpfchs_admin.upgrade_url, '_blank' );
-			closeModal();
-		} );
-	}
-
 	function textParagraph( text ) {
 		return $( '<p></p>' ).text( text ).prop( 'outerHTML' );
 	}
-
-	$( document ).on( 'click', '.wpfchs-locked', function () {
-		upsellModal( $( this ).data( 'feature' ), textParagraph( i18n.pro_body ) );
-	} );
 
 	function collectFixRequest( $trigger ) {
 		var checkId = $trigger.data( 'check' );
@@ -464,16 +445,6 @@
 				return;
 			}
 			var data = response.data;
-			// Taste-then-buy: the preview is always shown in full, and when
-			// applying it needs Pro, the apply button becomes the upgrade
-			// link. The server refuses the write regardless.
-			if ( data.pro_required ) {
-				openModal( data.title, data.html + textParagraph( i18n.pro_free_hint ), i18n.unlock, function () {
-					window.open( data.upgrade || wpfchs_admin.upgrade_url, '_blank' );
-					closeModal();
-				} );
-				return;
-			}
 			var applyLabel = i18n.apply_to.replace( '%d', data.total );
 			openModal( data.title, data.html, applyLabel, function ( $apply ) {
 				post( 'wpfchs_fix_apply', request ).done( function ( applyResponse ) {
@@ -486,7 +457,7 @@
 							window.location.reload();
 						}, 6000 );
 					} else {
-						if ( applyResponse.data && applyResponse.data.upgrade ) { upsellModal( applyResponse.data.feature, textParagraph( applyResponse.data.message ) ); } else { notice( applyResponse.data.message || i18n.error, 'error' ); }
+						notice( applyResponse.data.message || i18n.error, 'error' );
 					}
 				} ).fail( function () {
 					$apply.prop( 'disabled', false );
@@ -502,13 +473,6 @@
 				notice( response.data.message || i18n.error, 'error' );
 				return;
 			}
-			if ( response.data.pro_required ) {
-				openModal( response.data.title, response.data.html + textParagraph( i18n.pro_free_hint ), i18n.unlock, function () {
-					window.open( response.data.upgrade || wpfchs_admin.upgrade_url, '_blank' );
-					closeModal();
-				} );
-				return;
-			}
 			openModal( response.data.title, response.data.html, i18n.apply_fixes, function ( $apply ) {
 				post( 'wpfchs_fix_all_quick_wins', {} ).done( function ( applyResponse ) {
 					closeModal();
@@ -518,7 +482,7 @@
 							window.location.reload();
 						}, 1500 );
 					} else {
-						if ( applyResponse.data && applyResponse.data.upgrade ) { upsellModal( applyResponse.data.feature, textParagraph( applyResponse.data.message ) ); } else { notice( applyResponse.data.message || i18n.error, 'error' ); }
+						notice( applyResponse.data.message || i18n.error, 'error' );
 					}
 				} ).fail( function () {
 					$apply.prop( 'disabled', false );

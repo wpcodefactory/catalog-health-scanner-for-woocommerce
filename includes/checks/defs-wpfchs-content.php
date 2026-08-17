@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Check Definitions - Content
+ * WPFactory Catalog Health Scanner for WooCommerce - Check Definitions - Content
  *
  * Always applicable.
  *
@@ -16,18 +16,18 @@ return array(
 
 	array(
 		'id'          => 'short_description_missing',
-		'label'       => __( 'Missing short description', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'The space next to the price and buy button is empty on this product page.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Missing short description', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'The space next to the price and buy button is empty on this product page.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'check'       => function ( $product ) {
-			return ( '' === trim( wp_strip_all_tags( $product->get_short_description( 'edit' ) ) ) ? __( 'Empty', 'catalog-health-scanner-for-woocommerce' ) : false );
+			return ( '' === trim( wp_strip_all_tags( $product->get_short_description( 'edit' ) ) ) ? __( 'Empty', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : false );
 		},
 	),
 
 	array(
 		'id'          => 'description_thin',
-		'label'       => __( 'Missing or very thin main description', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Thin product pages rank poorly and give customers nothing to base a purchase on.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Missing or very thin main description', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Thin product pages rank poorly and give customers nothing to base a purchase on.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'check'       => function ( $product ) {
 			$text = trim( wp_strip_all_tags( $product->get_description( 'edit' ) ) );
@@ -35,7 +35,7 @@ return array(
 			if ( mb_strlen( $text ) < $min ) {
 				return sprintf(
 					/* translators: %1$d: current description length, %2$d: minimum length. */
-					__( '%1$d of %2$d characters', 'catalog-health-scanner-for-woocommerce' ),
+					__( '%1$d of %2$d characters', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					mb_strlen( $text ),
 					$min
 				);
@@ -46,8 +46,8 @@ return array(
 
 	array(
 		'id'          => 'title_duplicate',
-		'label'       => __( 'Duplicate product titles', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Identically named products compete with each other in search and confuse customers and staff.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Duplicate product titles', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Identically named products compete with each other in search and confuse customers and staff.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'pass'        => 'catalog',
 		'check'       => function () {
@@ -83,8 +83,8 @@ return array(
 
 	array(
 		'id'          => 'title_artifacts',
-		'label'       => __( 'Product title containing import artefacts or encoding errors', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Garbled characters in the title show on the product page, in search results, and in feeds.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Product title containing import artefacts or encoding errors', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Garbled characters in the title show on the product page, in search results, and in feeds.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'fix'         => 'clean_title_artifacts',
 		'fix_type'    => 'auto',
@@ -100,8 +100,8 @@ return array(
 
 	array(
 		'id'          => 'schema_markup_missing',
-		'label'       => __( 'Product pages emit no structured data (schema.org)', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Without Product structured data, your listings cannot earn Google rich results and are far less likely to be surfaced by AI shopping assistants. This is usually a store-wide theme or SEO setting.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Product pages emit no structured data (schema.org)', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Without Product structured data, your listings cannot earn Google rich results and are far less likely to be surfaced by AI shopping assistants. This is usually a store-wide theme or SEO setting.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		// One store-level cause blanket-flags every product. Reported and
 		// scored as ONE finding, or a single theme setting is 30% of the
@@ -115,14 +115,14 @@ return array(
 		'check'       => function ( $product ) {
 			// applies() already confirmed the store emits no schema; every
 			// scanned product is affected.
-			return ( 'publish' === $product->get_status() ? __( 'No Product schema on the page', 'catalog-health-scanner-for-woocommerce' ) : false );
+			return ( 'publish' === $product->get_status() ? __( 'No Product schema on the page', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : false );
 		},
 	),
 
 	array(
 		'id'          => 'content_placeholder',
-		'label'       => __( 'Placeholder or lorem-ipsum content', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'This product still has sample or template text. It reads as unfinished to shoppers and to AI shopping assistants.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Placeholder or lorem-ipsum content', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'This product still has sample or template text. It reads as unfinished to shoppers and to AI shopping assistants.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'check'       => function ( $product ) {
 			$text = strtolower( wp_strip_all_tags( $product->get_description( 'edit' ) . ' ' . $product->get_short_description( 'edit' ) ) );
@@ -143,7 +143,7 @@ return array(
 				if ( false !== strpos( $text, $needle ) ) {
 					return sprintf(
 						/* translators: %s: the placeholder phrase found. */
-						__( 'Contains "%s"', 'catalog-health-scanner-for-woocommerce' ),
+						__( 'Contains "%s"', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 						$needle
 					);
 				}
@@ -154,8 +154,8 @@ return array(
 
 	array(
 		'id'          => 'description_duplicate',
-		'label'       => __( 'Description duplicated across multiple products', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Identical descriptions compete with each other in search and give AI answer engines nothing to tell these products apart.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Description duplicated across multiple products', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Identical descriptions compete with each other in search and give AI answer engines nothing to tell these products apart.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'pass'        => 'catalog',
 		'check'       => function () {
@@ -187,7 +187,7 @@ return array(
 						'product_id' => $product_id,
 						'value'      => sprintf(
 							/* translators: %d: number of products sharing the description. */
-							__( 'Shared with %d other product(s)', 'catalog-health-scanner-for-woocommerce' ),
+							__( 'Shared with %d other product(s)', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 							count( $ids ) - 1
 						),
 					);
@@ -199,35 +199,35 @@ return array(
 
 	array(
 		'id'          => 'no_product_attributes',
-		'label'       => __( 'No attributes or specifications', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Without structured attributes (material, size, colour…), filtered navigation and AI shopping assistants have no facts to match this product against a query.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'No attributes or specifications', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Without structured attributes (material, size, colour…), filtered navigation and AI shopping assistants have no facts to match this product against a query.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'applies'     => function ( $product ) {
 			return $product->is_type( array( 'simple', 'variable', 'external' ) );
 		},
 		'check'       => function ( $product ) {
-			return ( empty( $product->get_attributes() ) ? __( 'No attributes set', 'catalog-health-scanner-for-woocommerce' ) : false );
+			return ( empty( $product->get_attributes() ) ? __( 'No attributes set', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : false );
 		},
 	),
 
 	array(
 		'id'          => 'reviews_missing',
-		'label'       => __( 'No reviews', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Products without reviews lack the star ratings that shoppers and AI assistants use as social proof, and miss the review rich-result in search.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'No reviews', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Products without reviews lack the star ratings that shoppers and AI assistants use as social proof, and miss the review rich-result in search.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'low',
 		'group'       => 'reviews',
 		'applies'     => function ( $product ) {
 			return ( 'yes' === get_option( 'woocommerce_enable_reviews', 'yes' ) && $product->get_reviews_allowed() );
 		},
 		'check'       => function ( $product ) {
-			return ( (int) $product->get_review_count() < 1 ? __( 'No reviews yet', 'catalog-health-scanner-for-woocommerce' ) : false );
+			return ( (int) $product->get_review_count() < 1 ? __( 'No reviews yet', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : false );
 		},
 	),
 
 	array(
 		'id'          => 'faq_missing',
-		'label'       => __( 'No FAQ / question-and-answer content', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'FAQ content is what AI answer engines quote directly. Products without it are far less likely to be surfaced in AI shopping answers.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'No FAQ / question-and-answer content', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'FAQ content is what AI answer engines quote directly. Products without it are far less likely to be surfaced in AI shopping answers.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'low',
 		'group'       => 'faq',
 		'applies'     => function () {
@@ -251,14 +251,14 @@ return array(
 			if ( preg_match( '/\b(FAQ|frequently asked|Q&A|Q:\s|question)/i', $text ) ) {
 				return false;
 			}
-			return __( 'No FAQ content', 'catalog-health-scanner-for-woocommerce' );
+			return __( 'No FAQ content', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 		},
 	),
 
 	array(
 		'id'          => 'broken_shortcodes',
-		'label'       => __( 'Description containing broken shortcodes or leftover markup', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Raw shortcode text from a removed plugin is printed to customers instead of content.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Description containing broken shortcodes or leftover markup', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Raw shortcode text from a removed plugin is printed to customers instead of content.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'check'       => function ( $product ) {
 			$text = $product->get_description( 'edit' ) . ' ' . $product->get_short_description( 'edit' );

@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - CSV Export Class
+ * WPFactory Catalog Health Scanner for WooCommerce - CSV Export Class
  *
  * Admin GET action link pattern: nonce in the URL, nonce + capability
  * verified in the handler, `wp_die()` on failure.
@@ -66,7 +66,7 @@ class WPFCHS_Export {
 			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'wpfchs_export' ) ||
 			! current_user_can( wpfchs()->core->get_capability() )
 		) {
-			wp_die( esc_html__( 'Link expired.', 'catalog-health-scanner-for-woocommerce' ) );
+			wp_die( esc_html__( 'Link expired.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		}
 
 		$args = array(
@@ -89,16 +89,16 @@ class WPFCHS_Export {
 		fputcsv(
 			$out,
 			array(
-				__( 'Product ID', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'Product', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'SKU', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'Category', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'Check', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'Severity', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'Status', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'Value', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'First seen', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'Edit link', 'catalog-health-scanner-for-woocommerce' ),
+				__( 'Product ID', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'Product', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'SKU', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'Category', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'Check', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'Severity', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'Status', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'Value', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'First seen', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'Edit link', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			)
 		);
 

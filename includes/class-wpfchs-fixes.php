@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Fixes Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Fixes Class
  *
  * Every bulk action here is previewable (exact before/after per product),
  * reversible (one-click undo for the whole batch within the undo window),
@@ -72,7 +72,7 @@ class WPFCHS_Fixes {
 
 		$check = wpfchs()->core->checks->get( $check_id );
 		if ( ! $check || ! $check->get_fixer() ) {
-			return new WP_Error( 'wpfchs_no_fixer', __( 'This check has no automatic fix.', 'catalog-health-scanner-for-woocommerce' ) );
+			return new WP_Error( 'wpfchs_no_fixer', __( 'This check has no automatic fix.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		}
 
 		$rows  = array();
@@ -110,7 +110,7 @@ class WPFCHS_Fixes {
 
 		$check = wpfchs()->core->checks->get( $check_id );
 		if ( ! $check || ! $check->get_fixer() ) {
-			return new WP_Error( 'wpfchs_no_fixer', __( 'This check has no automatic fix.', 'catalog-health-scanner-for-woocommerce' ) );
+			return new WP_Error( 'wpfchs_no_fixer', __( 'This check has no automatic fix.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		}
 
 		$fixer = $check->get_fixer();
@@ -131,7 +131,7 @@ class WPFCHS_Fixes {
 		}
 
 		if ( empty( $items ) ) {
-			return new WP_Error( 'wpfchs_nothing_fixed', __( 'Nothing needed fixing.', 'catalog-health-scanner-for-woocommerce' ) );
+			return new WP_Error( 'wpfchs_nothing_fixed', __( 'Nothing needed fixing.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		}
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Custom fix log table; no WP API exists.
@@ -163,124 +163,6 @@ class WPFCHS_Fixes {
 	}
 
 	/**
-	 * Builds a combined preview of every auto-fixable quick win: per-check
-	 * counts plus a sample of before/after rows. Nothing is written.
-	 *
-	 * @version 1.0.0
-	 * @since   1.0.0
-	 *
-	 * @param   int $sample_per_check Rows to include per check in the preview.
-	 * @return  array {total: int, checks: array, rows: array}
-	 */
-	function preview_all_quick_wins( $sample_per_check = 4 ) {
-
-		$open_counts = wpfchs()->core->issues->count_open_by_check();
-		$checks_out  = array();
-		$rows        = array();
-		$total       = 0;
-
-		foreach ( wpfchs()->core->checks->get_all() as $check_id => $check ) {
-
-			if ( 'auto' !== $check->get_fix_type() || ! $check->get_fixer() ) {
-				continue;
-			}
-			if ( empty( $open_counts[ $check_id ] ) ) {
-				continue;
-			}
-
-			$object_ids = $this->get_target_object_ids( $check_id );
-			$changes    = 0;
-			$samples    = array();
-
-			foreach ( $object_ids as $object_id ) {
-				$change = $this->compute_change( $check->get_fixer(), (int) $object_id );
-				if ( null === $change ) {
-					continue;
-				}
-				$changes++;
-				if ( count( $samples ) < $sample_per_check ) {
-					$samples[] = $change;
-				}
-			}
-
-			if ( $changes < 1 ) {
-				continue;
-			}
-
-			$total          += $changes;
-			$checks_out[]    = array(
-				'label' => $check->get_label(),
-				'count' => $changes,
-			);
-			foreach ( $samples as $sample ) {
-				$rows[] = array(
-					'check'  => $check->get_label(),
-					'title'  => $sample['title'],
-					'before' => $sample['before_label'],
-					'after'  => $sample['after_label'],
-				);
-			}
-		}
-
-		return array(
-			'total'  => $total,
-			'checks' => $checks_out,
-			'rows'   => $rows,
-		);
-
-	}
-
-	/**
-	 * Applies every auto-fixable check that currently has open issues, in one
-	 * pass. Each check is logged as its own batch, so each stays individually
-	 * undoable. Used by the "Fix all quick wins" button and by unattended
-	 * post-scan auto-remediation.
-	 *
-	 * @version 1.0.0
-	 * @since   1.0.0
-	 *
-	 * @param   array|null $only_check_ids Restrict to these checks (null = all auto-fixable).
-	 * @return  array {checks_fixed: int, products_fixed: int, log_ids: array, details: array}
-	 */
-	function fix_all_quick_wins( $only_check_ids = null ) {
-
-		$open_counts = wpfchs()->core->issues->count_open_by_check();
-		$log_ids     = array();
-		$details     = array();
-		$total       = 0;
-
-		foreach ( wpfchs()->core->checks->get_all() as $check_id => $check ) {
-
-			if ( 'auto' !== $check->get_fix_type() || ! $check->get_fixer() ) {
-				continue;
-			}
-			if ( empty( $open_counts[ $check_id ] ) ) {
-				continue;
-			}
-			if ( null !== $only_check_ids && ! in_array( $check_id, $only_check_ids, true ) ) {
-				continue;
-			}
-
-			$object_ids = $this->get_target_object_ids( $check_id );
-			$result     = $this->apply( $check_id, $object_ids );
-
-			if ( ! is_wp_error( $result ) ) {
-				$log_ids[]              = $result['log_id'];
-				$details[ $check_id ]   = $result['fixed'];
-				$total                 += $result['fixed'];
-			}
-		}
-
-		return array(
-			'checks_fixed'   => count( $details ),
-			'products_fixed' => $total,
-			'log_ids'        => $log_ids,
-			'details'        => $details,
-		);
-
-	}
-
-	/**
 	 * Undoes an entire fix batch.
 	 *
 	 * @version 1.0.0
@@ -299,12 +181,12 @@ class WPFCHS_Fixes {
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 
 		if ( ! $log || $log->undone ) {
-			return new WP_Error( 'wpfchs_no_log', __( 'Fix batch not found or already undone.', 'catalog-health-scanner-for-woocommerce' ) );
+			return new WP_Error( 'wpfchs_no_log', __( 'Fix batch not found or already undone.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		}
 
 		$window_days = (int) wpfchs()->core->get_threshold( 'undo_window_days' );
 		if ( strtotime( $log->created_at ) < ( time() - $window_days * DAY_IN_SECONDS ) ) {
-			return new WP_Error( 'wpfchs_undo_expired', __( 'The undo window for this fix has expired.', 'catalog-health-scanner-for-woocommerce' ) );
+			return new WP_Error( 'wpfchs_undo_expired', __( 'The undo window for this fix has expired.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 		}
 
 		$items    = (array) json_decode( (string) $log->items, true );
@@ -384,8 +266,8 @@ class WPFCHS_Fixes {
 				'title'        => get_the_title( $object_id ),
 				'before'       => get_post_status( $object_id ),
 				'after'        => 'trash',
-				'before_label' => __( 'Orphaned variation', 'catalog-health-scanner-for-woocommerce' ),
-				'after_label'  => __( 'Moved to trash', 'catalog-health-scanner-for-woocommerce' ),
+				'before_label' => __( 'Orphaned variation', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'after_label'  => __( 'Moved to trash', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			);
 		}
 
@@ -413,7 +295,7 @@ class WPFCHS_Fixes {
 				);
 				$row['after']        = array( 'sale_price' => '', 'date_from' => '', 'date_to' => '' );
 				$row['before_label'] = wc_format_decimal( $product->get_sale_price( 'edit' ) );
-				$row['after_label']  = __( 'Sale removed', 'catalog-health-scanner-for-woocommerce' );
+				$row['after_label']  = __( 'Sale removed', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				return $row;
 
 			case 'sync_stock_status':
@@ -428,8 +310,8 @@ class WPFCHS_Fixes {
 				}
 				$row['before']       = $current;
 				$row['after']        = $correct;
-				$row['before_label'] = ( 'instock' === $current ? __( 'In stock', 'catalog-health-scanner-for-woocommerce' ) : __( 'Out of stock', 'catalog-health-scanner-for-woocommerce' ) );
-				$row['after_label']  = ( 'instock' === $correct ? __( 'In stock', 'catalog-health-scanner-for-woocommerce' ) : __( 'Out of stock', 'catalog-health-scanner-for-woocommerce' ) );
+				$row['before_label'] = ( 'instock' === $current ? __( 'In stock', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : __( 'Out of stock', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
+				$row['after_label']  = ( 'instock' === $correct ? __( 'In stock', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : __( 'Out of stock', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 				return $row;
 
 			case 'clear_unmanaged_stock':
@@ -440,7 +322,7 @@ class WPFCHS_Fixes {
 				$row['before']       = (string) $raw;
 				$row['after']        = '';
 				$row['before_label'] = (string) $raw;
-				$row['after_label']  = __( 'Cleared', 'catalog-health-scanner-for-woocommerce' );
+				$row['after_label']  = __( 'Cleared', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				return $row;
 
 			case 'clean_linked_products':
@@ -458,8 +340,8 @@ class WPFCHS_Fixes {
 				$row['before']       = array( 'cross' => $cross, 'up' => $up );
 				$row['after']        = array( 'cross' => $cross_clean, 'up' => $up_clean );
 				/* translators: %d: number of linked product references. */
-				$row['before_label'] = sprintf( __( '%d broken link(s)', 'catalog-health-scanner-for-woocommerce' ), $removed );
-				$row['after_label']  = __( 'References removed', 'catalog-health-scanner-for-woocommerce' );
+				$row['before_label'] = sprintf( __( '%d broken link(s)', 'wpfactory-catalog-health-scanner-for-woocommerce' ), $removed );
+				$row['after_label']  = __( 'References removed', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				return $row;
 
 			case 'clean_gallery':
@@ -478,8 +360,8 @@ class WPFCHS_Fixes {
 				$row['before']       = $gallery;
 				$row['after']        = $clean;
 				/* translators: %d: number of gallery references. */
-				$row['before_label'] = sprintf( __( '%d dead reference(s)', 'catalog-health-scanner-for-woocommerce' ), count( $gallery ) - count( $clean ) );
-				$row['after_label']  = __( 'References removed', 'catalog-health-scanner-for-woocommerce' );
+				$row['before_label'] = sprintf( __( '%d dead reference(s)', 'wpfactory-catalog-health-scanner-for-woocommerce' ), count( $gallery ) - count( $clean ) );
+				$row['after_label']  = __( 'References removed', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				return $row;
 
 			case 'clean_grouped_children':
@@ -501,8 +383,8 @@ class WPFCHS_Fixes {
 				$row['before']       = $children;
 				$row['after']        = $clean;
 				/* translators: %d: number of child references. */
-				$row['before_label'] = sprintf( __( '%d broken child(ren)', 'catalog-health-scanner-for-woocommerce' ), count( $children ) - count( $clean ) );
-				$row['after_label']  = __( 'References removed', 'catalog-health-scanner-for-woocommerce' );
+				$row['before_label'] = sprintf( __( '%d broken child(ren)', 'wpfactory-catalog-health-scanner-for-woocommerce' ), count( $children ) - count( $clean ) );
+				$row['after_label']  = __( 'References removed', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				return $row;
 
 			case 'unassign_deleted_shipping_class':
@@ -526,10 +408,10 @@ class WPFCHS_Fixes {
 				$row['after']        = array();
 				$row['before_label'] = sprintf(
 					/* translators: %d: number of orphaned term references. */
-					_n( '%d deleted term referenced', '%d deleted terms referenced', count( $orphans ), 'catalog-health-scanner-for-woocommerce' ),
+					_n( '%d deleted term referenced', '%d deleted terms referenced', count( $orphans ), 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					count( $orphans )
 				);
-				$row['after_label']  = __( 'Stale references removed', 'catalog-health-scanner-for-woocommerce' );
+				$row['after_label']  = __( 'Stale references removed', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				return $row;
 
 			case 'reset_tax_class':
@@ -543,7 +425,7 @@ class WPFCHS_Fixes {
 				$row['before']       = $tax_class;
 				$row['after']        = '';
 				$row['before_label'] = $tax_class;
-				$row['after_label']  = __( 'Standard rate', 'catalog-health-scanner-for-woocommerce' );
+				$row['after_label']  = __( 'Standard rate', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				return $row;
 
 			case 'clear_virtual_dimensions':
@@ -558,7 +440,7 @@ class WPFCHS_Fixes {
 				);
 				$row['after']        = array( 'weight' => '', 'length' => '', 'width' => '', 'height' => '' );
 				$row['before_label'] = trim( $product->get_weight( 'edit' ) . ' / ' . wc_format_dimensions( $product->get_dimensions( false ) ), ' /' );
-				$row['after_label']  = __( 'Cleared', 'catalog-health-scanner-for-woocommerce' );
+				$row['after_label']  = __( 'Cleared', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				return $row;
 
 			case 'clean_title_artifacts':
@@ -582,7 +464,7 @@ class WPFCHS_Fixes {
 					$sku                 = $this->generate_sku( $product );
 					$row['before']       = '';
 					$row['after']        = $sku;
-					$row['before_label'] = __( 'No SKU', 'catalog-health-scanner-for-woocommerce' );
+					$row['before_label'] = __( 'No SKU', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 					$row['after_label']  = $sku;
 					return $row;
 				}
@@ -604,7 +486,7 @@ class WPFCHS_Fixes {
 					$row['after']        = $children;
 					$row['before_label'] = sprintf(
 						/* translators: %d: number of variations without a SKU. */
-						_n( '%d variation with no SKU', '%d variations with no SKU', count( $children ), 'catalog-health-scanner-for-woocommerce' ),
+						_n( '%d variation with no SKU', '%d variations with no SKU', count( $children ), 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 						count( $children )
 					);
 					$row['after_label']  = implode( ', ', array_slice( $children, 0, 3 ) ) . ( count( $children ) > 3 ? '…' : '' );
@@ -620,7 +502,7 @@ class WPFCHS_Fixes {
 				}
 				$row['before']       = '';
 				$row['after']        = $value;
-				$row['before_label'] = __( 'No weight', 'catalog-health-scanner-for-woocommerce' );
+				$row['before_label'] = __( 'No weight', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				$row['after_label']  = $value . ' ' . get_option( 'woocommerce_weight_unit' );
 				return $row;
 
@@ -632,7 +514,7 @@ class WPFCHS_Fixes {
 				}
 				$row['before']       = 0;
 				$row['after']        = $term_id;
-				$row['before_label'] = __( 'No shipping class', 'catalog-health-scanner-for-woocommerce' );
+				$row['before_label'] = __( 'No shipping class', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				$row['after_label']  = $term->name;
 				return $row;
 
@@ -648,7 +530,7 @@ class WPFCHS_Fixes {
 				}
 				$row['before']       = $current;
 				$row['after']        = array_merge( $current, array( $term_id ) );
-				$row['before_label'] = __( 'No category', 'catalog-health-scanner-for-woocommerce' );
+				$row['before_label'] = __( 'No category', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				$row['after_label']  = $term->name;
 				return $row;
 
@@ -665,7 +547,7 @@ class WPFCHS_Fixes {
 				}
 				$row['before']       = array();
 				$row['after']        = array( $term_id );
-				$row['before_label'] = __( 'No brand', 'catalog-health-scanner-for-woocommerce' );
+				$row['before_label'] = __( 'No brand', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				$row['after_label']  = $term->name;
 				return $row;
 
@@ -688,8 +570,8 @@ class WPFCHS_Fixes {
 				}
 				$row['before']       = $current;
 				$row['after']        = $new_class;
-				$row['before_label'] = ( '' !== $current ? $current : __( 'Standard rate', 'catalog-health-scanner-for-woocommerce' ) );
-				$row['after_label']  = ( '' !== $new_class ? $new_class : __( 'Standard rate', 'catalog-health-scanner-for-woocommerce' ) );
+				$row['before_label'] = ( '' !== $current ? $current : __( 'Standard rate', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
+				$row['after_label']  = ( '' !== $new_class ? $new_class : __( 'Standard rate', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 				return $row;
 
 			case 'set_cog_percent':
@@ -705,9 +587,9 @@ class WPFCHS_Fixes {
 				$cost                = wc_format_decimal( (float) $price * $percent / 100 );
 				$row['before']       = '';
 				$row['after']        = $cost;
-				$row['before_label'] = __( 'No cost', 'catalog-health-scanner-for-woocommerce' );
+				$row['before_label'] = __( 'No cost', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 				/* translators: %1$s: computed cost, %2$s: percentage of price. */
-				$row['after_label']  = sprintf( __( '%1$s (%2$s%% of price)', 'catalog-health-scanner-for-woocommerce' ), $cost, wc_format_decimal( $percent ) );
+				$row['after_label']  = sprintf( __( '%1$s (%2$s%% of price)', 'wpfactory-catalog-health-scanner-for-woocommerce' ), $cost, wc_format_decimal( $percent ) );
 				return $row;
 
 		}

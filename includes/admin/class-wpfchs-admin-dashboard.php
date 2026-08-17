@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Admin Dashboard Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Admin Dashboard Class
  *
  * The landing screen: overall score, trend, scan controls, category
  * summary grid, quick wins, top issues.
@@ -75,7 +75,7 @@ class WPFCHS_Admin_Dashboard {
 
 		echo '<div class="wpfchs-card wpfchs-scan-controls">';
 
-		echo '<label for="wpfchs-profile">' . esc_html__( 'Scan profile', 'catalog-health-scanner-for-woocommerce' ) . '</label> ';
+		echo '<label for="wpfchs-profile">' . esc_html__( 'Scan profile', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</label> ';
 		echo '<select id="wpfchs-profile"' . ( $running ? ' disabled' : '' ) . '>';
 		foreach ( $profiles as $profile_id => $profile ) {
 			echo '<option value="' . esc_attr( $profile_id ) . '"' . selected( $profile_id, $selected, false ) . '>' . esc_html( $profile['label'] ) . '</option>';
@@ -84,16 +84,16 @@ class WPFCHS_Admin_Dashboard {
 
 		if ( $running ) {
 			if ( 'paused' === $running->status ) {
-				echo '<button type="button" class="button button-primary wpfchs-start-scan" id="wpfchs-resume-scan" data-scan="' . esc_attr( $running->id ) . '">' . esc_html__( 'Resume Scan', 'catalog-health-scanner-for-woocommerce' ) . '</button> ';
+				echo '<button type="button" class="button button-primary wpfchs-start-scan" id="wpfchs-resume-scan" data-scan="' . esc_attr( $running->id ) . '">' . esc_html__( 'Resume Scan', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button> ';
 			} else {
-				echo '<button type="button" class="button" id="wpfchs-pause-scan" data-scan="' . esc_attr( $running->id ) . '">' . esc_html__( 'Pause', 'catalog-health-scanner-for-woocommerce' ) . '</button> ';
+				echo '<button type="button" class="button" id="wpfchs-pause-scan" data-scan="' . esc_attr( $running->id ) . '">' . esc_html__( 'Pause', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button> ';
 			}
-			echo '<button type="button" class="button" id="wpfchs-cancel-scan" data-scan="' . esc_attr( $running->id ) . '">' . esc_html__( 'Cancel', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+			echo '<button type="button" class="button" id="wpfchs-cancel-scan" data-scan="' . esc_attr( $running->id ) . '">' . esc_html__( 'Cancel', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 		} else {
-			echo '<button type="button" class="button button-primary wpfchs-start-scan" id="wpfchs-run-scan">' . esc_html__( 'Run Scan', 'catalog-health-scanner-for-woocommerce' ) . '</button> ';
-			echo '<a class="button" href="' . esc_url( admin_url( 'admin.php?page=wpfchs-settings#wpfchs-schedule' ) ) . '">' . esc_html__( 'Schedule', 'catalog-health-scanner-for-woocommerce' ) . '</a>';
-			if ( $last ) {
-				echo ' ' . $core->upgrade->lock_link( __( 'PDF report', 'catalog-health-scanner-for-woocommerce' ), __( 'PDF report', 'catalog-health-scanner-for-woocommerce' ), $core->report->get_url() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Fully escaped in WPFCHS_Upgrade::lock_link().
+			echo '<button type="button" class="button button-primary wpfchs-start-scan" id="wpfchs-run-scan">' . esc_html__( 'Run Scan', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button> ';
+			echo '<a class="button" href="' . esc_url( admin_url( 'admin.php?page=wpfchs-settings#wpfchs-schedule' ) ) . '">' . esc_html__( 'Schedule', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</a>';
+			if ( $last && $core->report ) {
+				echo ' <a class="button" href="' . esc_url( $core->report->get_url() ) . '">' . esc_html__( 'PDF report', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</a>';
 			}
 		}
 
@@ -101,7 +101,7 @@ class WPFCHS_Admin_Dashboard {
 			echo '<span class="wpfchs-scan-meta">';
 			printf(
 				/* translators: %1$s: human time diff since last scan, %2$s: number of products scanned. */
-				esc_html__( 'Last scan: %1$s ago · %2$s products', 'catalog-health-scanner-for-woocommerce' ),
+				esc_html__( 'Last scan: %1$s ago · %2$s products', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				esc_html( human_time_diff( strtotime( $last->completed_at . ' UTC' ) ) ),
 				esc_html( number_format_i18n( (int) $last->products_scanned ) )
 			);
@@ -127,7 +127,7 @@ class WPFCHS_Admin_Dashboard {
 		echo '<span class="wpfchs-progress-text">';
 		printf(
 			/* translators: %1$s: scanned count, %2$s: total count. */
-			esc_html__( 'Scanning: %1$s of %2$s products', 'catalog-health-scanner-for-woocommerce' ),
+			esc_html__( 'Scanning: %1$s of %2$s products', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			esc_html( number_format_i18n( $progress['scanned'] ) ),
 			esc_html( number_format_i18n( $progress['total'] ) )
 		);
@@ -143,9 +143,9 @@ class WPFCHS_Admin_Dashboard {
 	 */
 	function render_empty_state() {
 		echo '<div class="wpfchs-card wpfchs-empty-state">';
-		echo '<h2>' . esc_html__( 'Run your first scan', 'catalog-health-scanner-for-woocommerce' ) . '</h2>';
-		echo '<p>' . esc_html__( 'Find the products that are silently costing you sales. Revenue Blockers is a fast first look — critical issues only. It takes seconds on most catalogs.', 'catalog-health-scanner-for-woocommerce' ) . '</p>';
-		echo '<p><button type="button" class="button button-primary button-hero wpfchs-start-scan">' . esc_html__( 'Scan my catalog now', 'catalog-health-scanner-for-woocommerce' ) . '</button></p>';
+		echo '<h2>' . esc_html__( 'Run your first scan', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</h2>';
+		echo '<p>' . esc_html__( 'Find the products that are silently costing you sales. Revenue Blockers is a fast first look — critical issues only. It takes seconds on most catalogs.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</p>';
+		echo '<p><button type="button" class="button button-primary button-hero wpfchs-start-scan">' . esc_html__( 'Scan my catalog now', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button></p>';
 		echo '</div>';
 	}
 
@@ -160,10 +160,10 @@ class WPFCHS_Admin_Dashboard {
 			return;
 		}
 		echo '<div class="wpfchs-banner wpfchs-banner-welcome">';
-		echo '<span><strong>' . esc_html__( 'Setup complete.', 'catalog-health-scanner-for-woocommerce' ) . '</strong> ';
-		esc_html_e( 'Your store is configured. Run your first scan to see where you stand.', 'catalog-health-scanner-for-woocommerce' );
+		echo '<span><strong>' . esc_html__( 'Setup complete.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</strong> ';
+		esc_html_e( 'Your store is configured. Run your first scan to see where you stand.', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 		echo '</span>';
-		echo '<button type="button" class="button button-primary wpfchs-start-scan">' . esc_html__( 'Run first scan', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+		echo '<button type="button" class="button button-primary wpfchs-start-scan">' . esc_html__( 'Run first scan', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 		echo '</div>';
 	}
 
@@ -197,12 +197,12 @@ class WPFCHS_Admin_Dashboard {
 		echo '<div class="wpfchs-score-main">';
 		echo $this->render_gauge( $score, $band ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built from escaped numeric/colour parts.
 		echo '<span class="wpfchs-score-labels">';
-		echo '<strong>' . esc_html__( 'Catalog Health', 'catalog-health-scanner-for-woocommerce' ) . '</strong>';
+		echo '<strong>' . esc_html__( 'Catalog Health', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</strong>';
 		echo '<span class="wpfchs-chip wpfchs-score-band" style="color:' . esc_attr( $band['color'] ) . ';background:' . esc_attr( $band['color'] ) . '1a">' . esc_html( $band['label'] ) . '</span>';
 		echo '<span class="wpfchs-muted">';
 		printf(
 			/* translators: %s: number of open issues. */
-			esc_html( _n( '%s open issue', '%s open issues', $open, 'catalog-health-scanner-for-woocommerce' ) ),
+			esc_html( _n( '%s open issue', '%s open issues', $open, 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
 			esc_html( number_format_i18n( $open ) )
 		);
 
@@ -214,7 +214,7 @@ class WPFCHS_Admin_Dashboard {
 			echo ' &middot; <a class="wpfchs-ignored-link" href="' . esc_url( admin_url( 'admin.php?page=wpfchs-settings#wpfchs-ignored' ) ) . '">';
 			printf(
 				/* translators: %s: number of ignored issues. */
-				esc_html( _n( '%s ignored, not counted', '%s ignored, not counted', $ignored, 'catalog-health-scanner-for-woocommerce' ) ),
+				esc_html( _n( '%s ignored, not counted', '%s ignored, not counted', $ignored, 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
 				esc_html( number_format_i18n( $ignored ) )
 			);
 			echo '</a>';
@@ -252,7 +252,7 @@ class WPFCHS_Admin_Dashboard {
 		$circ   = 2 * M_PI * $r;
 		$offset = $circ * ( 1 - max( 0, min( 100, $score ) ) / 100 );
 
-		$svg  = '<svg class="wpfchs-gauge" width="' . esc_attr( $size ) . '" height="' . esc_attr( $size ) . '" viewBox="0 0 ' . esc_attr( $size ) . ' ' . esc_attr( $size ) . '" role="img" aria-label="' . esc_attr( sprintf( /* translators: %s: score. */ __( 'Catalog health score: %s percent', 'catalog-health-scanner-for-woocommerce' ), wc_format_decimal( $score, 0 ) ) ) . '">';
+		$svg  = '<svg class="wpfchs-gauge" width="' . esc_attr( $size ) . '" height="' . esc_attr( $size ) . '" viewBox="0 0 ' . esc_attr( $size ) . ' ' . esc_attr( $size ) . '" role="img" aria-label="' . esc_attr( sprintf( /* translators: %s: score. */ __( 'Catalog health score: %s percent', 'wpfactory-catalog-health-scanner-for-woocommerce' ), wc_format_decimal( $score, 0 ) ) ) . '">';
 		$svg .= '<circle cx="' . esc_attr( $cx ) . '" cy="' . esc_attr( $cx ) . '" r="' . esc_attr( $r ) . '" fill="none" stroke="#eef0f1" stroke-width="' . esc_attr( $stroke ) . '"></circle>';
 		$svg .= '<circle cx="' . esc_attr( $cx ) . '" cy="' . esc_attr( $cx ) . '" r="' . esc_attr( $r ) . '" fill="none" stroke="' . esc_attr( $band['color'] ) . '" stroke-width="' . esc_attr( $stroke ) . '" stroke-linecap="round" stroke-dasharray="' . esc_attr( round( $circ, 2 ) ) . '" stroke-dashoffset="' . esc_attr( round( $offset, 2 ) ) . '" transform="rotate(-90 ' . esc_attr( $cx ) . ' ' . esc_attr( $cx ) . ')"></circle>';
 		$svg .= '<text x="' . esc_attr( $cx ) . '" y="' . esc_attr( $cx + 2 ) . '" text-anchor="middle" dominant-baseline="middle" font-size="30" font-weight="700" fill="#1d2327">' . esc_html( wc_format_decimal( $score, 0 ) ) . '%</text>';
@@ -290,7 +290,7 @@ class WPFCHS_Admin_Dashboard {
 		echo '<span class="wpfchs-trend-label">';
 		printf(
 			/* translators: %d: number of scans in the trend. */
-			esc_html__( 'Trend · last %d scans', 'catalog-health-scanner-for-woocommerce' ),
+			esc_html__( 'Trend · last %d scans', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			(int) $count
 		);
 		echo '</span>';
@@ -338,14 +338,14 @@ class WPFCHS_Admin_Dashboard {
 		echo '<div class="wpfchs-alert wpfchs-alert-warning">';
 		echo '<span class="wpfchs-alert-icon wpfchs-alert-icon-warning" aria-hidden="true">i</span>';
 		echo '<span class="wpfchs-alert-text">';
-		echo '<strong>' . esc_html__( 'These results predate your settings change.', 'catalog-health-scanner-for-woocommerce' ) . '</strong> ';
+		echo '<strong>' . esc_html__( 'These results predate your settings change.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</strong> ';
 		printf(
 			/* translators: %s: human-readable time difference. */
-			esc_html__( 'This scan ran %s ago, under the settings you have since reset. Run a new scan for results that match your current configuration.', 'catalog-health-scanner-for-woocommerce' ),
+			esc_html__( 'This scan ran %s ago, under the settings you have since reset. Run a new scan for results that match your current configuration.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			esc_html( human_time_diff( $scanned_at ) )
 		);
 		echo '</span>';
-		echo '<button type="button" class="button button-primary wpfchs-start-scan">' . esc_html__( 'Run scan', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+		echo '<button type="button" class="button button-primary wpfchs-start-scan">' . esc_html__( 'Run scan', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 		echo '</div>';
 
 	}
@@ -382,7 +382,7 @@ class WPFCHS_Admin_Dashboard {
 		echo '<strong>';
 		printf(
 			/* translators: %s: number of products skipped. */
-			esc_html( _n( '%s product was not checked in this scan.', '%s products were not checked in this scan.', $skipped, 'catalog-health-scanner-for-woocommerce' ) ),
+			esc_html( _n( '%s product was not checked in this scan.', '%s products were not checked in this scan.', $skipped, 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
 			esc_html( number_format_i18n( $skipped ) )
 		);
 		echo '</strong> ';
@@ -390,21 +390,21 @@ class WPFCHS_Admin_Dashboard {
 		if ( $grace_days > 0 && ! empty( $excluded ) ) {
 			printf(
 				/* translators: %d: grace period in days. */
-				esc_html__( 'They are either newer than your %d-day grace period or sit in an excluded category, so your score does not cover them.', 'catalog-health-scanner-for-woocommerce' ),
+				esc_html__( 'They are either newer than your %d-day grace period or sit in an excluded category, so your score does not cover them.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				(int) $grace_days
 			);
 		} elseif ( $grace_days > 0 ) {
 			printf(
 				/* translators: %d: grace period in days. */
-				esc_html__( 'They are newer than your %d-day grace period, so your score does not cover them. Turn the grace period off to include everything.', 'catalog-health-scanner-for-woocommerce' ),
+				esc_html__( 'They are newer than your %d-day grace period, so your score does not cover them. Turn the grace period off to include everything.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				(int) $grace_days
 			);
 		} else {
-			esc_html_e( 'They sit in a category excluded from scanning, so your score does not cover them.', 'catalog-health-scanner-for-woocommerce' );
+			esc_html_e( 'They sit in a category excluded from scanning, so your score does not cover them.', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 		}
 
 		echo '</span>';
-		echo '<a class="wpfchs-cta-warning" href="' . esc_url( $settings_url . '#wpfchs-scope' ) . '">' . esc_html__( 'Change what gets scanned', 'catalog-health-scanner-for-woocommerce' ) . ' &rarr;</a>';
+		echo '<a class="wpfchs-cta-warning" href="' . esc_url( $settings_url . '#wpfchs-scope' ) . '">' . esc_html__( 'Change what gets scanned', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . ' &rarr;</a>';
 		echo '</div>';
 
 	}
@@ -451,11 +451,11 @@ class WPFCHS_Admin_Dashboard {
 		echo '<strong>';
 		printf(
 			/* translators: %s: number of critical issues. */
-			esc_html( _n( '%s critical issue is costing you sales right now.', '%s critical issues are costing you sales right now.', $critical, 'catalog-health-scanner-for-woocommerce' ) ),
+			esc_html( _n( '%s critical issue is costing you sales right now.', '%s critical issues are costing you sales right now.', $critical, 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
 			esc_html( number_format_i18n( $critical ) )
 		);
 		echo '</strong> ';
-		esc_html_e( 'Unpurchasable products, negative margins, or broken downloads.', 'catalog-health-scanner-for-woocommerce' );
+		esc_html_e( 'Unpurchasable products, negative margins, or broken downloads.', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 
 		echo '<span class="wpfchs-alert-breakdown">';
 		foreach ( $by_cat as $category_id => $count ) {
@@ -489,10 +489,10 @@ class WPFCHS_Admin_Dashboard {
 		}
 		$cta_text = (
 			$fixable ?
-			__( 'Review & fix', 'catalog-health-scanner-for-woocommerce' ) :
+			__( 'Review & fix', 'wpfactory-catalog-health-scanner-for-woocommerce' ) :
 			sprintf(
 				/* translators: %s: number of critical issues. */
-				__( 'Review the %s', 'catalog-health-scanner-for-woocommerce' ),
+				__( 'Review the %s', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				number_format_i18n( $critical )
 			)
 		);
@@ -556,11 +556,11 @@ class WPFCHS_Admin_Dashboard {
 		}
 
 		echo '<div class="wpfchs-grid-header">';
-		echo '<h2>' . esc_html__( 'Category scores', 'catalog-health-scanner-for-woocommerce' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'Category scores', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</h2>';
 		echo '<span class="wpfchs-muted">';
 		printf(
 			/* translators: %1$d: applicable category count, %2$d: total category count. */
-			esc_html__( '%1$d of %2$d categories apply to this store', 'catalog-health-scanner-for-woocommerce' ),
+			esc_html__( '%1$d of %2$d categories apply to this store', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			(int) $applicable_count,
 			(int) count( $categories )
 		);
@@ -581,7 +581,7 @@ class WPFCHS_Admin_Dashboard {
 
 			if ( ! $card['applicable'] ) {
 				echo '<div class="wpfchs-category-card wpfchs-card-na">';
-				echo '<div class="wpfchs-card-head"><span class="wpfchs-card-title">' . esc_html( $card['label'] ) . '</span><span class="wpfchs-card-state">' . esc_html__( 'Not applicable', 'catalog-health-scanner-for-woocommerce' ) . '</span></div>';
+				echo '<div class="wpfchs-card-head"><span class="wpfchs-card-title">' . esc_html( $card['label'] ) . '</span><span class="wpfchs-card-state">' . esc_html__( 'Not applicable', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</span></div>';
 				echo '<div class="wpfchs-card-score">&mdash;</div>';
 				echo '<div class="wpfchs-card-bar"><div style="width:0"></div></div>';
 				echo '<div class="wpfchs-card-foot">' . esc_html( $card['reason'] ) . '</div>';
@@ -618,7 +618,7 @@ class WPFCHS_Admin_Dashboard {
 				$percent = ( $card['score']['possible'] > 0 ? round( ( $card['score']['earned'] / $card['score']['possible'] ) * 100 ) : 100 );
 				echo '<div class="wpfchs-card-bar"><div style="width:' . esc_attr( $percent ) . '%;background:' . esc_attr( $band['color'] ) . '"></div></div>';
 			} else {
-				echo '<span class="wpfchs-card-state">' . esc_html__( 'Not scanned yet', 'catalog-health-scanner-for-woocommerce' ) . '</span></div>';
+				echo '<span class="wpfchs-card-state">' . esc_html__( 'Not scanned yet', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</span></div>';
 				echo '<div class="wpfchs-card-score">&mdash;</div>';
 				echo '<div class="wpfchs-card-bar"><div style="width:0"></div></div>';
 			}
@@ -626,20 +626,20 @@ class WPFCHS_Admin_Dashboard {
 			echo '<div class="wpfchs-card-foot">';
 			printf(
 				/* translators: %s: number of open issues. */
-				esc_html( _n( '%s issue', '%s issues', $card['open'], 'catalog-health-scanner-for-woocommerce' ) ),
+				esc_html( _n( '%s issue', '%s issues', $card['open'], 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
 				esc_html( number_format_i18n( $card['open'] ) )
 			);
 			// Name the worst open severity, so a good score next to a pile of
 			// low-weight issues does not read as a contradiction.
 			$highest = '';
 			if ( $crit_open > 0 ) {
-				$highest = __( 'highest: Critical', 'catalog-health-scanner-for-woocommerce' );
+				$highest = __( 'highest: Critical', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 			} elseif ( $high_open > 0 ) {
-				$highest = __( 'highest: High', 'catalog-health-scanner-for-woocommerce' );
+				$highest = __( 'highest: High', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 			} elseif ( ! empty( $med_by_cat[ $category_id ] ) ) {
-				$highest = __( 'highest: Medium', 'catalog-health-scanner-for-woocommerce' );
+				$highest = __( 'highest: Medium', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 			} elseif ( ! empty( $low_by_cat[ $category_id ] ) ) {
-				$highest = __( 'highest: Low', 'catalog-health-scanner-for-woocommerce' );
+				$highest = __( 'highest: Low', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 			}
 			if ( '' !== $highest && $card['open'] > 0 ) {
 				echo ' <span class="wpfchs-muted">&middot; ' . esc_html( $highest ) . '</span>';
@@ -680,28 +680,17 @@ class WPFCHS_Admin_Dashboard {
 			}
 		}
 
-		// The buttons stay live in the free build: they open the full
-		// before/after preview (always free), and the preview's apply button
-		// is where the Pro wall stands. The badge just makes sure the wall
-		// is announced, not a surprise.
-		$locked = $core->upgrade->is_locked();
-
 		echo '<div class="wpfchs-card wpfchs-panel">';
-		echo '<div class="wpfchs-panel-head"><h2>' . esc_html__( 'Quick wins', 'catalog-health-scanner-for-woocommerce' ) . '</h2>';
-		if ( ! empty( $wins ) ) {
-			echo '<span>';
-			if ( $locked ) {
-				echo $core->upgrade->badge(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Fully escaped in WPFCHS_Upgrade::badge().
-			}
-			echo '<button type="button" class="button button-primary wpfchs-fix-all-quick-wins">' . esc_html__( 'Fix all', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
-			echo '</span>';
+		echo '<div class="wpfchs-panel-head"><h2>' . esc_html__( 'Quick wins', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</h2>';
+		if ( ! empty( $wins ) && $core->bulk ) {
+			echo '<button type="button" class="button button-primary wpfchs-fix-all-quick-wins">' . esc_html__( 'Fix all', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 		} else {
-			echo '<span class="wpfchs-muted">' . esc_html__( 'Auto-fixable', 'catalog-health-scanner-for-woocommerce' ) . '</span>';
+			echo '<span class="wpfchs-muted">' . esc_html__( 'Auto-fixable', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</span>';
 		}
 		echo '</div>';
 
 		if ( empty( $wins ) ) {
-			echo '<p class="wpfchs-panel-empty">' . esc_html__( 'Nothing auto-fixable right now. Good.', 'catalog-health-scanner-for-woocommerce' ) . '</p>';
+			echo '<p class="wpfchs-panel-empty">' . esc_html__( 'Nothing auto-fixable right now. Good.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</p>';
 		} else {
 			foreach ( array_slice( $wins, 0, 5, true ) as $check_id => $win ) {
 				echo '<div class="wpfchs-panel-row">';
@@ -710,17 +699,12 @@ class WPFCHS_Admin_Dashboard {
 				echo '<span class="wpfchs-muted">';
 				printf(
 					/* translators: %s: number of affected products. */
-					esc_html( _n( '%s product', '%s products', $win['count'], 'catalog-health-scanner-for-woocommerce' ) ),
+					esc_html( _n( '%s product', '%s products', $win['count'], 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
 					esc_html( number_format_i18n( $win['count'] ) )
 				);
 				echo '</span>';
 				echo '</span>';
-				echo '<span>';
-				if ( $locked && $win['count'] > 1 ) {
-					echo $core->upgrade->badge(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Fully escaped in WPFCHS_Upgrade::badge().
-				}
-				echo '<button type="button" class="button wpfchs-fix-preview" data-check="' . esc_attr( $check_id ) . '">' . esc_html__( 'Fix all', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
-				echo '</span>';
+				echo '<a class="button" href="' . esc_url( add_query_arg( array( 'page' => 'wpfchs', 'tab' => $win['check']->get_category() ), admin_url( 'admin.php' ) ) ) . '">' . esc_html__( 'Review', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</a>';
 				echo '</div>';
 			}
 		}
@@ -772,10 +756,10 @@ class WPFCHS_Admin_Dashboard {
 		);
 
 		echo '<div class="wpfchs-card wpfchs-panel">';
-		echo '<div class="wpfchs-panel-head"><h2>' . esc_html__( 'Top issues', 'catalog-health-scanner-for-woocommerce' ) . '</h2></div>';
+		echo '<div class="wpfchs-panel-head"><h2>' . esc_html__( 'Top issues', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</h2></div>';
 
 		if ( empty( $rows ) ) {
-			echo '<p class="wpfchs-panel-empty">' . esc_html__( 'No open issues. Your catalog is clean.', 'catalog-health-scanner-for-woocommerce' ) . '</p>';
+			echo '<p class="wpfchs-panel-empty">' . esc_html__( 'No open issues. Your catalog is clean.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</p>';
 		} else {
 			foreach ( array_slice( $rows, 0, 5 ) as $row ) {
 				$check = $row['check'];
@@ -794,11 +778,11 @@ class WPFCHS_Admin_Dashboard {
 				echo '<span class="wpfchs-muted wpfchs-count">';
 				printf(
 					/* translators: %s: number of affected products. */
-					esc_html( _n( '%s product', '%s products', $row['count'], 'catalog-health-scanner-for-woocommerce' ) ),
+					esc_html( _n( '%s product', '%s products', $row['count'], 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
 					esc_html( number_format_i18n( $row['count'] ) )
 				);
 				echo '</span>';
-				echo '<a href="' . esc_url( $url ) . '">' . esc_html__( 'View', 'catalog-health-scanner-for-woocommerce' ) . '</a>';
+				echo '<a href="' . esc_url( $url ) . '">' . esc_html__( 'View', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</a>';
 				echo '</div>';
 			}
 		}

@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Product Screen Surfaces Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Product Screen Surfaces Class
  *
  * The two surfaces outside the plugin's own pages: an issue-count column
  * in the products list, and a panel on the product edit screen.
@@ -102,7 +102,7 @@ class WPFCHS_Admin_Products {
 	 * @return  array
 	 */
 	function add_column( $columns ) {
-		$columns['wpfchs_issues'] = __( 'Health', 'catalog-health-scanner-for-woocommerce' );
+		$columns['wpfchs_issues'] = __( 'Health', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 		return $columns;
 	}
 
@@ -131,7 +131,7 @@ class WPFCHS_Admin_Products {
 
 		if ( $count < 1 ) {
 			echo '<span class="wpfchs-col-ok" aria-hidden="true">—</span>';
-			echo '<span class="screen-reader-text">' . esc_html__( 'No open issues', 'catalog-health-scanner-for-woocommerce' ) . '</span>';
+			echo '<span class="screen-reader-text">' . esc_html__( 'No open issues', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</span>';
 			return;
 		}
 
@@ -151,7 +151,7 @@ class WPFCHS_Admin_Products {
 		}
 		add_meta_box(
 			'wpfchs-product-issues',
-			__( 'Catalog Health', 'catalog-health-scanner-for-woocommerce' ),
+			__( 'Catalog Health', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			array( $this, 'render_meta_box' ),
 			'product',
 			'side',
@@ -181,7 +181,7 @@ class WPFCHS_Admin_Products {
 		);
 
 		if ( empty( $issues ) ) {
-			echo '<p>' . esc_html__( 'No open issues on this product.', 'catalog-health-scanner-for-woocommerce' ) . '</p>';
+			echo '<p>' . esc_html__( 'No open issues on this product.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</p>';
 			return;
 		}
 
@@ -194,12 +194,12 @@ class WPFCHS_Admin_Products {
 			if ( '' !== (string) $issue->issue_value ) {
 				echo '<br /><span class="wpfchs-muted">' . esc_html( $issue->issue_value ) . '</span>';
 			}
-			echo '<br /><button type="button" class="button-link wpfchs-ignore-issue" data-issue="' . esc_attr( $issue->id ) . '">' . esc_html__( 'Ignore for this product', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+			echo '<br /><button type="button" class="button-link wpfchs-ignore-issue" data-issue="' . esc_attr( $issue->id ) . '">' . esc_html__( 'Ignore for this product', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 			echo '</li>';
 		}
 		echo '</ul>';
 
-		echo '<p><a href="' . esc_url( admin_url( 'admin.php?page=wpfchs' ) ) . '">' . esc_html__( 'Open Catalog Health dashboard', 'catalog-health-scanner-for-woocommerce' ) . '</a></p>';
+		echo '<p><a href="' . esc_url( admin_url( 'admin.php?page=wpfchs' ) ) . '">' . esc_html__( 'Open Catalog Health dashboard', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</a></p>';
 
 	}
 

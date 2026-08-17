@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Core Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Core Class
  *
  * @version 1.0.0
  * @since   1.0.0
@@ -103,12 +103,20 @@ class WPFCHS_Core {
 	public $report;
 
 	/**
-	 * upgrade.
+	 * bulk. Pro only; null when the Pro plugin is not installed.
 	 *
-	 * @var     WPFCHS_Upgrade
+	 * @var     WPFCHS_Pro_Bulk|null
 	 * @since   1.0.0
 	 */
-	public $upgrade;
+	public $bulk;
+
+	/**
+	 * compare. Pro only; null when the Pro plugin is not installed.
+	 *
+	 * @var     WPFCHS_Pro_Compare|null
+	 * @since   1.0.0
+	 */
+	public $compare;
 
 	/**
 	 * admin.
@@ -117,6 +125,14 @@ class WPFCHS_Core {
 	 * @since   1.0.0
 	 */
 	public $admin;
+
+	/**
+	 * ajax.
+	 *
+	 * @var     WPFCHS_Ajax
+	 * @since   1.0.0
+	 */
+	public $ajax;
 
 	/**
 	 * Constructor.
@@ -136,15 +152,23 @@ class WPFCHS_Core {
 		$this->profiles = require_once $path . 'class-wpfchs-profiles.php';
 		$this->fixes    = require_once $path . 'class-wpfchs-fixes.php';
 		$this->scanner  = require_once $path . 'class-wpfchs-scanner.php';
-		$this->schedule = require_once $path . 'class-wpfchs-schedule.php';
 		$this->export   = require_once $path . 'class-wpfchs-export.php';
 		$this->recommendations = require_once $path . 'class-wpfchs-recommendations.php';
-		require_once $path . 'report/class-wpfchs-pdf.php';
-		$this->report   = require_once $path . 'report/class-wpfchs-report.php';
+
+		// Modules that ship only in the Pro plugin. Their absence is what
+		// makes a feature unavailable here — nothing in this plugin disables
+		// or restricts them, and no code for them is present when they are
+		// not installed.
+		if ( is_dir( $path . 'pro' ) ) {
+			$this->schedule = require_once $path . 'pro/class-wpfchs-schedule.php';
+			require_once $path . 'pro/report/class-wpfchs-pdf.php';
+			$this->report   = require_once $path . 'pro/report/class-wpfchs-report.php';
+			$this->bulk     = require_once $path . 'pro/class-wpfchs-pro-bulk.php';
+			$this->compare  = require_once $path . 'pro/class-wpfchs-pro-compare.php';
+		}
 
 		if ( is_admin() ) {
-			$this->upgrade = require_once $path . 'admin/class-wpfchs-admin-upgrade.php';
-			require_once $path . 'admin/class-wpfchs-ajax.php';
+			$this->ajax = require_once $path . 'admin/class-wpfchs-ajax.php';
 			$this->admin = require_once $path . 'admin/class-wpfchs-admin.php';
 			do_action( 'wpfchs_admin_loaded', $this );
 		}

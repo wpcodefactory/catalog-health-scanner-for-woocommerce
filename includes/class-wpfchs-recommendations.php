@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Recommendations Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Recommendations Class
  *
  * Cross-catalog plugin recommendations (spec section 14), under two hard
  * constraints: restraint (one subtle dismissible line, neutral styling)
@@ -31,19 +31,19 @@ class WPFCHS_Recommendations {
 	function get_map() {
 
 		$ean = array(
-			'plugin' => __( 'EAN for WooCommerce', 'catalog-health-scanner-for-woocommerce' ),
+			'plugin' => __( 'EAN for WooCommerce', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			'url'    => 'https://wpfactory.com/item/ean-for-woocommerce/',
-			'text'   => __( 'manages GTIN, EAN, and UPC codes in bulk, including auto-generation.', 'catalog-health-scanner-for-woocommerce' ),
+			'text'   => __( 'manages GTIN, EAN, and UPC codes in bulk, including auto-generation.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		);
 		$cog = array(
-			'plugin' => __( 'Cost of Goods for WooCommerce', 'catalog-health-scanner-for-woocommerce' ),
+			'plugin' => __( 'Cost of Goods for WooCommerce', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			'url'    => 'https://wpfactory.com/item/cost-of-goods-for-woocommerce/',
-			'text'   => __( 'tracks cost and profit per product and per order.', 'catalog-health-scanner-for-woocommerce' ),
+			'text'   => __( 'tracks cost and profit per product and per order.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		);
 		$vat = array(
-			'plugin' => __( 'EU VAT for WooCommerce', 'catalog-health-scanner-for-woocommerce' ),
+			'plugin' => __( 'EU VAT for WooCommerce', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			'url'    => 'https://wpfactory.com/item/eu-vat-for-woocommerce/',
-			'text'   => __( 'handles VAT validation and tax handling across EU regions.', 'catalog-health-scanner-for-woocommerce' ),
+			'text'   => __( 'handles VAT validation and tax handling across EU regions.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		);
 
 		return apply_filters(
@@ -125,7 +125,7 @@ class WPFCHS_Recommendations {
 		echo '<p class="wpfchs-recommendation" data-check="' . esc_attr( $check_id ) . '">';
 		echo '<a href="' . esc_url( $recommendation['url'] ) . '" target="_blank" rel="noopener">' . esc_html( $recommendation['plugin'] ) . '</a> ';
 		echo esc_html( $recommendation['text'] );
-		echo ' <button type="button" class="button-link wpfchs-dismiss-rec" data-check="' . esc_attr( $check_id ) . '">' . esc_html__( 'Dismiss', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+		echo ' <button type="button" class="button-link wpfchs-dismiss-rec" data-check="' . esc_attr( $check_id ) . '">' . esc_html__( 'Dismiss', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 		echo '</p>';
 
 	}

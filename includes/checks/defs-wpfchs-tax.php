@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Check Definitions - Tax
+ * WPFactory Catalog Health Scanner for WooCommerce - Check Definitions - Tax
  *
  * Auto-detected: off when tax is disabled or only the standard class exists.
  *
@@ -16,8 +16,8 @@ return array(
 
 	array(
 		'id'          => 'tax_class_invalid',
-		'label'       => __( 'Product referencing a deleted tax class', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'This product falls back to the standard rate, which may be the wrong tax for it.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Product referencing a deleted tax class', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'This product falls back to the standard rate, which may be the wrong tax for it.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'fix'         => 'reset_tax_class',
 		'fix_type'    => 'auto',
@@ -38,18 +38,18 @@ return array(
 	array(
 		'id'          => 'tax_status_none',
 		'group'       => 'tax_status',
-		'label'       => __( 'Tax status set to none', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'No tax is ever charged on this product. If that is not deliberate, you are under-collecting tax.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Tax status set to none', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'No tax is ever charged on this product. If that is not deliberate, you are under-collecting tax.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'check'       => function ( $product ) {
-			return ( 'none' === $product->get_tax_status( 'edit' ) ? __( 'Tax status: none', 'catalog-health-scanner-for-woocommerce' ) : false );
+			return ( 'none' === $product->get_tax_status( 'edit' ) ? __( 'Tax status: none', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : false );
 		},
 	),
 
 	array(
 		'id'          => 'tax_class_inconsistent',
-		'label'       => __( 'Inconsistent tax class within a product category', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'A handful of products taxed differently from the rest of their category is usually a mistake, not a policy.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Inconsistent tax class within a product category', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'A handful of products taxed differently from the rest of their category is usually a mistake, not a policy.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'low',
 		'fix'         => 'assign_tax_class',
 		'fix_type'    => 'bulk',
@@ -88,9 +88,9 @@ return array(
 							'product_id' => $product_id,
 							'value'      => sprintf(
 								/* translators: %1$s: product's tax class, %2$s: dominant tax class in the category. */
-								__( '"%1$s" while the category uses "%2$s"', 'catalog-health-scanner-for-woocommerce' ),
-								( '' !== $tax_class ? $tax_class : __( 'standard', 'catalog-health-scanner-for-woocommerce' ) ),
-								( '' !== $dominant ? $dominant : __( 'standard', 'catalog-health-scanner-for-woocommerce' ) )
+								__( '"%1$s" while the category uses "%2$s"', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+								( '' !== $tax_class ? $tax_class : __( 'standard', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
+								( '' !== $dominant ? $dominant : __( 'standard', 'wpfactory-catalog-health-scanner-for-woocommerce' ) )
 							),
 						);
 					}

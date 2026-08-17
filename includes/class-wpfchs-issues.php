@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Issues Repository Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Issues Repository Class
  *
  * All reads/writes of the `wpfchs_issues` table live here. The table is a
  * custom store (issue lifecycle across scans) with no WP API equivalent,

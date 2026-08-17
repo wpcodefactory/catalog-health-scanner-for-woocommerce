@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Admin AJAX Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Admin AJAX Class
  *
  * Every handler: `check_ajax_referer()` first line, then capability.
  * The nonce is delivered via `wp_localize_script`.
@@ -35,123 +35,7 @@ class WPFCHS_Ajax {
 		add_action( 'wp_ajax_wpfchs_fix_preview', array( $this, 'fix_preview' ) );
 		add_action( 'wp_ajax_wpfchs_fix_apply', array( $this, 'fix_apply' ) );
 		add_action( 'wp_ajax_wpfchs_fix_undo', array( $this, 'fix_undo' ) );
-		add_action( 'wp_ajax_wpfchs_fix_all_quick_wins', array( $this, 'fix_all_quick_wins' ) );
-		add_action( 'wp_ajax_wpfchs_preview_quick_wins', array( $this, 'preview_quick_wins' ) );
 		add_action( 'wp_ajax_wpfchs_dismiss_rec', array( $this, 'dismiss_rec' ) );
-	}
-
-	/**
-	 * preview_quick_wins: combined before/after preview for "Fix all".
-	 *
-	 * @version 1.0.0
-	 * @since   1.0.0
-	 */
-	function preview_quick_wins() {
-		$this->gate();
-
-		$preview = wpfchs()->core->fixes->preview_all_quick_wins();
-
-		if ( 0 === $preview['total'] ) {
-			wp_send_json_error( array( 'message' => __( 'Nothing auto-fixable right now.', 'catalog-health-scanner-for-woocommerce' ) ) );
-		}
-
-		ob_start();
-
-		echo '<p class="wpfchs-preview-summary">';
-		printf(
-			/* translators: %1$d: total products, %2$d: number of checks. */
-			esc_html( _n( '%1$d product will be fixed across %2$d check.', '%1$d products will be fixed across %2$d checks.', $preview['total'], 'catalog-health-scanner-for-woocommerce' ) ),
-			(int) $preview['total'],
-			(int) count( $preview['checks'] )
-		);
-		echo '</p>';
-
-		echo '<ul class="wpfchs-preview-checks">';
-		foreach ( $preview['checks'] as $c ) {
-			echo '<li>' . esc_html( $c['label'] ) . ' <span class="wpfchs-muted">' . esc_html( sprintf( /* translators: %d: count. */ _n( '%d product', '%d products', $c['count'], 'catalog-health-scanner-for-woocommerce' ), $c['count'] ) ) . '</span></li>';
-		}
-		echo '</ul>';
-
-		echo '<table class="widefat striped wpfchs-table">';
-		echo '<thead><tr>';
-		echo '<th>' . esc_html__( 'Product', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th>' . esc_html__( 'Fix', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th>' . esc_html__( 'Current', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th>' . esc_html__( 'After', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '</tr></thead><tbody>';
-		foreach ( array_slice( $preview['rows'], 0, 60 ) as $row ) {
-			echo '<tr>';
-			echo '<td>' . esc_html( $row['title'] ) . '</td>';
-			echo '<td class="wpfchs-muted">' . esc_html( $row['check'] ) . '</td>';
-			echo '<td class="wpfchs-before">' . esc_html( $row['before'] ) . '</td>';
-			echo '<td class="wpfchs-after">' . esc_html( $row['after'] ) . '</td>';
-			echo '</tr>';
-		}
-		echo '</tbody></table>';
-
-		echo '<p class="wpfchs-muted">';
-		printf(
-			/* translators: %d: undo window in days. */
-			esc_html__( 'Every change is logged and can be undone for %d days.', 'catalog-health-scanner-for-woocommerce' ),
-			(int) wpfchs()->core->get_threshold( 'undo_window_days' )
-		);
-		echo '</p>';
-
-		wp_send_json_success(
-			array(
-				'title' => sprintf(
-					/* translators: %d: number of products. */
-					__( 'Preview: fix %d products', 'catalog-health-scanner-for-woocommerce' ),
-					$preview['total']
-				),
-				'html'  => ob_get_clean(),
-				'total' => $preview['total'],
-				// The preview is free to see; applying it is not. The JS
-				// layer swaps the apply button for an upgrade link.
-				'pro_required' => ( ! wpfchs()->is_pro() ),
-				'upgrade'      => WPFCHS_Upgrade::URL,
-			)
-		);
-	}
-
-	/**
-	 * fix_all_quick_wins: applies every auto-fixable group in one action.
-	 *
-	 * @version 1.0.0
-	 * @since   1.0.0
-	 */
-	function fix_all_quick_wins() {
-		$this->gate();
-
-		if ( ! wpfchs()->is_pro() ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Fixing every quick win in one click is a Pro feature. The free version fixes one product at a time.', 'catalog-health-scanner-for-woocommerce' ),
-					'upgrade' => WPFCHS_Upgrade::URL,
-					'feature' => __( 'Fix all quick wins', 'catalog-health-scanner-for-woocommerce' ),
-				)
-			);
-		}
-
-		$result = wpfchs()->core->fixes->fix_all_quick_wins();
-
-		if ( 0 === $result['products_fixed'] ) {
-			wp_send_json_error( array( 'message' => __( 'Nothing auto-fixable right now.', 'catalog-health-scanner-for-woocommerce' ) ) );
-		}
-
-		$result['message'] = sprintf(
-			/* translators: %1$d: number of products fixed, %2$d: number of checks. */
-			_n(
-				'Fixed %1$d product across %2$d check.',
-				'Fixed %1$d products across %2$d checks.',
-				$result['products_fixed'],
-				'catalog-health-scanner-for-woocommerce'
-			),
-			$result['products_fixed'],
-			$result['checks_fixed']
-		);
-
-		wp_send_json_success( $result );
 	}
 
 	/**
@@ -173,41 +57,11 @@ class WPFCHS_Ajax {
 	 * @version 1.0.0
 	 * @since   1.0.0
 	 */
-	protected function gate() {
+	function gate() {
 		check_ajax_referer( 'wpfchs-admin', 'nonce' );
 		if ( ! current_user_can( wpfchs()->core->get_capability() ) ) {
-			wp_send_json_error( array( 'message' => __( 'You are not allowed to do this.', 'catalog-health-scanner-for-woocommerce' ) ) );
+			wp_send_json_error( array( 'message' => __( 'You are not allowed to do this.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ) );
 		}
-	}
-
-	/**
-	 * Pro gate for bulk fixing. Previews are never gated — the free build
-	 * always shows exactly what a fix would change (taste-then-buy); applying
-	 * to more than one product at a time is what Pro unlocks. The JS layer
-	 * turns the `upgrade` key into an upgrade modal instead of an error
-	 * notice, but this is the enforcement: the free build refuses the write
-	 * regardless of what the client sends.
-	 *
-	 * @version 1.0.0
-	 * @since   1.0.0
-	 *
-	 * @param   int $target_count Products the request would write to.
-	 */
-	protected function gate_bulk_fix( $target_count ) {
-		if ( wpfchs()->is_pro() || $target_count <= 1 ) {
-			return;
-		}
-		wp_send_json_error(
-			array(
-				'message' => sprintf(
-					/* translators: %d: number of products in the request. */
-					__( 'Fixing %d products at once is a Pro feature. The free version fixes one product at a time.', 'catalog-health-scanner-for-woocommerce' ),
-					$target_count
-				),
-				'upgrade' => WPFCHS_Upgrade::URL,
-				'feature' => __( 'Bulk fixing', 'catalog-health-scanner-for-woocommerce' ),
-			)
-		);
 	}
 
 	/**
@@ -267,7 +121,7 @@ class WPFCHS_Ajax {
 		);
 
 		if ( ! isset( $map[ $control ] ) || ! wpfchs()->core->scanner->set_status( $scan_id, $map[ $control ] ) ) {
-			wp_send_json_error( array( 'message' => __( 'Could not update the scan.', 'catalog-health-scanner-for-woocommerce' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Could not update the scan.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ) );
 		}
 
 		wp_send_json_success( array( 'status' => $map[ $control ] ) );
@@ -289,7 +143,7 @@ class WPFCHS_Ajax {
 		$core  = wpfchs()->core;
 		$check = $core->checks->get( $check_id );
 		if ( ! $check ) {
-			wp_send_json_error( array( 'message' => __( 'Unknown check.', 'catalog-health-scanner-for-woocommerce' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Unknown check.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ) );
 		}
 
 		$filter_args = array(
@@ -359,35 +213,35 @@ class WPFCHS_Ajax {
 		switch ( $fixer ) {
 
 			case 'generate_skus':
-				echo '<span class="wpfchs-muted">' . esc_html__( 'SKUs are generated from the product slug and id, guaranteed unique.', 'catalog-health-scanner-for-woocommerce' ) . '</span>';
+				echo '<span class="wpfchs-muted">' . esc_html__( 'SKUs are generated from the product slug and id, guaranteed unique.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</span>';
 				break;
 
 			case 'set_weight':
-				echo '<label>' . esc_html__( 'Weight to assign', 'catalog-health-scanner-for-woocommerce' ) . ' ';
+				echo '<label>' . esc_html__( 'Weight to assign', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . ' ';
 				echo '<input type="number" step="any" min="0" class="small-text wpfchs-bulk-value" data-arg="value" /> ' . esc_html( get_option( 'woocommerce_weight_unit' ) );
 				echo '</label>';
 				break;
 
 			case 'assign_shipping_class':
-				$this->render_term_select( 'product_shipping_class', __( 'Shipping class to assign', 'catalog-health-scanner-for-woocommerce' ) );
+				$this->render_term_select( 'product_shipping_class', __( 'Shipping class to assign', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 				break;
 
 			case 'assign_category':
-				$this->render_term_select( 'product_cat', __( 'Category to assign', 'catalog-health-scanner-for-woocommerce' ) );
+				$this->render_term_select( 'product_cat', __( 'Category to assign', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 				break;
 
 			case 'assign_brand':
 				$taxonomy = wpfchs()->core->fixes->get_brand_taxonomy();
 				if ( '' !== $taxonomy ) {
-					$this->render_term_select( $taxonomy, __( 'Brand to assign', 'catalog-health-scanner-for-woocommerce' ) );
+					$this->render_term_select( $taxonomy, __( 'Brand to assign', 'wpfactory-catalog-health-scanner-for-woocommerce' ) );
 				}
 				break;
 
 			case 'assign_tax_class':
-				echo '<label>' . esc_html__( 'Tax class to assign', 'catalog-health-scanner-for-woocommerce' ) . ' ';
+				echo '<label>' . esc_html__( 'Tax class to assign', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . ' ';
 				echo '<select class="wpfchs-bulk-value" data-arg="value">';
-				echo '<option value="">' . esc_html__( '— Select —', 'catalog-health-scanner-for-woocommerce' ) . '</option>';
-				echo '<option value="standard">' . esc_html__( 'Standard rate', 'catalog-health-scanner-for-woocommerce' ) . '</option>';
+				echo '<option value="">' . esc_html__( '— Select —', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</option>';
+				echo '<option value="standard">' . esc_html__( 'Standard rate', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</option>';
 				foreach ( \WC_Tax::get_tax_class_slugs() as $slug ) {
 					echo '<option value="' . esc_attr( $slug ) . '">' . esc_html( $slug ) . '</option>';
 				}
@@ -395,15 +249,15 @@ class WPFCHS_Ajax {
 				break;
 
 			case 'set_cog_percent':
-				echo '<label>' . esc_html__( 'Cost as % of price', 'catalog-health-scanner-for-woocommerce' ) . ' ';
+				echo '<label>' . esc_html__( 'Cost as % of price', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . ' ';
 				echo '<input type="number" step="any" min="1" max="100" class="small-text wpfchs-bulk-value" data-arg="percent" />%';
 				echo '</label>';
-				echo ' <span class="wpfchs-muted">' . esc_html__( 'A starting estimate; refine per product later.', 'catalog-health-scanner-for-woocommerce' ) . '</span>';
+				echo ' <span class="wpfchs-muted">' . esc_html__( 'A starting estimate; refine per product later.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</span>';
 				break;
 
 		}
 
-		echo '<button type="button" class="button button-primary wpfchs-fix-preview" data-check="' . esc_attr( $check->get_id() ) . '" data-selected-only="1">' . esc_html__( 'Preview changes', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+		echo '<button type="button" class="button button-primary wpfchs-fix-preview" data-check="' . esc_attr( $check->get_id() ) . '" data-selected-only="1">' . esc_html__( 'Preview changes', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 		echo '</div>';
 
 	}
@@ -428,24 +282,24 @@ class WPFCHS_Ajax {
 
 		echo '<div class="wpfchs-selection-bar" data-total="' . esc_attr( $total ) . '">';
 
-		echo '<label class="wpfchs-selection-toggle"><input type="checkbox" class="wpfchs-select-all" /> ' . esc_html__( 'Select all on this page', 'catalog-health-scanner-for-woocommerce' ) . '</label>';
+		echo '<label class="wpfchs-selection-toggle"><input type="checkbox" class="wpfchs-select-all" /> ' . esc_html__( 'Select all on this page', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</label>';
 
 		echo '<span class="wpfchs-selection-count" hidden>';
-		echo '<strong class="wpfchs-selected-number">0</strong> ' . esc_html__( 'selected', 'catalog-health-scanner-for-woocommerce' );
+		echo '<strong class="wpfchs-selected-number">0</strong> ' . esc_html__( 'selected', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 		echo '</span>';
 
 		echo '<span class="wpfchs-selection-actions">';
 
 		if ( $has_fixer ) {
-			echo '<button type="button" class="button button-primary wpfchs-fix-preview wpfchs-action-selected" data-check="' . esc_attr( $check->get_id() ) . '" data-selected-only="1" hidden>' . esc_html__( 'Fix selected', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+			echo '<button type="button" class="button button-primary wpfchs-fix-preview wpfchs-action-selected" data-check="' . esc_attr( $check->get_id() ) . '" data-selected-only="1" hidden>' . esc_html__( 'Fix selected', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 		}
 
-		echo '<button type="button" class="button wpfchs-ignore-selected wpfchs-action-selected" hidden>' . esc_html__( 'Ignore selected', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+		echo '<button type="button" class="button wpfchs-ignore-selected wpfchs-action-selected" hidden>' . esc_html__( 'Ignore selected', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 
 		echo '<button type="button" class="button-link wpfchs-ignore-all" data-check="' . esc_attr( $check->get_id() ) . '" data-total="' . esc_attr( $total ) . '">';
 		printf(
 			/* translators: %s: number of matching issues. */
-			esc_html( _n( 'Ignore all %s product', 'Ignore all %s products', $total, 'catalog-health-scanner-for-woocommerce' ) ),
+			esc_html( _n( 'Ignore all %s product', 'Ignore all %s products', $total, 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
 			esc_html( number_format_i18n( $total ) )
 		);
 		echo '</button>';
@@ -474,7 +328,7 @@ class WPFCHS_Ajax {
 		);
 		echo '<label>' . esc_html( $label ) . ' ';
 		echo '<select class="wpfchs-bulk-value" data-arg="term_id">';
-		echo '<option value="">' . esc_html__( '— Select —', 'catalog-health-scanner-for-woocommerce' ) . '</option>';
+		echo '<option value="">' . esc_html__( '— Select —', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</option>';
 		if ( ! is_wp_error( $terms ) ) {
 			foreach ( $terms as $term ) {
 				echo '<option value="' . esc_attr( $term->term_id ) . '">' . esc_html( $term->name ) . '</option>';
@@ -498,10 +352,10 @@ class WPFCHS_Ajax {
 		echo '<thead><tr>';
 		echo '<th class="wpfchs-col-cb"><input type="checkbox" class="wpfchs-select-all" /></th>';
 		echo '<th class="wpfchs-col-thumb"></th>';
-		echo '<th>' . esc_html__( 'Product', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th>' . esc_html__( 'Type', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th>' . esc_html__( 'Offending value', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th class="wpfchs-col-actions">' . esc_html__( 'Actions', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th>' . esc_html__( 'Product', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th>' . esc_html__( 'Type', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th>' . esc_html__( 'Offending value', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th class="wpfchs-col-actions">' . esc_html__( 'Actions', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
 		echo '</tr></thead><tbody>';
 
 		foreach ( $issues as $issue ) {
@@ -528,9 +382,9 @@ class WPFCHS_Ajax {
 			echo '<td class="wpfchs-muted">' . esc_html( (string) $issue->issue_value ) . '</td>';
 			echo '<td class="wpfchs-col-actions">';
 			if ( $edit_url ) {
-				echo '<a href="' . esc_url( $edit_url ) . '">' . esc_html__( 'Edit', 'catalog-health-scanner-for-woocommerce' ) . '</a> | ';
+				echo '<a href="' . esc_url( $edit_url ) . '">' . esc_html__( 'Edit', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</a> | ';
 			}
-			echo '<button type="button" class="button-link wpfchs-ignore-issue" data-issue="' . esc_attr( $issue->id ) . '">' . esc_html__( 'Ignore', 'catalog-health-scanner-for-woocommerce' ) . '</button>';
+			echo '<button type="button" class="button-link wpfchs-ignore-issue" data-issue="' . esc_attr( $issue->id ) . '">' . esc_html__( 'Ignore', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</button>';
 			echo '</td>';
 			echo '</tr>';
 
@@ -560,7 +414,7 @@ class WPFCHS_Ajax {
 		echo '<span class="wpfchs-muted">';
 		printf(
 			/* translators: %s: number of matching products. */
-			esc_html( _n( '%s product', '%s products', $total, 'catalog-health-scanner-for-woocommerce' ) ),
+			esc_html( _n( '%s product', '%s products', $total, 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
 			esc_html( number_format_i18n( $total ) )
 		);
 		echo '</span>';
@@ -569,7 +423,7 @@ class WPFCHS_Ajax {
 		echo '<span class="wpfchs-muted">';
 		printf(
 			/* translators: %1$d: current page, %2$d: total pages. */
-			esc_html__( '%1$d of %2$d', 'catalog-health-scanner-for-woocommerce' ),
+			esc_html__( '%1$d of %2$d', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			(int) $page,
 			(int) $pages
 		);
@@ -592,7 +446,7 @@ class WPFCHS_Ajax {
 		$issue_id = isset( $_POST['issue_id'] ) ? absint( wp_unslash( $_POST['issue_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce and capability are verified in gate(), called as the first statement of every handler.
 
 		if ( ! wpfchs()->core->issues->ignore( $issue_id ) ) {
-			wp_send_json_error( array( 'message' => __( 'Could not ignore this issue.', 'catalog-health-scanner-for-woocommerce' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Could not ignore this issue.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ) );
 		}
 
 		$issue = wpfchs()->core->issues->get( $issue_id );
@@ -615,7 +469,7 @@ class WPFCHS_Ajax {
 		$issue_id = isset( $_POST['issue_id'] ) ? absint( wp_unslash( $_POST['issue_id'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce and capability are verified in gate(), called as the first statement of every handler.
 
 		if ( ! wpfchs()->core->issues->restore( $issue_id ) ) {
-			wp_send_json_error( array( 'message' => __( 'Could not restore this issue.', 'catalog-health-scanner-for-woocommerce' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Could not restore this issue.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ) );
 		}
 
 		$issue = wpfchs()->core->issues->get( $issue_id );
@@ -688,7 +542,7 @@ class WPFCHS_Ajax {
 			$count = $core->issues->ignore_matching( $this->read_filter_args() );
 		} else {
 			if ( empty( $issue_ids ) ) {
-				wp_send_json_error( array( 'message' => __( 'Select at least one product first.', 'catalog-health-scanner-for-woocommerce' ) ) );
+				wp_send_json_error( array( 'message' => __( 'Select at least one product first.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ) );
 			}
 			$object_ids = $core->issues->get_object_ids_for_issues( $issue_ids );
 			$count      = $core->issues->set_status_for_ids( $issue_ids, 'ignored' );
@@ -696,7 +550,7 @@ class WPFCHS_Ajax {
 		}
 
 		if ( $count < 1 ) {
-			wp_send_json_error( array( 'message' => __( 'Nothing left to ignore here.', 'catalog-health-scanner-for-woocommerce' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Nothing left to ignore here.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ) );
 		}
 
 		wp_send_json_success(
@@ -704,7 +558,7 @@ class WPFCHS_Ajax {
 				'count'   => $count,
 				'message' => sprintf(
 					/* translators: %s: number of issues ignored. */
-					_n( '%s issue ignored. It counts as passing until you restore it from Settings. Re-run the scan to refresh your score.', '%s issues ignored. They count as passing until you restore them from Settings. Re-run the scan to refresh your score.', $count, 'catalog-health-scanner-for-woocommerce' ),
+					_n( '%s issue ignored. It counts as passing until you restore it from Settings. Re-run the scan to refresh your score.', '%s issues ignored. They count as passing until you restore them from Settings. Re-run the scan to refresh your score.', $count, 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					number_format_i18n( $count )
 				),
 			)
@@ -728,7 +582,7 @@ class WPFCHS_Ajax {
 			$count = $core->issues->restore_matching( array() );
 		} else {
 			if ( empty( $issue_ids ) ) {
-				wp_send_json_error( array( 'message' => __( 'Select at least one product first.', 'catalog-health-scanner-for-woocommerce' ) ) );
+				wp_send_json_error( array( 'message' => __( 'Select at least one product first.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ) );
 			}
 			$object_ids = $core->issues->get_object_ids_for_issues( $issue_ids );
 			$count      = $core->issues->set_status_for_ids( $issue_ids, 'open' );
@@ -736,7 +590,7 @@ class WPFCHS_Ajax {
 		}
 
 		if ( $count < 1 ) {
-			wp_send_json_error( array( 'message' => __( 'Nothing to restore.', 'catalog-health-scanner-for-woocommerce' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Nothing to restore.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ) );
 		}
 
 		wp_send_json_success(
@@ -744,7 +598,7 @@ class WPFCHS_Ajax {
 				'count'   => $count,
 				'message' => sprintf(
 					/* translators: %s: number of issues restored. */
-					_n( '%s issue restored. Re-run the scan to refresh your score.', '%s issues restored. Re-run the scan to refresh your score.', $count, 'catalog-health-scanner-for-woocommerce' ),
+					_n( '%s issue restored. Re-run the scan to refresh your score.', '%s issues restored. Re-run the scan to refresh your score.', $count, 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					number_format_i18n( $count )
 				),
 			)
@@ -801,16 +655,16 @@ class WPFCHS_Ajax {
 		}
 
 		if ( 0 === $preview['total'] ) {
-			wp_send_json_error( array( 'message' => __( 'Nothing to change with these settings. Check the bulk value.', 'catalog-health-scanner-for-woocommerce' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Nothing to change with these settings. Check the bulk value.', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ) );
 		}
 
 		ob_start();
 
 		echo '<table class="widefat striped wpfchs-table">';
 		echo '<thead><tr>';
-		echo '<th>' . esc_html__( 'Product', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th>' . esc_html__( 'Current', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
-		echo '<th>' . esc_html__( 'After fix', 'catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th>' . esc_html__( 'Product', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th>' . esc_html__( 'Current', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
+		echo '<th>' . esc_html__( 'After fix', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</th>';
 		echo '</tr></thead><tbody>';
 
 		foreach ( $preview['rows'] as $row ) {
@@ -827,7 +681,7 @@ class WPFCHS_Ajax {
 			echo '<p class="wpfchs-muted">';
 			printf(
 				/* translators: %1$d: rows shown, %2$d: total products affected. */
-				esc_html__( 'Showing %1$d of %2$d.', 'catalog-health-scanner-for-woocommerce' ),
+				esc_html__( 'Showing %1$d of %2$d.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				(int) count( $preview['rows'] ),
 				(int) $preview['total']
 			);
@@ -837,7 +691,7 @@ class WPFCHS_Ajax {
 		echo '<p class="wpfchs-muted">';
 		printf(
 			/* translators: %d: undo window in days. */
-			esc_html__( 'This action can be undone for %d days.', 'catalog-health-scanner-for-woocommerce' ),
+			esc_html__( 'This action can be undone for %d days.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			(int) wpfchs()->core->get_threshold( 'undo_window_days' )
 		);
 		echo '</p>';
@@ -848,17 +702,13 @@ class WPFCHS_Ajax {
 			array(
 				'title' => sprintf(
 					/* translators: %1$s: check label, %2$d: number of products. */
-					__( 'Preview: %1$s — %2$d products', 'catalog-health-scanner-for-woocommerce' ),
+					__( 'Preview: %1$s — %2$d products', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					( $check ? $check->get_label() : $check_id ),
 					$preview['total']
 				),
 				'html'       => $html,
 				'total'      => $preview['total'],
 				'object_ids' => $object_ids,
-				// Free applies to one product at a time; the JS layer swaps
-				// the apply button for an upgrade link when this is true.
-				'pro_required' => ( ! wpfchs()->is_pro() && $preview['total'] > 1 ),
-				'upgrade'      => WPFCHS_Upgrade::URL,
 			)
 		);
 	}
@@ -873,8 +723,6 @@ class WPFCHS_Ajax {
 		$this->gate();
 
 		list( $check_id, $object_ids, $args ) = $this->read_fix_request();
-
-		$this->gate_bulk_fix( count( $object_ids ) );
 
 		$result = wpfchs()->core->fixes->apply( $check_id, $object_ids, $args );
 

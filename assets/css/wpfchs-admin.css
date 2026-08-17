@@ -1,5 +1,5 @@
 /**
- * Catalog Health Scanner for WooCommerce - Admin Styles
+ * WPFactory Catalog Health Scanner for WooCommerce - Admin Styles
  *
  * @version 1.0.0
  * @since   1.0.0
@@ -1160,64 +1160,4 @@ a.wpfchs-category-card.wpfchs-band-critical {
 
 /* Pro locks
 --------------------------------------------------------------- */
-.wpfchs-pro-badge {
-	display: inline-block;
-	padding: 1px 8px;
-	margin-right: 6px;
-	border-radius: 999px;
-	background: linear-gradient(135deg, #6d28d9, #9333ea);
-	color: #fff;
-	font-size: 10px;
-	font-weight: 600;
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
-	vertical-align: middle;
-}
-
-.wpfchs-panel-head h2 .wpfchs-pro-badge {
-	margin-right: 0;
-	margin-left: 2px;
-}
-
-button.wpfchs-locked {
-	position: relative;
-	opacity: 0.85;
-}
-
-button.wpfchs-locked .dashicons-lock {
-	font-size: 14px;
-	width: 14px;
-	height: 14px;
-	line-height: 1.35;
-	margin-right: 3px;
-	vertical-align: text-top;
-}
-
-button.button-link.wpfchs-locked {
-	text-decoration: none;
-}
-
-.wpfchs-lock-note {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	margin: 0;
-	padding: 10px 16px;
-	border-bottom: 1px solid var(--wpfchs-border);
-	background: #faf5ff;
-	color: #4c1d95;
-}
-
-.wpfchs-lock-note .dashicons-lock {
-	font-size: 16px;
-	width: 16px;
-	height: 16px;
-}
-
-.wpfchs-lock-note a {
-	font-weight: 600;
-}
-
-.wpfchs-panel-locked .wpfchs-form-table {
-	opacity: 0.65;
-}
+.wpfchs-panel-head h2 

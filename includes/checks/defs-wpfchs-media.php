@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Check Definitions - Media
+ * WPFactory Catalog Health Scanner for WooCommerce - Check Definitions - Media
  *
  * Always applicable.
  *
@@ -16,18 +16,18 @@ return array(
 
 	array(
 		'id'          => 'image_missing',
-		'label'       => __( 'No featured image', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Products without images convert dramatically worse, and most feed platforms reject them outright.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'No featured image', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Products without images convert dramatically worse, and most feed platforms reject them outright.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'check'       => function ( $product ) {
-			return ( ! $product->get_image_id( 'edit' ) ? __( 'No featured image', 'catalog-health-scanner-for-woocommerce' ) : false );
+			return ( ! $product->get_image_id( 'edit' ) ? __( 'No featured image', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : false );
 		},
 	),
 
 	array(
 		'id'          => 'image_file_missing',
-		'label'       => __( 'Image record exists but file is missing from the server', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'The product shows a broken image placeholder to every visitor.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Image record exists but file is missing from the server', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'The product shows a broken image placeholder to every visitor.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'check'       => function ( $product ) {
 			$image_id = $product->get_image_id( 'edit' );
@@ -44,8 +44,8 @@ return array(
 
 	array(
 		'id'          => 'gallery_deleted_refs',
-		'label'       => __( 'Gallery images referencing deleted attachments', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'The product gallery contains slots pointing at images that no longer exist.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Gallery images referencing deleted attachments', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'The product gallery contains slots pointing at images that no longer exist.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'fix'         => 'clean_gallery',
 		'fix_type'    => 'auto',
@@ -59,7 +59,7 @@ return array(
 			if ( $deleted > 0 ) {
 				return sprintf(
 					/* translators: %d: number of deleted gallery attachments. */
-					__( '%d deleted attachment(s) referenced', 'catalog-health-scanner-for-woocommerce' ),
+					__( '%d deleted attachment(s) referenced', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					$deleted
 				);
 			}
@@ -69,8 +69,8 @@ return array(
 
 	array(
 		'id'          => 'image_alt_missing',
-		'label'       => __( 'Featured image has no alt text', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Alt text is what screen readers, image search, and AI vision models read. Without it the image is invisible to all three.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Featured image has no alt text', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Alt text is what screen readers, image search, and AI vision models read. Without it the image is invisible to all three.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'check'       => function ( $product ) {
 			$image_id = $product->get_image_id( 'edit' );
@@ -78,20 +78,20 @@ return array(
 				return false; // Covered by `image_missing`.
 			}
 			$alt = get_post_meta( $image_id, '_wp_attachment_image_alt', true );
-			return ( '' === trim( (string) $alt ) ? __( 'No alt text', 'catalog-health-scanner-for-woocommerce' ) : false );
+			return ( '' === trim( (string) $alt ) ? __( 'No alt text', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : false );
 		},
 	),
 
 	array(
 		'id'          => 'placeholder_image_only',
-		'label'       => __( 'Only the WooCommerce placeholder image', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Customers see the generic grey placeholder instead of the product.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Only the WooCommerce placeholder image', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Customers see the generic grey placeholder instead of the product.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'check'       => function ( $product ) {
 			$image_id       = $product->get_image_id( 'edit' );
 			$placeholder_id = (int) get_option( 'woocommerce_placeholder_image', 0 );
 			if ( $image_id && $placeholder_id && (int) $image_id === $placeholder_id ) {
-				return __( 'Placeholder set as product image', 'catalog-health-scanner-for-woocommerce' );
+				return __( 'Placeholder set as product image', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 			}
 			return false;
 		},
@@ -99,8 +99,8 @@ return array(
 
 	array(
 		'id'          => 'image_reused_across_products',
-		'label'       => __( 'Same featured image reused across many different products', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Identical thumbnails make products indistinguishable in the catalog and in feeds.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Same featured image reused across many different products', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Identical thumbnails make products indistinguishable in the catalog and in feeds.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'low',
 		'pass'        => 'catalog',
 		'check'       => function () {
@@ -143,7 +143,7 @@ return array(
 					'product_id' => (int) $row->post_id,
 					'value'      => sprintf(
 						/* translators: %d: attachment id. */
-						__( 'Image #%d shared with other products', 'catalog-health-scanner-for-woocommerce' ),
+						__( 'Image #%d shared with other products', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 						(int) $row->thumb
 					),
 				);
@@ -154,8 +154,8 @@ return array(
 
 	array(
 		'id'          => 'variation_images_inconsistent',
-		'label'       => __( 'Variations with no image on a product where other variations have one', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Switching variations makes the image flicker between real photos and the parent fallback.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Variations with no image on a product where other variations have one', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Switching variations makes the image flicker between real photos and the parent fallback.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'low',
 		'applies'     => function ( $product ) {
 			return $product->is_type( 'variable' );
@@ -173,7 +173,7 @@ return array(
 			if ( $with > 0 && $without > 0 ) {
 				return sprintf(
 					/* translators: %d: number of variations without an image. */
-					__( '%d variation(s) without an image', 'catalog-health-scanner-for-woocommerce' ),
+					__( '%d variation(s) without an image', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					$without
 				);
 			}
@@ -183,8 +183,8 @@ return array(
 
 	array(
 		'id'          => 'image_low_res',
-		'label'       => __( 'Featured image below minimum usable resolution', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'The image pixelates on zoom and fails the minimum size requirements of most feed platforms.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Featured image below minimum usable resolution', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'The image pixelates on zoom and fails the minimum size requirements of most feed platforms.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'check'       => function ( $product ) {
 			$image_id = $product->get_image_id( 'edit' );

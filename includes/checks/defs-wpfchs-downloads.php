@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Check Definitions - Downloads
+ * WPFactory Catalog Health Scanner for WooCommerce - Check Definitions - Downloads
  *
  * Auto-detected: off when no downloadable products exist.
  *
@@ -16,21 +16,21 @@ return array(
 
 	array(
 		'id'          => 'download_no_files',
-		'label'       => __( 'Downloadable product with no files attached', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Customers pay and receive nothing. This produces refunds and disputes, not just complaints.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Downloadable product with no files attached', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Customers pay and receive nothing. This produces refunds and disputes, not just complaints.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'critical',
 		'applies'     => function ( $product ) {
 			return $product->is_downloadable();
 		},
 		'check'       => function ( $product ) {
-			return ( empty( $product->get_downloads() ) ? __( 'No files attached', 'catalog-health-scanner-for-woocommerce' ) : false );
+			return ( empty( $product->get_downloads() ) ? __( 'No files attached', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : false );
 		},
 	),
 
 	array(
 		'id'          => 'download_file_missing',
-		'label'       => __( 'Download file missing from the server', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Customers paid and got a broken download link.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Download file missing from the server', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Customers paid and got a broken download link.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'critical',
 		'applies'     => function ( $product ) {
 			return $product->is_downloadable();
@@ -60,8 +60,8 @@ return array(
 
 	array(
 		'id'          => 'download_public_location',
-		'label'       => __( 'Download files stored in a publicly guessable location', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Anyone who guesses the URL gets your paid file for free.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Download files stored in a publicly guessable location', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Anyone who guesses the URL gets your paid file for free.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'applies'     => function ( $product ) {
 			return $product->is_downloadable();
@@ -83,8 +83,8 @@ return array(
 
 	array(
 		'id'          => 'download_url_error',
-		'label'       => __( 'Download URL returning an error', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'The remote file behind this download answers with an error, so customers get nothing after paying.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Download URL returning an error', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'The remote file behind this download answers with an error, so customers get nothing after paying.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'critical',
 		'applies'     => function ( $product ) {
 			return $product->is_downloadable();
@@ -113,9 +113,9 @@ return array(
 				if ( 'error' === $status || (int) $status >= 400 ) {
 					return sprintf(
 						/* translators: %1$s: file name, %2$s: HTTP status. */
-						__( '%1$s (HTTP %2$s)', 'catalog-health-scanner-for-woocommerce' ),
+						__( '%1$s (HTTP %2$s)', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 						basename( wp_parse_url( $file, PHP_URL_PATH ) ),
-						( 'error' === $status ? __( 'unreachable', 'catalog-health-scanner-for-woocommerce' ) : $status )
+						( 'error' === $status ? __( 'unreachable', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : $status )
 					);
 				}
 			}

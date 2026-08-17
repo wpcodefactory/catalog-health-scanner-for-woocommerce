@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Admin Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Admin Class
  *
  * Top-level menu, screen routing, assets, and shared render helpers.
  *
@@ -137,8 +137,8 @@ class WPFCHS_Admin {
 
 			add_submenu_page(
 				$parent,
-				__( 'Catalog Health Scanner', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'Catalog Health', 'catalog-health-scanner-for-woocommerce' ),
+				__( 'Catalog Health Scanner', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'Catalog Health', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				$capability,
 				'wpfchs',
 				array( $this, 'render_main_page' )
@@ -148,8 +148,8 @@ class WPFCHS_Admin {
 
 			// Standalone fallback: no WPFactory menu to join, so keep our own.
 			add_menu_page(
-				__( 'Catalog Health Scanner', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'Catalog Health', 'catalog-health-scanner-for-woocommerce' ),
+				__( 'Catalog Health Scanner', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'Catalog Health', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				$capability,
 				'wpfchs',
 				array( $this, 'render_main_page' ),
@@ -159,8 +159,8 @@ class WPFCHS_Admin {
 
 			add_submenu_page(
 				'wpfchs',
-				__( 'Catalog Health Scanner', 'catalog-health-scanner-for-woocommerce' ),
-				__( 'Dashboard', 'catalog-health-scanner-for-woocommerce' ),
+				__( 'Catalog Health Scanner', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				__( 'Dashboard', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				$capability,
 				'wpfchs',
 				array( $this, 'render_main_page' )
@@ -179,15 +179,15 @@ class WPFCHS_Admin {
 		// this page" bug hit earlier on the setup wizard.
 		$hidden = array(
 			'wpfchs-profiles' => array(
-				__( 'Scan Profiles', 'catalog-health-scanner-for-woocommerce' ),
+				__( 'Scan Profiles', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				array( $this->profiles, 'render_page' ),
 			),
 			'wpfchs-settings' => array(
-				__( 'Settings', 'catalog-health-scanner-for-woocommerce' ),
+				__( 'Settings', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				array( $this->settings, 'render_page' ),
 			),
 			'wpfchs-setup'    => array(
-				__( 'Catalog Health Scanner Setup', 'catalog-health-scanner-for-woocommerce' ),
+				__( 'Catalog Health Scanner Setup', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				array( $this->wizard, 'render_page' ),
 			),
 		);
@@ -289,47 +289,45 @@ class WPFCHS_Admin {
 				// Presentation only — every Pro feature is enforced
 				// server-side. This just decides whether a wall is drawn
 				// before the request instead of after it.
-				'is_pro'      => wpfchs()->is_pro(),
-				'upgrade_url' => WPFCHS_Upgrade::URL,
 				'i18n'     => array(
-					'scanning'       => __( 'Scanning…', 'catalog-health-scanner-for-woocommerce' ),
-					'scan_complete'  => __( 'Scan complete.', 'catalog-health-scanner-for-woocommerce' ),
-					'scan_failed'    => __( 'The scan could not continue. You can resume it from the dashboard.', 'catalog-health-scanner-for-woocommerce' ),
-					'confirm_cancel' => __( 'Cancel this scan? Progress so far is kept.', 'catalog-health-scanner-for-woocommerce' ),
-					'ignored'        => __( 'Ignored. This check will no longer flag this product.', 'catalog-health-scanner-for-woocommerce' ),
-					'restored'       => __( 'Restored.', 'catalog-health-scanner-for-woocommerce' ),
-					'fixed'          => __( 'Fixed.', 'catalog-health-scanner-for-woocommerce' ),
-					'undo'           => __( 'Undo', 'catalog-health-scanner-for-woocommerce' ),
-					'undone'         => __( 'Fix undone. The issues are open again.', 'catalog-health-scanner-for-woocommerce' ),
-					'error'          => __( 'Something went wrong. Please try again.', 'catalog-health-scanner-for-woocommerce' ),
-					'loading'        => __( 'Loading…', 'catalog-health-scanner-for-woocommerce' ),
+					'scanning'       => __( 'Scanning…', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'scan_complete'  => __( 'Scan complete.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'scan_failed'    => __( 'The scan could not continue. You can resume it from the dashboard.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'confirm_cancel' => __( 'Cancel this scan? Progress so far is kept.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'ignored'        => __( 'Ignored. This check will no longer flag this product.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'restored'       => __( 'Restored.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'fixed'          => __( 'Fixed.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'undo'           => __( 'Undo', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'undone'         => __( 'Fix undone. The issues are open again.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'error'          => __( 'Something went wrong. Please try again.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'loading'        => __( 'Loading…', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					/* translators: %d: number of products the fix will be applied to. */
-					'apply_to'       => __( 'Apply to %d products', 'catalog-health-scanner-for-woocommerce' ),
-					'no_selection'   => __( 'Select at least one product first.', 'catalog-health-scanner-for-woocommerce' ),
-					'cancel'         => __( 'Cancel', 'catalog-health-scanner-for-woocommerce' ),
+					'apply_to'       => __( 'Apply to %d products', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'no_selection'   => __( 'Select at least one product first.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'cancel'         => __( 'Cancel', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					/* translators: %d: number of rows currently selected. */
-					'selected'       => __( '%d selected', 'catalog-health-scanner-for-woocommerce' ),
-					'confirm_delete_profile' => __( 'Delete this profile? Scans that used it keep their history.', 'catalog-health-scanner-for-woocommerce' ),
-					'confirm_reset'  => __( 'Reset all settings and re-run the setup wizard? Scan history is kept.', 'catalog-health-scanner-for-woocommerce' ),
-					'confirm_fix_all' => __( 'Preview and apply all auto-fixable quick wins?', 'catalog-health-scanner-for-woocommerce' ),
-					'fixing'         => __( 'Applying fixes…', 'catalog-health-scanner-for-woocommerce' ),
-					'choose_logo'    => __( 'Choose report logo', 'catalog-health-scanner-for-woocommerce' ),
-					'use_logo'       => __( 'Use this logo', 'catalog-health-scanner-for-woocommerce' ),
-					'apply_fixes'    => __( 'Apply all fixes', 'catalog-health-scanner-for-woocommerce' ),
-					'unlock'         => __( 'Unlock with Pro', 'catalog-health-scanner-for-woocommerce' ),
+					'selected'       => __( '%d selected', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'confirm_delete_profile' => __( 'Delete this profile? Scans that used it keep their history.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'confirm_reset'  => __( 'Reset all settings and re-run the setup wizard? Scan history is kept.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'confirm_fix_all' => __( 'Preview and apply all auto-fixable quick wins?', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'fixing'         => __( 'Applying fixes…', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'choose_logo'    => __( 'Choose report logo', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'use_logo'       => __( 'Use this logo', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'apply_fixes'    => __( 'Apply all fixes', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'unlock'         => __( 'Unlock with Pro', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					/* translators: %s: feature name. */
-					'pro_feature'    => __( '%s is a Pro feature', 'catalog-health-scanner-for-woocommerce' ),
-					'pro_generic'    => __( 'This feature', 'catalog-health-scanner-for-woocommerce' ),
-					'pro_body'       => __( 'Available in the Pro version, along with bulk fixing, scheduled scans, email alerts, scan comparison, and the white-label PDF audit report.', 'catalog-health-scanner-for-woocommerce' ),
-					'pro_free_hint'  => __( 'The free version fixes one product at a time. Pro applies a reviewed fix to every affected product in one click.', 'catalog-health-scanner-for-woocommerce' ),
+					'pro_feature'    => __( '%s is a Pro feature', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'pro_generic'    => __( 'This feature', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'pro_body'       => __( 'Available in the Pro version, along with bulk fixing, scheduled scans, email alerts, scan comparison, and the white-label PDF audit report.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+					'pro_free_hint'  => __( 'The free version fixes one product at a time. Pro applies a reviewed fix to every affected product in one click.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					/* translators: %d: number of selected products that will be ignored. */
-					'confirm_ignore_selected'  => __( 'Ignore %d selected products for this check? They will count as passing until you restore them from Settings.', 'catalog-health-scanner-for-woocommerce' ),
+					'confirm_ignore_selected'  => __( 'Ignore %d selected products for this check? They will count as passing until you restore them from Settings.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					/* translators: %d: total number of products that will be ignored. */
-					'confirm_ignore_all'       => __( 'Ignore all %d products for this check? They will count as passing until you restore them from Settings.', 'catalog-health-scanner-for-woocommerce' ),
+					'confirm_ignore_all'       => __( 'Ignore all %d products for this check? They will count as passing until you restore them from Settings.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					/* translators: %d: number of selected issues that will be restored. */
-					'confirm_restore_selected' => __( 'Restore %d selected issues? They become open again and count against your score.', 'catalog-health-scanner-for-woocommerce' ),
+					'confirm_restore_selected' => __( 'Restore %d selected issues? They become open again and count against your score.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					/* translators: %d: total number of ignored issues that will be restored. */
-					'confirm_restore_all'      => __( 'Restore all %d ignored issues? They become open again and count against your score.', 'catalog-health-scanner-for-woocommerce' ),
+					'confirm_restore_all'      => __( 'Restore all %d ignored issues? They become open again and count against your score.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				),
 			)
 		);
@@ -375,7 +373,7 @@ class WPFCHS_Admin {
 	 */
 	function render_shell_open( $active ) {
 		echo '<div class="wrap wpfchs-wrap">';
-		echo '<h1>' . esc_html__( 'Catalog Health Scanner', 'catalog-health-scanner-for-woocommerce' ) . '</h1>';
+		echo '<h1>' . esc_html__( 'Catalog Health Scanner', 'wpfactory-catalog-health-scanner-for-woocommerce' ) . '</h1>';
 		$this->render_tabs( $active );
 	}
 
@@ -415,24 +413,24 @@ class WPFCHS_Admin {
 	function render_tabs( $active ) {
 
 		$tabs = array_merge(
-			array( 'dashboard' => __( 'Dashboard', 'catalog-health-scanner-for-woocommerce' ) ),
+			array( 'dashboard' => __( 'Dashboard', 'wpfactory-catalog-health-scanner-for-woocommerce' ) ),
 			wpfchs()->core->checks->get_categories(),
-			array( 'history' => __( 'History', 'catalog-health-scanner-for-woocommerce' ) )
+			array( 'history' => __( 'History', 'wpfactory-catalog-health-scanner-for-woocommerce' ) )
 		);
 
 		// Screens that live on their own admin page but belong to the same
 		// tab bar. Keyed by the tab key their render_page() passes in.
 		$pages = array(
 			'profiles' => array(
-				'label' => __( 'Profiles', 'catalog-health-scanner-for-woocommerce' ),
+				'label' => __( 'Profiles', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'url'   => admin_url( 'admin.php?page=wpfchs-profiles' ),
 			),
 			'settings' => array(
-				'label' => __( 'Settings', 'catalog-health-scanner-for-woocommerce' ),
+				'label' => __( 'Settings', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'url'   => admin_url( 'admin.php?page=wpfchs-settings' ),
 			),
 			'setup'    => array(
-				'label' => __( 'Setup', 'catalog-health-scanner-for-woocommerce' ),
+				'label' => __( 'Setup', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'url'   => admin_url( 'admin.php?page=wpfchs-setup' ),
 			),
 		);
@@ -471,10 +469,10 @@ class WPFCHS_Admin {
 	 */
 	function severity_badge( $severity ) {
 		$labels = array(
-			'critical' => __( 'Critical', 'catalog-health-scanner-for-woocommerce' ),
-			'high'     => __( 'High', 'catalog-health-scanner-for-woocommerce' ),
-			'medium'   => __( 'Medium', 'catalog-health-scanner-for-woocommerce' ),
-			'low'      => __( 'Low', 'catalog-health-scanner-for-woocommerce' ),
+			'critical' => __( 'Critical', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'high'     => __( 'High', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'medium'   => __( 'Medium', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'low'      => __( 'Low', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		);
 		$severity = ( isset( $labels[ $severity ] ) ? $severity : 'medium' );
 		return '<span class="wpfchs-badge wpfchs-badge-' . esc_attr( $severity ) . '">' . esc_html( $labels[ $severity ] ) . '</span>';

@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Scores Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Scores Class
  *
  * Scoring rules (spec section 9):
  * - each check contributes points equal to its severity weight, earned in
@@ -177,27 +177,27 @@ class WPFCHS_Scores {
 		if ( $score >= 90 ) {
 			return array(
 				'id'    => 'healthy',
-				'label' => __( 'Healthy', 'catalog-health-scanner-for-woocommerce' ),
+				'label' => __( 'Healthy', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'color' => '#00a32b',
 			);
 		}
 		if ( $score >= 75 ) {
 			return array(
 				'id'    => 'minor',
-				'label' => __( 'Minor issues', 'catalog-health-scanner-for-woocommerce' ),
+				'label' => __( 'Minor issues', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'color' => '#dba617',
 			);
 		}
 		if ( $score >= 50 ) {
 			return array(
 				'id'    => 'attention',
-				'label' => __( 'Needs attention', 'catalog-health-scanner-for-woocommerce' ),
+				'label' => __( 'Needs attention', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'color' => '#e65054',
 			);
 		}
 		return array(
 			'id'    => 'critical',
-			'label' => __( 'Critical', 'catalog-health-scanner-for-woocommerce' ),
+			'label' => __( 'Critical', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			'color' => '#d63638',
 		);
 	}
@@ -247,14 +247,14 @@ class WPFCHS_Scores {
 		if ( $critical_open > 0 ) {
 			return array(
 				'id'    => 'critical-open',
-				'label' => __( 'Critical issues open', 'catalog-health-scanner-for-woocommerce' ),
+				'label' => __( 'Critical issues open', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'color' => $band['color'],
 			);
 		}
 		if ( $high_open > 0 ) {
 			return array(
 				'id'    => 'attention',
-				'label' => __( 'Needs attention', 'catalog-health-scanner-for-woocommerce' ),
+				'label' => __( 'Needs attention', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 				'color' => $band['color'],
 			);
 		}
@@ -281,7 +281,7 @@ class WPFCHS_Scores {
 			return array(
 				'label' => sprintf(
 					/* translators: %s: number of critical issues. */
-					_n( '%s critical', '%s critical', $critical_open, 'catalog-health-scanner-for-woocommerce' ),
+					_n( '%s critical', '%s critical', $critical_open, 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					number_format_i18n( $critical_open )
 				),
 				'color' => '#d63638',
@@ -291,7 +291,7 @@ class WPFCHS_Scores {
 			return array(
 				'label' => sprintf(
 					/* translators: %s: number of high-severity issues. */
-					_n( '%s high', '%s high', $high_open, 'catalog-health-scanner-for-woocommerce' ),
+					_n( '%s high', '%s high', $high_open, 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					number_format_i18n( $high_open )
 				),
 				'color' => '#dba617',

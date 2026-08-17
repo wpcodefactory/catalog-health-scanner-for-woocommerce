@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Check Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Check Class
  *
  * A single catalog check: identity, severity, applicability, the test
  * itself, and (optionally) the fixer that can repair its findings.

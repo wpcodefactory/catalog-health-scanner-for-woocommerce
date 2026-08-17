@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Checks Registry Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Checks Registry Class
  *
  * @version 1.0.0
  * @since   1.0.0
@@ -34,16 +34,16 @@ class WPFCHS_Checks {
 		return apply_filters(
 			'wpfchs_categories',
 			array(
-				'purchasability' => __( 'Purchasability', 'catalog-health-scanner-for-woocommerce' ),
-				'inventory'      => __( 'Inventory', 'catalog-health-scanner-for-woocommerce' ),
-				'shipping'       => __( 'Shipping', 'catalog-health-scanner-for-woocommerce' ),
-				'tax'            => __( 'Tax', 'catalog-health-scanner-for-woocommerce' ),
-				'media'          => __( 'Media', 'catalog-health-scanner-for-woocommerce' ),
-				'structure'      => __( 'Structure', 'catalog-health-scanner-for-woocommerce' ),
-				'downloads'      => __( 'Downloads', 'catalog-health-scanner-for-woocommerce' ),
-				'content'        => __( 'Content', 'catalog-health-scanner-for-woocommerce' ),
-				'feed'           => __( 'Feed Readiness', 'catalog-health-scanner-for-woocommerce' ),
-				'pricing'        => __( 'Pricing', 'catalog-health-scanner-for-woocommerce' ),
+				'purchasability' => __( 'Purchasability', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'inventory'      => __( 'Inventory', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'shipping'       => __( 'Shipping', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'tax'            => __( 'Tax', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'media'          => __( 'Media', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'structure'      => __( 'Structure', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'downloads'      => __( 'Downloads', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'content'        => __( 'Content', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'feed'           => __( 'Feed Readiness', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'pricing'        => __( 'Pricing', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 			)
 		);
 	}

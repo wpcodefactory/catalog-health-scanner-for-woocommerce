@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Check Definitions - Feed Readiness
+ * WPFactory Catalog Health Scanner for WooCommerce - Check Definitions - Feed Readiness
  *
  * Auto-detected: off for stores not running product feeds.
  *
@@ -33,8 +33,8 @@ return array(
 
 	array(
 		'id'          => 'gtin_missing',
-		'label'       => __( 'Missing GTIN, EAN, UPC, or MPN', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Feed platforms reject listings without a product identifier, so this product earns no paid traffic.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Missing GTIN, EAN, UPC, or MPN', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Feed platforms reject listings without a product identifier, so this product earns no paid traffic.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'check'       => function ( $product ) {
 			if ( is_callable( array( $product, 'get_global_unique_id' ) ) && '' !== (string) $product->get_global_unique_id() ) {
@@ -49,14 +49,14 @@ return array(
 					return false;
 				}
 			}
-			return __( 'No identifier', 'catalog-health-scanner-for-woocommerce' );
+			return __( 'No identifier', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 		},
 	),
 
 	array(
 		'id'          => 'brand_missing',
-		'label'       => __( 'Missing brand', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Most feed platforms require a brand; listings without one are rejected or demoted.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Missing brand', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Most feed platforms require a brand; listings without one are rejected or demoted.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'fix'         => 'assign_brand',
 		'fix_type'    => 'bulk',
@@ -65,14 +65,14 @@ return array(
 		},
 		'check'       => function ( $product ) use ( $wpfchs_brand_taxonomy ) {
 			$terms = get_the_terms( $product->get_id(), $wpfchs_brand_taxonomy() );
-			return ( empty( $terms ) || is_wp_error( $terms ) ? __( 'No brand', 'catalog-health-scanner-for-woocommerce' ) : false );
+			return ( empty( $terms ) || is_wp_error( $terms ) ? __( 'No brand', 'wpfactory-catalog-health-scanner-for-woocommerce' ) : false );
 		},
 	),
 
 	array(
 		'id'          => 'condition_missing',
-		'label'       => __( 'Missing product condition', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Feed platforms assume "new" when condition is missing; wrong assumptions get listings suspended.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Missing product condition', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Feed platforms assume "new" when condition is missing; wrong assumptions get listings suspended.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'applies'     => function () {
 			// Only meaningful when the store actually maintains condition
@@ -91,14 +91,14 @@ return array(
 					return false;
 				}
 			}
-			return __( 'No condition', 'catalog-health-scanner-for-woocommerce' );
+			return __( 'No condition', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 		},
 	),
 
 	array(
 		'id'          => 'google_category_missing',
-		'label'       => __( 'Missing Google product category mapping', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Unmapped products land in the wrong Google Shopping category and reach the wrong buyers.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Missing Google product category mapping', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Unmapped products land in the wrong Google Shopping category and reach the wrong buyers.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'applies'     => function () {
 			static $in_use = null;
@@ -115,14 +115,14 @@ return array(
 					return false;
 				}
 			}
-			return __( 'No mapping', 'catalog-health-scanner-for-woocommerce' );
+			return __( 'No mapping', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 		},
 	),
 
 	array(
 		'id'          => 'feed_description_too_long',
-		'label'       => __( 'Description exceeding feed platform character limits', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Feed platforms truncate or reject descriptions past their limit.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Description exceeding feed platform character limits', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Feed platforms truncate or reject descriptions past their limit.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'low',
 		'check'       => function ( $product ) {
 			$length = mb_strlen( trim( wp_strip_all_tags( $product->get_description( 'edit' ) ) ) );
@@ -130,7 +130,7 @@ return array(
 			if ( $max > 0 && $length > $max ) {
 				return sprintf(
 					/* translators: %1$d: description length, %2$d: limit. */
-					__( '%1$d of %2$d characters', 'catalog-health-scanner-for-woocommerce' ),
+					__( '%1$d of %2$d characters', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					$length,
 					$max
 				);
@@ -141,15 +141,15 @@ return array(
 
 	array(
 		'id'          => 'feed_title_too_long',
-		'label'       => __( 'Title exceeding feed platform character limits', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Google Shopping truncates titles over 150 characters, cutting off what you wrote.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Title exceeding feed platform character limits', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Google Shopping truncates titles over 150 characters, cutting off what you wrote.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'check'       => function ( $product ) {
 			$length = mb_strlen( $product->get_name( 'edit' ) );
 			if ( $length > 150 ) {
 				return sprintf(
 					/* translators: %d: title length in characters. */
-					__( '%d characters', 'catalog-health-scanner-for-woocommerce' ),
+					__( '%d characters', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					$length
 				);
 			}

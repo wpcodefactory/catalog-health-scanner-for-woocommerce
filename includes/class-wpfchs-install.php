@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Install Class
+ * WPFactory Catalog Health Scanner for WooCommerce - Install Class
  *
  * @version 1.0.0
  * @since   1.0.0

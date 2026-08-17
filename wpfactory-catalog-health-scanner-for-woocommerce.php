@@ -1,14 +1,14 @@
 <?php
 /**
- * Plugin Name: Catalog Health Scanner for WooCommerce
- * Plugin URI: https://wordpress.org/plugins/catalog-health-scanner-for-woocommerce/
+ * Plugin Name: WPFactory Catalog Health Scanner for WooCommerce
+ * Plugin URI: https://wordpress.org/plugins/wpfactory-catalog-health-scanner-for-woocommerce/
  * Description: Scan your WooCommerce catalog and find the products that are silently costing you sales.
  * Version: 1.0.0
  * Author: WPFactory
  * Author URI: https://wpfactory.com
  * Requires at least: 6.0
  * Requires PHP: 7.4
- * Text Domain: catalog-health-scanner-for-woocommerce
+ * Text Domain: wpfactory-catalog-health-scanner-for-woocommerce
  * Domain Path: /langs
  * WC tested up to: 10.9
  * Requires Plugins: woocommerce
@@ -20,14 +20,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( 'catalog-health-scanner-for-woocommerce.php' === basename( __FILE__ ) ) {
+if ( 'wpfactory-catalog-health-scanner-for-woocommerce.php' === basename( __FILE__ ) ) {
 	/**
 	 * Check if Pro plugin version is activated.
 	 *
 	 * @version 1.0.0
 	 * @since   1.0.0
 	 */
-	$plugin = 'catalog-health-scanner-for-woocommerce-pro/catalog-health-scanner-for-woocommerce-pro.php';
+	$plugin = 'wpfactory-catalog-health-scanner-for-woocommerce-pro/wpfactory-catalog-health-scanner-for-woocommerce-pro.php';
 	if (
 		in_array( $plugin, (array) get_option( 'active_plugins', array() ), true ) ||
 		(

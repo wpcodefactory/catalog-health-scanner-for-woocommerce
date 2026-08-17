@@ -1,6 +1,6 @@
 <?php
 /**
- * Catalog Health Scanner for WooCommerce - Check Definitions - Structure & Taxonomy
+ * WPFactory Catalog Health Scanner for WooCommerce - Check Definitions - Structure & Taxonomy
  *
  * Always applicable.
  *
@@ -16,8 +16,8 @@ return array(
 
 	array(
 		'id'          => 'category_missing',
-		'label'       => __( 'Product in no category, or only Uncategorized', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'This product is invisible to category browsing and filtered navigation.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Product in no category, or only Uncategorized', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'This product is invisible to category browsing and filtered navigation.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'fix'         => 'assign_category',
 		'fix_type'    => 'bulk',
@@ -28,8 +28,8 @@ return array(
 			if ( empty( $real ) ) {
 				return (
 					empty( $term_ids ) ?
-					__( 'No category', 'catalog-health-scanner-for-woocommerce' ) :
-					__( 'Only the default category', 'catalog-health-scanner-for-woocommerce' )
+					__( 'No category', 'wpfactory-catalog-health-scanner-for-woocommerce' ) :
+					__( 'Only the default category', 'wpfactory-catalog-health-scanner-for-woocommerce' )
 				);
 			}
 			return false;
@@ -38,8 +38,8 @@ return array(
 
 	array(
 		'id'          => 'linked_products_deleted',
-		'label'       => __( 'Cross-sells or upsells pointing at deleted or unpublished products', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Recommendation slots on this product page are silently empty or broken.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Cross-sells or upsells pointing at deleted or unpublished products', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Recommendation slots on this product page are silently empty or broken.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'fix'         => 'clean_linked_products',
 		'fix_type'    => 'auto',
@@ -57,7 +57,7 @@ return array(
 			if ( $broken > 0 ) {
 				return sprintf(
 					/* translators: %d: number of broken linked product references. */
-					__( '%d broken linked product(s)', 'catalog-health-scanner-for-woocommerce' ),
+					__( '%d broken linked product(s)', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					$broken
 				);
 			}
@@ -67,8 +67,8 @@ return array(
 
 	array(
 		'id'          => 'orphaned_variation',
-		'label'       => __( 'Orphaned variation with no surviving parent', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'These variations belong to no product but still exist in the database, and can leak into feeds and search.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Orphaned variation with no surviving parent', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'These variations belong to no product but still exist in the database, and can leak into feeds and search.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'fix'         => 'delete_orphaned_variations',
 		'fix_type'    => 'auto',
@@ -98,15 +98,15 @@ return array(
 
 	array(
 		'id'          => 'attributes_not_for_variation',
-		'label'       => __( 'Variable product with attributes not enabled for variations', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'The product has variations but no attribute drives them, so the variation picker is broken or empty.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Variable product with attributes not enabled for variations', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'The product has variations but no attribute drives them, so the variation picker is broken or empty.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'applies'     => function ( $product ) {
 			return $product->is_type( 'variable' );
 		},
 		'check'       => function ( $product ) {
 			if ( count( $product->get_children() ) > 0 && empty( $product->get_variation_attributes() ) ) {
-				return __( 'No attribute is marked "used for variations"', 'catalog-health-scanner-for-woocommerce' );
+				return __( 'No attribute is marked "used for variations"', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 			}
 			return false;
 		},
@@ -114,8 +114,8 @@ return array(
 
 	array(
 		'id'          => 'variation_attribute_invalid',
-		'label'       => __( 'Variation with missing or invalid attribute value', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'These variations reference attribute options that no longer exist, so they can never be selected.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Variation with missing or invalid attribute value', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'These variations reference attribute options that no longer exist, so they can never be selected.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'critical',
 		'applies'     => function ( $product ) {
 			return $product->is_type( 'variable' );
@@ -153,7 +153,7 @@ return array(
 			if ( $invalid > 0 ) {
 				return sprintf(
 					/* translators: %d: number of variations with invalid attribute values. */
-					__( '%d variation(s) with invalid attribute values', 'catalog-health-scanner-for-woocommerce' ),
+					__( '%d variation(s) with invalid attribute values', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					$invalid
 				);
 			}
@@ -163,8 +163,8 @@ return array(
 
 	array(
 		'id'          => 'variation_count_mismatch',
-		'label'       => __( 'Variation count not matching possible attribute combinations', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Some attribute combinations have no variation behind them, so customers can select options that cannot be bought.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Variation count not matching possible attribute combinations', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Some attribute combinations have no variation behind them, so customers can select options that cannot be bought.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'medium',
 		'applies'     => function ( $product ) {
 			return $product->is_type( 'variable' );
@@ -186,7 +186,7 @@ return array(
 			if ( $actual < $possible ) {
 				return sprintf(
 					/* translators: %1$d: existing variation count, %2$d: possible combination count. */
-					__( '%1$d of %2$d combinations covered', 'catalog-health-scanner-for-woocommerce' ),
+					__( '%1$d of %2$d combinations covered', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					$actual,
 					$possible
 				);
@@ -197,8 +197,8 @@ return array(
 
 	array(
 		'id'          => 'category_not_in_menu',
-		'label'       => __( 'Product assigned to a category that no longer appears in the menu structure', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'The only path to this product is search; browsing customers never reach it.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Product assigned to a category that no longer appears in the menu structure', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'The only path to this product is search; browsing customers never reach it.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'low',
 		'applies'     => function () {
 			// Only meaningful on stores that actually put product categories
@@ -235,7 +235,7 @@ return array(
 			}
 			$term_ids = array_map( 'intval', $product->get_category_ids( 'edit' ) );
 			if ( ! empty( $term_ids ) && empty( array_intersect( $term_ids, $menu_cat_ids ) ) ) {
-				return __( 'No assigned category is reachable from a menu', 'catalog-health-scanner-for-woocommerce' );
+				return __( 'No assigned category is reachable from a menu', 'wpfactory-catalog-health-scanner-for-woocommerce' );
 			}
 			return false;
 		},
@@ -243,8 +243,8 @@ return array(
 
 	array(
 		'id'          => 'grouped_children_invalid',
-		'label'       => __( 'Grouped product with deleted or unpublished children', 'catalog-health-scanner-for-woocommerce' ),
-		'explanation' => __( 'Part of this grouped product silently disappeared, so the page sells less than intended.', 'catalog-health-scanner-for-woocommerce' ),
+		'label'       => __( 'Grouped product with deleted or unpublished children', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+		'explanation' => __( 'Part of this grouped product silently disappeared, so the page sells less than intended.', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 		'severity'    => 'high',
 		'fix'         => 'clean_grouped_children',
 		'fix_type'    => 'auto',
@@ -261,7 +261,7 @@ return array(
 			if ( $broken > 0 ) {
 				return sprintf(
 					/* translators: %d: number of broken child product references. */
-					__( '%d broken child reference(s)', 'catalog-health-scanner-for-woocommerce' ),
+					__( '%d broken child reference(s)', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
 					$broken
 				);
 			}
