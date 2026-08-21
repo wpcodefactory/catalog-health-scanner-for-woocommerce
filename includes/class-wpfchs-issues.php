@@ -437,6 +437,34 @@ class WPFCHS_Issues {
 	 *
 	 * @return  int
 	 */
+	/**
+	 * Counts issue rows the way every user-facing surface must: a store-level
+	 * finding is one issue however many products it reaches.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   array $rows Issue rows carrying a check_id.
+	 * @return  int
+	 */
+	function collapse_store_level( $rows ) {
+		$checks     = wpfchs()->core->checks;
+		$seen_store = array();
+		$total      = 0;
+		foreach ( (array) $rows as $row ) {
+			$check_id = ( is_object( $row ) ? $row->check_id : ( $row['check_id'] ?? '' ) );
+			$check    = $checks->get( $check_id );
+			if ( $check && $check->is_store_level() ) {
+				if ( isset( $seen_store[ $check_id ] ) ) {
+					continue;
+				}
+				$seen_store[ $check_id ] = true;
+			}
+			$total++;
+		}
+		return $total;
+	}
+
 	function count_open_effective() {
 		return (int) array_sum( $this->count_open_scored_by_category() );
 	}

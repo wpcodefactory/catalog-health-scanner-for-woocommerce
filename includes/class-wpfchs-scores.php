@@ -213,7 +213,36 @@ class WPFCHS_Scores {
 	 * @return  array {id, label, color}
 	 */
 	function get_category_band( $earned, $possible ) {
-		return $this->get_band( $possible > 0 ? ( $earned / $possible ) * 100 : 100 );
+
+		// Category cards use their own three-tier scale, NOT get_band().
+		// get_band() is the four-tier scale for the overall health score
+		// (90/75/50), and borrowing it here made every category between 70%
+		// and 74.99% render red — a 74% category looked as bad as a 40% one.
+		//
+		// The comparison is made on the raw fraction. Rounding first would
+		// push 89.6% into the green band and 69.6% out of amber, so a card
+		// could contradict the score printed on it.
+		$percent = ( $possible > 0 ? ( $earned / $possible ) * 100 : 100 );
+
+		if ( $percent >= 90 ) {
+			return array(
+				'id'    => 'healthy',
+				'label' => __( 'Healthy', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'color' => '#00a32b',
+			);
+		}
+		if ( $percent >= 70 ) {
+			return array(
+				'id'    => 'minor',
+				'label' => __( 'Minor issues', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+				'color' => '#dba617',
+			);
+		}
+		return array(
+			'id'    => 'critical',
+			'label' => __( 'Needs attention', 'wpfactory-catalog-health-scanner-for-woocommerce' ),
+			'color' => '#d63638',
+		);
 	}
 
 	/**

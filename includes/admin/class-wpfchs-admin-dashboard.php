@@ -209,7 +209,8 @@ class WPFCHS_Admin_Dashboard {
 		$open    = $core->issues->count_open_effective();
 		$ignored = $core->issues->count( array( 'status' => 'ignored' ) );
 
-		$history = array_reverse( $core->scanner->get_history( 8 ) );
+		// Only scans that measured something belong on the chart.
+		$history = array_reverse( $core->scanner->get_trend_history( 8 ) );
 
 		echo '<div class="wpfchs-card wpfchs-score-panel">';
 
@@ -544,7 +545,11 @@ class WPFCHS_Admin_Dashboard {
 		$core          = wpfchs()->core;
 		$categories    = $core->checks->get_categories();
 		$applicability = $core->applicability;
-		$open_counts   = $core->issues->count_open_by_check();
+		// The SAME counter the headline total uses. Summing raw per-check
+		// counts here made a store-wide finding count once per product it
+		// reaches, so Content read 131 where the report listed 39 and the
+		// card totals did not reconcile with the headline.
+		$open_by_cat   = $core->issues->count_open_scored_by_category();
 
 		$applicable_count = 0;
 		$cards            = array();
@@ -566,10 +571,7 @@ class WPFCHS_Admin_Dashboard {
 				$reason = $resolve['reason'];
 			}
 
-			$open = 0;
-			foreach ( $checks as $check_id => $check ) {
-				$open += ( $open_counts[ $check_id ] ?? 0 );
-			}
+			$open = (int) ( $open_by_cat[ $category_id ] ?? 0 );
 
 			$cards[ $category_id ] = array(
 				'label'      => $label,
@@ -644,7 +646,7 @@ class WPFCHS_Admin_Dashboard {
 				$chip_label = ( $chip ? $chip['label'] : $band['label'] );
 				$chip_color = ( $chip ? $chip['color'] : $band['color'] );
 				echo '<span class="wpfchs-chip" style="color:' . esc_attr( $chip_color ) . ';background:' . esc_attr( $chip_color ) . '1a">' . esc_html( $chip_label ) . '</span></div>';
-				echo '<div class="wpfchs-card-score">' . esc_html( wc_format_decimal( $card['score']['earned'], 1 ) ) . ' <span>/ ' . esc_html( wc_format_decimal( $card['score']['possible'], 0 ) ) . '</span></div>';
+				echo '<div class="wpfchs-card-score">' . esc_html( wc_format_decimal( $card['score']['earned'], 1 ) ) . ' <span>/ ' . esc_html( wc_format_decimal( $card['score']['possible'], 1, true ) ) . '</span></div>';
 				$percent = ( $card['score']['possible'] > 0 ? round( ( $card['score']['earned'] / $card['score']['possible'] ) * 100 ) : 100 );
 				echo '<div class="wpfchs-card-bar"><div style="width:' . esc_attr( $percent ) . '%;background:' . esc_attr( $band['color'] ) . '"></div></div>';
 			} else {

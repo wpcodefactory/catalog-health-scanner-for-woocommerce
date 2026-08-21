@@ -115,6 +115,38 @@ class WPFCHS_Scanner {
 	}
 
 	/**
+	 * Completed scans that carry a real result, newest first — the series the
+	 * trend chart plots.
+	 *
+	 * A scan that finished but measured nothing (cancelled early, an empty
+	 * catalog, every product skipped) stores a zero score. Plotting those puts
+	 * 0% points in the middle of the line, which reads as a broken chart
+	 * rather than as history — and this chart appears in marketing
+	 * screenshots.
+	 *
+	 * @version 1.0.0
+	 * @since   1.0.0
+	 *
+	 * @param   int $limit
+	 * @return  array Newest first.
+	 */
+	function get_trend_history( $limit = 8 ) {
+		global $wpdb;
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Custom scans table; no WP API exists.
+		return (array) $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$wpdb->prefix}wpfchs_scans
+				WHERE status = 'complete'
+				AND score IS NOT NULL AND score > 0
+				AND products_scanned > 0
+				ORDER BY id DESC LIMIT %d",
+				absint( $limit )
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
+	}
+
+	/**
 	 * Starts a new scan.
 	 *
 	 * @version 1.0.0

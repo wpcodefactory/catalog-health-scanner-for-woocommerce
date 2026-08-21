@@ -170,12 +170,8 @@ class WPFCHS_Admin_Category {
 
 		$core = wpfchs()->core;
 		$last = $core->admin->get_last_scan_data();
-		$open = $core->issues->count(
-			array(
-				'category' => $category,
-				'status'   => 'open',
-			)
-		);
+		// Counted the same way as the dashboard card and the headline total.
+		$open = (int) ( $core->issues->count_open_scored_by_category()[ $category ] ?? 0 );
 
 		// Applicability summary — only when every check in the category
 		// belongs to the same group. A mixed category (Purchasability holds
@@ -205,7 +201,7 @@ class WPFCHS_Admin_Category {
 		$score = ( $last['categories'][ $category ] ?? null );
 		if ( null !== $score ) {
 			$band = $core->scores->get_category_band( $score['earned'], $score['possible'] );
-			echo '<span class="wpfchs-category-score">' . esc_html( wc_format_decimal( $score['earned'], 1 ) ) . ' <span class="wpfchs-muted">/ ' . esc_html( wc_format_decimal( $score['possible'], 0 ) ) . '</span></span>';
+			echo '<span class="wpfchs-category-score">' . esc_html( wc_format_decimal( $score['earned'], 1 ) ) . ' <span class="wpfchs-muted">/ ' . esc_html( wc_format_decimal( $score['possible'], 1, true ) ) . '</span></span>';
 			echo '<span class="wpfchs-band" style="color:' . esc_attr( $band['color'] ) . '">' . esc_html( $band['label'] ) . '</span>';
 			$percent = ( $score['possible'] > 0 ? round( ( $score['earned'] / $score['possible'] ) * 100 ) : 100 );
 			echo '<div class="wpfchs-card-bar wpfchs-category-bar"><div style="width:' . esc_attr( $percent ) . '%;background:' . esc_attr( $band['color'] ) . '"></div></div>';
